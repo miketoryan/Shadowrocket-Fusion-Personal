@@ -1,28 +1,35 @@
 # Shadowrocket Fusion Personal v6
 
-这是以“联网稳定优先”为目标的个人 Shadowrocket 广告屏蔽模块。
+这是以联网稳定为前提、支持受控自动更新的个人 Shadowrocket 广告屏蔽模块。
 
-## 修复内容
+## 当前结构
 
-- 删除 71 个远程依赖及全部远程脚本，避免脚本下载、执行或失效引发连锁故障。
-- 删除约 1690 条 URL 重写，不再对普通 HTTPS 流量做重写。
-- 完全关闭 MITM；YouTube、微信、百度网盘不会被解密或修改，真实会员状态保持原样。
-- 删除 `DOMAIN-KEYWORD,pangolin-sdk-toutiao`，避免广告 SDK 重试风暴。
-- 删除 `DOMAIN-SUFFIX,wxs.qq.com`，避免微信资源被误拦截。
-- 删除对 HTTPDNS、共用 CDN 和应用核心 API 的拦截。
-- 只保留精确 `DOMAIN` 广告主机规则；自动任务只做安全校验，不再自动合并上游内容。
+- 稳定核心：人工确认的 62 条精确广告域名规则。
+- 自动增量：只接受通过全部安全检查的精确 `DOMAIN,REJECT` 广告域名。
+- 不包含脚本、URL 重写、MITM、远程规则集、`DOMAIN-SUFFIX` 或 `DOMAIN-KEYWORD`。
+
+## 自动更新流程
+
+1. 每日读取 `sources.json` 中固定仓库、固定路径的上游文件。
+2. 只提取精确 `DOMAIN,REJECT`，忽略脚本、重写、MITM、规则集和广域规则。
+3. 域名必须带明确广告特征，并通过核心服务保护列表。
+4. 自动排除 YouTube、微信、百度、Apple、Google、哔哩哔哩、爱奇艺、淘宝、京东、美团等核心域名。
+5. 校验上游规模、筛选后规模、单次增删数量及变化比例。
+6. 任一检查失败，原 `Module.sgmodule` 保持不变。
+
+目前 `fmz200` 仅作为候选数据源，绝不会整库合并。`app2smile` 的 QQ 新闻和贴吧当前依赖远程脚本或远程规则集，因此只监控，不自动导入。
+
+## 更新限制
+
+- 自动规则总量最多 200 条。
+- 单次最多新增 20 条、删除 20 条。
+- 自动规则总数变化超过 25% 时拒绝更新。
+- 自动更新只能改动 `BEGIN/END CONTROLLED AUTO RULES` 标记之间的内容。
 
 ## 使用方式
 
-1. 在 Shadowrocket 的模块页面更新当前订阅。
-2. 确认模块名称显示为“广告屏蔽（稳定修正版）”。
-3. 重新启用模块后，先测试大陆网站，再测试代理网站。
-4. 如果仍显示旧名称，删除旧模块后使用下方地址重新添加。
+在 Shadowrocket 模块页面更新当前订阅，名称应显示为“广告屏蔽”。
 
-## 订阅地址
+订阅地址：
 
 `https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/Module.sgmodule`
-
-## 自动维护边界
-
-`tools/fusion.py` 会拒绝以下内容进入主模块：脚本、URL 重写、MITM、远程规则集、`DOMAIN-KEYWORD`、HTTPDNS 拦截，以及 YouTube/百度网盘会员相关流量。
