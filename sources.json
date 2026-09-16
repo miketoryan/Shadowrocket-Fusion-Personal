@@ -1,24 +1,42 @@
 {
-  "mode": "connectivity-safe",
-  "auto_sync_modules": [],
-  "watched_modules": [
+  "mode": "controlled-auto-update",
+  "controlled_sources": [
     {
-      "name": "fmz200 Shadowrocket ad collection",
+      "id": "fmz200-exact-ad-domains",
       "url": "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Shadowrocket/module/blockAds.srmodule",
-      "enabled": false,
-      "note": "Reference only. Never merged automatically."
+      "allowed_repository": "fmz200/wool_scripts",
+      "allowed_path": "Shadowrocket/module/blockAds.srmodule",
+      "enabled": true,
+      "max_source_lines": 12000,
+      "min_exact_rules": 300,
+      "max_exact_rules": 800,
+      "min_safe_rules": 40,
+      "max_safe_rules": 180,
+      "note": "Never merge the whole module. Accept only exact DOMAIN,REJECT lines that pass all filters."
+    }
+  ],
+  "watch_only": [
+    {
+      "name": "app2smile QQ News",
+      "url": "https://raw.githubusercontent.com/app2smile/rules/master/module/qqnews.sgmodule",
+      "reason": "Script-only upstream; monitored but never auto-imported."
+    },
+    {
+      "name": "app2smile Tieba",
+      "url": "https://raw.githubusercontent.com/app2smile/rules/master/module/tieba.sgmodule",
+      "reason": "Remote script and RULE-SET upstream; monitored but never auto-imported."
     },
     {
       "name": "ddgksf Weibo Ads",
       "url": "https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/WeiboAds.conf",
-      "enabled": false,
-      "note": "Reference only. Never merged automatically."
-    },
-    {
-      "name": "ddgksf Cainiao Ads",
-      "url": "https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/CainiaoAds.conf",
-      "enabled": false,
-      "note": "Reference only. Never merged automatically."
+      "reason": "Different format and rewrite logic; manual review required."
     }
-  ]
+  ],
+  "safety": {
+    "max_total_auto_rules": 200,
+    "max_additions_per_run": 20,
+    "max_removals_per_run": 20,
+    "max_count_change_ratio": 0.25,
+    "allow_bootstrap": false
+  }
 }
