@@ -1,23 +1,7 @@
 {
-  "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Shadowrocket/module/blockAds.srmodule": {
-    "name": "fmz200 Shadowrocket ad collection",
+  "fmz200-exact-ad-domains": {
     "sha256": "513e9c5a5d6199d12df9720d743422b1581bdca9473f18c352b1e8edd36bd07f",
-    "http": 206,
-    "last_commit": "2026-09-10T14:03:10+00:00",
-    "error": null
-  },
-  "https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/WeiboAds.conf": {
-    "name": "ddgksf Weibo Ads",
-    "sha256": "9cc47e68231ae05324f50eea108e0f1e5175fa2cfeeb6c8bae241db1556b038a",
-    "http": 206,
-    "last_commit": "2025-12-12T00:51:52+00:00",
-    "error": null
-  },
-  "https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/CainiaoAds.conf": {
-    "name": "ddgksf Cainiao Ads",
-    "sha256": "c45b9717c6f474b652a2c8c49f0cb224c2592d222912932ffd127455c257ab6c",
-    "http": 206,
-    "last_commit": "2025-12-12T00:48:13+00:00",
-    "error": null
+    "exact_rules": 438,
+    "safe_rules": 83
   }
 }
