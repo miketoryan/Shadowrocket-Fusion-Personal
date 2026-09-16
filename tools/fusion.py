@@ -5,6 +5,10 @@
 
 The bundled Module.sgmodule is the only source of truth. This maintainer never
 downloads or replaces it from a parent fusion repository.
+
+Selected upstream modules may update small, explicitly allowlisted blocks. Each
+candidate is fetched, safety-scanned and limited to approved repositories and
+sections before it can change Module.sgmodule.
 """
 
 from __future__ import annotations
@@ -34,7 +38,7 @@ GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "").strip()
 STALE_DAYS = int(os.environ.get("STALE_DAYS", "365"))
 MAX_WORKERS = max(1, int(os.environ.get("MAX_WORKERS", "12")))
 TIMEOUT = 20
-UA = "Shadowrocket-Fusion-Personal/FINAL-v2"
+UA = "Shadowrocket-Fusion-Personal/FINAL-v3"
 
 SCRIPT_PATH_RE = re.compile(r"script-path\s*=\s*(https?://[^,\s]+)", re.I)
 RULESET_RE = re.compile(r"RULE-SET\s*,\s*(https?://[^,\s]+)", re.I)
@@ -42,6 +46,26 @@ LITERAL_URL_RE = re.compile(r"(?<!\\)https?://[^\s,`\"']+", re.I)
 REMOTE_RESOURCE_SUFFIXES = {
     ".conf", ".js", ".json", ".list", ".module", ".sgmodule", ".txt"
 }
+
+AUTO_BEGIN = "# BEGIN SAFE AUTO-SYNC:"
+AUTO_END = "# END SAFE AUTO-SYNC:"
+
+# High-confidence unlock/fake-entitlement signals. These are intentionally
+# narrower than a plain "vip" keyword so legitimate ad-cleaning code is kept.
+FORBIDDEN_CONTENT_PATTERNS = [
+    re.compile(r"(?i)\b(?:crack|unlock)\b"),
+    re.compile(r"(?i)revenuecat"),
+    re.compile(r"(?i)nanocat\.cloud"),
+    re.compile(r"(?i)\.vip_type\s*(?:\|?=|:)\s*[12]\b"),
+    re.compile(r"(?i)\bdue_date\s*(?:\|?=|:)\s*[89]\d{11,}\b"),
+    re.compile(r"(?i)\brole\s*(?:\|?=|:)\s*15\b"),
+    re.compile(r"(?i)\.data\.vip\s*\|="),
+    re.compile(r"(?i)spotify[^\n]{0,80}crack"),
+]
+
+RISKY_PATH_TOKENS = (
+    "/unlock/", "crack", "/vip/", "vip.", "_vip", "-vip",
+)
 
 
 def request(url: str, *, range_probe=False, accept=None):
@@ -214,12 +238,26 @@ def classify(url: str, kinds: set[str]):
         "http": code,
         "last_commit": None,
         "error": error,
+        "risk": None,
     }
     if state == "dead":
         item["status"] = "DEAD"
         return item
     if state == "unknown":
         return item
+
+    if "script-path" in kinds:
+        try:
+            script_text = fetch_bytes(url).decode("utf-8", errors="replace")
+            risk = forbidden_reason(script_text)
+            if risk:
+                item["status"] = "RISKY"
+                item["risk"] = risk
+                return item
+        except Exception as exc:
+            item["status"] = "UNKNOWN"
+            item["error"] = f"Safety scan failed: {type(exc).__name__}: {exc}"
+            return item
     last_commit = github_last_commit(url)
     if last_commit is None:
         item["status"] = "REACHABLE"
@@ -251,7 +289,246 @@ def load_json(path: Path, default):
         return default
 
 
-def watch_interfaces():
+def forbidden_reason(value: str):
+    for pattern in FORBIDDEN_CONTENT_PATTERNS:
+        if pattern.search(value):
+            return pattern.pattern
+    return None
+
+
+def risky_script_url(url: str):
+    decoded = urllib.parse.unquote(url).lower()
+    return any(token in decoded for token in RISKY_PATH_TOKENS)
+
+
+def remove_forbidden_module_lines(text: str):
+    """Remove only high-confidence unlock declarations from the local module."""
+    output = []
+    removed = []
+    section = ""
+    for line_number, line in enumerate(text.splitlines(keepends=True), 1):
+        stripped = line.strip()
+        if stripped.startswith("[") and stripped.endswith("]"):
+            section = stripped[1:-1].strip().lower()
+            output.append(line)
+            continue
+
+        reason = None
+        if section == "body rewrite":
+            reason = forbidden_reason(line)
+        elif section == "script":
+            match = SCRIPT_PATH_RE.search(line)
+            if match and risky_script_url(clean_url(match.group(1))):
+                reason = "risky script-path"
+
+        if reason:
+            removed.append({"line": line_number, "reason": reason})
+            continue
+        output.append(line)
+    return "".join(output), removed
+
+
+def parse_module_sections(text: str):
+    sections = defaultdict(list)
+    section = ""
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("[") and stripped.endswith("]"):
+            section = stripped[1:-1].strip()
+            continue
+        if section and stripped and not stripped.startswith("#"):
+            sections[section.lower()].append(stripped)
+    return sections
+
+
+def allowed_raw_url(url: str, repository: str):
+    parsed = parse_raw_github(url)
+    if not parsed:
+        return False
+    owner, repo, _branch, _path = parsed
+    return f"{owner}/{repo}".lower() == repository.lower()
+
+
+def source_payload(entry):
+    name = str(entry.get("name", "Unnamed"))
+    url = str(entry.get("url", "")).strip()
+    repository = str(entry.get("allowed_repository", "")).strip()
+    if not url or not repository or not allowed_raw_url(url, repository):
+        raise ValueError("source URL is outside allowed_repository")
+
+    body = fetch_bytes(url).decode("utf-8", errors="replace")
+    if forbidden_reason(body):
+        raise ValueError("source contains forbidden unlock/proxy signals")
+
+    replacements = entry.get("arguments", {})
+    if isinstance(replacements, dict):
+        for old, new in replacements.items():
+            body = body.replace(str(old), str(new))
+
+    parsed = parse_module_sections(body)
+    selected = {}
+    remote_urls = set()
+    for requested in entry.get("sections", []):
+        section = str(requested).strip()
+        lines = parsed.get(section.lower(), [])
+        if section.lower() == "rule":
+            lines = [line for line in lines if line.upper().startswith("RULE-SET,")]
+        elif section.lower() == "script":
+            lines = [line for line in lines if SCRIPT_PATH_RE.search(line)]
+        else:
+            raise ValueError(f"section not allowlisted: {section}")
+        if not lines:
+            raise ValueError(f"approved section is empty: {section}")
+        for line in lines:
+            if forbidden_reason(line):
+                raise ValueError(f"forbidden content in {section}")
+            urls = [url for _kind, url in line_dependencies(section, line)]
+            if not urls:
+                raise ValueError(f"no auditable remote dependency in {section}")
+            for dependency in urls:
+                if not allowed_raw_url(dependency, repository):
+                    raise ValueError(f"dependency outside {repository}: {dependency}")
+                remote_urls.add(dependency)
+        selected[section] = lines
+
+    hosts = []
+    if entry.get("merge_mitm_hosts", False):
+        for line in parsed.get("mitm", []):
+            if not line.lower().startswith("hostname") or "=" not in line:
+                continue
+            for host in line.split("=", 1)[1].replace("%APPEND%", "").split(","):
+                host = host.strip()
+                if host and re.fullmatch(r"[-*?.A-Za-z0-9]+", host):
+                    hosts.append(host)
+
+    return {
+        "name": name,
+        "url": url,
+        "sha256": hashlib.sha256(body.encode("utf-8")).hexdigest(),
+        "sections": selected,
+        "remote_urls": remote_urls,
+        "hosts": sorted(set(hosts)),
+    }
+
+
+def remove_source_blocks(text: str, source_id: str):
+    begin = f"{AUTO_BEGIN} {source_id}"
+    end = f"{AUTO_END} {source_id}"
+    output = []
+    skipping = False
+    for line in text.splitlines(keepends=True):
+        marker = line.strip()
+        if marker == begin:
+            skipping = True
+            continue
+        if skipping and marker == end:
+            skipping = False
+            continue
+        if not skipping:
+            output.append(line)
+    return "".join(output)
+
+
+def remove_duplicate_sync_lines(text: str, remote_urls: set[str]):
+    output = []
+    section = ""
+    for line in text.splitlines(keepends=True):
+        stripped = line.strip()
+        if stripped.startswith("[") and stripped.endswith("]"):
+            section = stripped[1:-1].strip()
+            output.append(line)
+            continue
+        dependencies = {url for _kind, url in line_dependencies(section, line)}
+        if dependencies & remote_urls:
+            continue
+        output.append(line)
+    return "".join(output)
+
+
+def insert_source_block(text: str, source_id: str, section_name: str, entries):
+    lines = text.splitlines(keepends=True)
+    start = None
+    end = len(lines)
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.lower() == f"[{section_name.lower()}]":
+            start = index
+            continue
+        if start is not None and index > start and stripped.startswith("[") and stripped.endswith("]"):
+            end = index
+            break
+    if start is None:
+        raise ValueError(f"target module section missing: {section_name}")
+
+    block = [
+        f"{AUTO_BEGIN} {source_id}\n",
+        *[entry.rstrip("\n") + "\n" for entry in entries],
+        f"{AUTO_END} {source_id}\n",
+    ]
+    lines[end:end] = block
+    return "".join(lines)
+
+
+def merge_mitm_hosts(text: str, hosts):
+    if not hosts:
+        return text, []
+    lines = text.splitlines(keepends=True)
+    section = ""
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith("[") and stripped.endswith("]"):
+            section = stripped[1:-1].strip().lower()
+            continue
+        if section != "mitm" or not stripped.lower().startswith("hostname") or "=" not in line:
+            continue
+        existing = line.split("=", 1)[1]
+        additions = [host for host in hosts if host not in existing]
+        if additions:
+            newline = "\n" if line.endswith("\n") else ""
+            lines[index] = line.rstrip("\n").rstrip() + "," + ",".join(additions) + newline
+        return "".join(lines), additions
+    raise ValueError("target module MITM hostname line missing")
+
+
+def sync_allowlisted_sources(text: str):
+    config = load_json(SOURCES, {"auto_sync_modules": []})
+    results = []
+    for entry in config.get("auto_sync_modules", []):
+        if not isinstance(entry, dict) or entry.get("enabled", True) is False:
+            continue
+        source_id = str(entry.get("id", "")).strip()
+        name = str(entry.get("name", source_id or "Unnamed"))
+        if not re.fullmatch(r"[a-z0-9-]+", source_id):
+            results.append({"name": name, "state": "BLOCKED", "detail": "invalid source id"})
+            continue
+        try:
+            payload = source_payload(entry)
+            updated = remove_source_blocks(text, source_id)
+            updated = remove_duplicate_sync_lines(updated, payload["remote_urls"])
+            for section, entries in payload["sections"].items():
+                updated = insert_source_block(updated, source_id, section, entries)
+            updated, added_hosts = merge_mitm_hosts(updated, payload["hosts"])
+            text = updated
+            results.append({
+                "name": name,
+                "state": "SYNCED",
+                "detail": (
+                    f"{sum(len(v) for v in payload['sections'].values())} lines; "
+                    f"{len(added_hosts)} new MITM hosts; sha256 {payload['sha256'][:12]}"
+                ),
+                "url": payload["url"],
+            })
+        except Exception as exc:
+            results.append({
+                "name": name,
+                "state": "BLOCKED",
+                "detail": f"{type(exc).__name__}: {exc}",
+                "url": str(entry.get("url", "")),
+            })
+    return text, results
+
+
+def watch_interfaces(sync_results):
     old_state = load_json(WATCH_STATE, {})
     new_state = {}
     rows = []
@@ -302,9 +579,28 @@ def watch_interfaces():
         json.dumps(new_state, ensure_ascii=False, indent=2) + "\n", "utf-8"
     )
     lines = [
-        "# Interface source watch",
+        "# Interface source maintenance",
         "",
-        "> `CHANGED` means a watched app module changed. Review it manually; changes are never auto-merged.",
+        "> `SYNCED` sources passed repository, section and unlock-risk checks. `BLOCKED` sources do not modify the module.",
+        "",
+        "## Safe auto-sync",
+        "",
+        "| App/source | State | Detail | URL |",
+        "|---|---|---|---|",
+    ]
+    if sync_results:
+        for item in sync_results:
+            lines.append(
+                f"| {md(item['name'])} | **{item['state']}** | "
+                f"{md(item['detail'])} | {md(item.get('url', '-'))} |"
+            )
+    else:
+        lines.append("| - | - | No automatic sources configured | - |")
+    lines += [
+        "",
+        "## Report-only watch",
+        "",
+        "> `CHANGED` means a watched source changed. It is never auto-merged.",
         "",
         "| App/source | State | HTTP | Last commit | URL | Note |",
         "|---|---|---:|---|---|---|",
@@ -346,10 +642,14 @@ def main():
 
     REPORTS.mkdir(parents=True, exist_ok=True)
     text = MODULE.read_text("utf-8")
+    text, forbidden_removed = remove_forbidden_module_lines(text)
+    text, sync_results = sync_allowlisted_sources(text)
     dependencies = extract_dependencies(text)
     audit = audit_dependencies(dependencies)
     confirmed_dead = {url for url, item in audit.items() if item["status"] == "DEAD"}
+    confirmed_risky = {url for url, item in audit.items() if item["status"] == "RISKY"}
     text, dead_removed = remove_dead_lines(text, confirmed_dead)
+    text, risky_removed = remove_dead_lines(text, confirmed_risky)
     remaining = extract_dependencies(text)
 
     counts = defaultdict(int)
@@ -362,7 +662,7 @@ def main():
         f" | active {counts['ACTIVE']}"
         f" | stale {counts['STALE']}"
         f" | reachable {counts['REACHABLE']}"
-        f" | unknown {counts['UNKNOWN']} | dead-left 0"
+        f" | unknown {counts['UNKNOWN']} | risky {counts['RISKY']} | dead-left 0"
     )
     if re.search(r"^#!name\s*=.*$", text, flags=re.M):
         text = re.sub(
@@ -389,14 +689,22 @@ def main():
         f"- UNKNOWN: **{counts['UNKNOWN']}**",
         f"- Confirmed DEAD found this run: **{counts['DEAD']}**",
         f"- Confirmed dead declaration lines removed this run: **{len(dead_removed)}**",
+        f"- Remote scripts blocked for unlock risk: **{counts['RISKY']}**",
+        f"- Risky remote declaration lines removed this run: **{len(risky_removed)}**",
+        f"- Forbidden unlock declarations removed this run: **{len(forbidden_removed)}**",
+        f"- Safe auto-sync sources passed: **{sum(1 for item in sync_results if item['state'] == 'SYNCED')}**",
+        f"- Safe auto-sync sources blocked: **{sum(1 for item in sync_results if item['state'] == 'BLOCKED')}**",
         "- DEAD dependencies left in Module.sgmodule: **0**",
         "",
         "> Only twice-confirmed HTTP 404/410 is auto-removed. 403/429/timeouts remain UNKNOWN and are kept.",
+        "> High-confidence VIP/unlock declarations are removed. An unsafe upstream sync is blocked and the previous managed block is retained.",
         "",
         "## Removed this run",
         "",
     ]
-    report.extend([f"- `{url}`" for url in dead_removed] or ["None."])
+    removed_rows = [f"- DEAD: `{url}`" for url in dead_removed]
+    removed_rows += [f"- RISKY: `{url}`" for url in risky_removed]
+    report.extend(removed_rows or ["None."])
     report += [
         "", "## Current dependency health", "",
         "| Status | Type | HTTP | Last commit | URL |",
@@ -407,11 +715,21 @@ def main():
             f"| {item['status']} | {item['kind']} | {item['http'] or '-'} | "
             f"{fmt_date(item['last_commit'])} | {md(url)} |"
         )
+    if forbidden_removed:
+        report += ["", "## Forbidden declarations removed", ""]
+        report.extend(
+            f"- Original line {item['line']}: `{md(item['reason'])}`"
+            for item in forbidden_removed
+        )
     STATUS.write_text("\n".join(report) + "\n", "utf-8")
-    watch_interfaces()
+    watch_interfaces(sync_results)
     print("Maintenance complete.")
     print(f"  dependencies audited: {len(dependencies)}")
     print(f"  dead removed: {len(dead_removed)}")
+    print(f"  risky remote declarations removed: {len(risky_removed)}")
+    print(f"  forbidden declarations removed: {len(forbidden_removed)}")
+    print(f"  safe sync passed: {sum(1 for item in sync_results if item['state'] == 'SYNCED')}")
+    print(f"  safe sync blocked: {sum(1 for item in sync_results if item['state'] == 'BLOCKED')}")
 
 
 if __name__ == "__main__":

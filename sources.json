@@ -1,16 +1,47 @@
 {
-  "watched_modules": [
+  "auto_sync_modules": [
     {
+      "id": "app2smile-qqnews",
       "name": "QQ News / app2smile",
       "url": "https://raw.githubusercontent.com/app2smile/rules/master/module/qqnews.sgmodule",
+      "allowed_repository": "app2smile/rules",
+      "sections": ["Script"],
+      "merge_mitm_hosts": true,
       "enabled": true,
-      "note": "Interface watcher only; never auto-merge."
+      "note": "Only the approved Script section and MITM hosts may update."
     },
     {
+      "id": "app2smile-tieba",
       "name": "Tieba / app2smile",
       "url": "https://raw.githubusercontent.com/app2smile/rules/master/module/tieba.sgmodule",
+      "allowed_repository": "app2smile/rules",
+      "sections": ["Rule", "Script"],
+      "merge_mitm_hosts": true,
+      "arguments": {
+        "{{{per_filter_video}}}": "0"
+      },
       "enabled": true,
-      "note": "JSON/Proto interface watcher only; never auto-merge."
+      "note": "Only approved ad rules/scripts update; module arguments are pinned."
+    }
+  ],
+  "watched_modules": [
+    {
+      "name": "fmz200 Shadowrocket ad collection",
+      "url": "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Shadowrocket/module/blockAds.srmodule",
+      "enabled": true,
+      "note": "Report only. Whole-file auto-merge is forbidden because it mixes ad removal with unlock/crack content."
+    },
+    {
+      "name": "ddgksf Weibo Ads",
+      "url": "https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/WeiboAds.conf",
+      "enabled": true,
+      "note": "Report only. Quantumult X format requires conversion and review."
+    },
+    {
+      "name": "ddgksf Cainiao Ads",
+      "url": "https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/CainiaoAds.conf",
+      "enabled": true,
+      "note": "Report only. Quantumult X format requires conversion and review."
     }
   ]
 }

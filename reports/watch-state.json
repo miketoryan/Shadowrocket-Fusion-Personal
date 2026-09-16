@@ -1,16 +1,23 @@
 {
-  "https://raw.githubusercontent.com/app2smile/rules/master/module/qqnews.sgmodule": {
-    "name": "QQ News / app2smile",
-    "sha256": "dbc36baa324c803bbcfdf0a6590faf58e2d5c8d8c18d1fd460a174600751847b",
+  "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Shadowrocket/module/blockAds.srmodule": {
+    "name": "fmz200 Shadowrocket ad collection",
+    "sha256": "513e9c5a5d6199d12df9720d743422b1581bdca9473f18c352b1e8edd36bd07f",
     "http": 206,
-    "last_commit": "2022-11-12T03:12:51+00:00",
+    "last_commit": "2026-09-10T14:03:10+00:00",
     "error": null
   },
-  "https://raw.githubusercontent.com/app2smile/rules/master/module/tieba.sgmodule": {
-    "name": "Tieba / app2smile",
-    "sha256": "b20d792a1f4466e97103266942176d6db4579340ba201a4fa8db91da2adfda29",
+  "https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/WeiboAds.conf": {
+    "name": "ddgksf Weibo Ads",
+    "sha256": "9cc47e68231ae05324f50eea108e0f1e5175fa2cfeeb6c8bae241db1556b038a",
     "http": 206,
-    "last_commit": "2026-01-06T05:39:43+00:00",
+    "last_commit": "2025-12-12T00:51:52+00:00",
+    "error": null
+  },
+  "https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/CainiaoAds.conf": {
+    "name": "ddgksf Cainiao Ads",
+    "sha256": "c45b9717c6f474b652a2c8c49f0cb224c2592d222912932ffd127455c257ab6c",
+    "http": 206,
+    "last_commit": "2025-12-12T00:48:13+00:00",
     "error": null
   }
 }
