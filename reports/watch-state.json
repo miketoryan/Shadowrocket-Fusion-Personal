@@ -1,0 +1,16 @@
+{
+  "https://raw.githubusercontent.com/app2smile/rules/master/module/qqnews.sgmodule": {
+    "name": "QQ News / app2smile",
+    "sha256": "dbc36baa324c803bbcfdf0a6590faf58e2d5c8d8c18d1fd460a174600751847b",
+    "http": 206,
+    "last_commit": "2022-11-12T03:12:51+00:00",
+    "error": null
+  },
+  "https://raw.githubusercontent.com/app2smile/rules/master/module/tieba.sgmodule": {
+    "name": "Tieba / app2smile",
+    "sha256": "b20d792a1f4466e97103266942176d6db4579340ba201a4fa8db91da2adfda29",
+    "http": 206,
+    "last_commit": null,
+    "error": null
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "watched_modules": [
+    {
+      "name": "QQ News / app2smile",
+      "url": "https://raw.githubusercontent.com/app2smile/rules/master/module/qqnews.sgmodule",
+      "enabled": true,
+      "note": "Interface watcher only; never auto-merge."
+    },
+    {
+      "name": "Tieba / app2smile",
+      "url": "https://raw.githubusercontent.com/app2smile/rules/master/module/tieba.sgmodule",
+      "enabled": true,
+      "note": "JSON/Proto interface watcher only; never auto-merge."
+    }
+  ]
+}
