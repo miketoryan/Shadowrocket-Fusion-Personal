@@ -1,14 +1,15 @@
 # Fusion Personal health
 
 - Mode: **controlled auto-update**
-- Stable core rules: **62**
+- Stable core rules: **66**
 - Controlled auto rules: **57**
-- Total exact DOMAIN rules: **119**
+- Total exact DOMAIN rules: **123**
 - Added this run: **0**
 - Removed this run: **0**
-- Script declarations: **0**
-- URL rewrites: **0**
-- MITM hosts: **0**
+- Script declarations: **4**
+- URL rewrites: **9**
+- Map Local entries: **10**
+- MITM hosts: **17**
 - Broad match rules: **0**
 - Validation: **PASS**
 
