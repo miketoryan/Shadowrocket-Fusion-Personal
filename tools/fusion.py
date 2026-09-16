@@ -38,7 +38,7 @@ GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "").strip()
 STALE_DAYS = int(os.environ.get("STALE_DAYS", "365"))
 MAX_WORKERS = max(1, int(os.environ.get("MAX_WORKERS", "12")))
 TIMEOUT = 20
-UA = "Shadowrocket-Fusion-Personal/FINAL-v3"
+UA = "Shadowrocket-Fusion-Personal/FINAL-v5"
 
 SCRIPT_PATH_RE = re.compile(r"script-path\s*=\s*(https?://[^,\s]+)", re.I)
 RULESET_RE = re.compile(r"RULE-SET\s*,\s*(https?://[^,\s]+)", re.I)
@@ -49,6 +49,67 @@ REMOTE_RESOURCE_SUFFIXES = {
 
 AUTO_BEGIN = "# BEGIN SAFE AUTO-SYNC:"
 AUTO_END = "# END SAFE AUTO-SYNC:"
+PERSONAL_BEGIN = "# BEGIN PERSONAL MERGE:"
+PERSONAL_END = "# END PERSONAL MERGE:"
+
+# These entries replace the user's former standalone modules. They are kept
+# inline so Shadowrocket only needs to install Module.sgmodule.
+PERSONAL_BLOCKS = {
+    "rule": {
+        "xianyu-baidupan-splash": [
+            "DOMAIN-SUFFIX, voiceads.cn, REJECT, extended-matching, pre-matching",
+            "DOMAIN, dsp.ads.umeng.com, REJECT, extended-matching, pre-matching",
+            "DOMAIN, sdkquic.e.qq.com, REJECT, extended-matching, pre-matching",
+            "DOMAIN, api-v3.mentamob.com, REJECT, extended-matching, pre-matching",
+            "DOMAIN, service.yunxish.com, REJECT, extended-matching, pre-matching",
+            "DOMAIN, cpc-service-square.yunxish.com, REJECT, extended-matching, pre-matching",
+            "DOMAIN, cpc-service-square.iggrowth.cn, REJECT, extended-matching, pre-matching",
+            "DOMAIN, sdk.zhangyuyidong.cn, REJECT, extended-matching, pre-matching",
+            "DOMAIN, iosid.zhangyuyidong.cn, REJECT, extended-matching, pre-matching",
+            "DOMAIN, bid-adx2.vlion.cn, REJECT, extended-matching, pre-matching",
+            "DOMAIN, sdk.beizi.biz, REJECT, extended-matching, pre-matching",
+            "DOMAIN-SUFFIX, adn-plus.com.cn, REJECT, extended-matching, pre-matching",
+        ],
+        "douban-splash": [
+            "DOMAIN, erebor.douban.com, REJECT, extended-matching, pre-matching",
+            "DOMAIN-SUFFIX, ad.doubanio.com, REJECT, extended-matching, pre-matching",
+            "DOMAIN-KEYWORD, pangolin-sdk-toutiao, REJECT, extended-matching, pre-matching",
+            "DOMAIN-SUFFIX, pangolin.snssdk.com, REJECT, extended-matching, pre-matching",
+            "DOMAIN-SUFFIX, pglstatp-toutiao.com, REJECT, extended-matching, pre-matching",
+            "DOMAIN-SUFFIX, pangle.io, REJECT, extended-matching, pre-matching",
+            "DOMAIN-SUFFIX, pangolin.byteoversea.com, REJECT, extended-matching, pre-matching",
+            "DOMAIN, ad.toutiao.com, REJECT, extended-matching, pre-matching",
+        ],
+    },
+    "url rewrite": {
+        "douban-splash": [
+            r"^https?:\/\/api\.douban\.com\/b.*\/common_ads\?.* - reject-dict",
+            r"^https?:\/\/api\.douban\.com\/v\d+\/app_ads\/.* - reject",
+            r"^https?:\/\/api-access\.pangolin-sdk-toutiao\d*\.com\/api\/ad\/union\/sdk\/get_ads\/.* - reject-dict",
+            r"^https?:\/\/api-access\.pangolin-sdk-toutiao-b\.com\/api\/ad\/union\/sdk\/get_ads\/.* - reject-dict",
+            r"^https?:\/\/api-access\.pangolin-sdk-toutiao\d*\.com\/api\/ad\/union\/sdk\/settings\/.* - reject-dict",
+            r"^https?:\/\/api-access\.pangolin-sdk-toutiao-b\.com\/api\/ad\/union\/sdk\/settings\/.* - reject-dict",
+        ],
+    },
+}
+
+PERSONAL_MITM_EXCLUSIONS = [
+    "-youtube.com", "-*.youtube.com", "-youtu.be", "-*.youtu.be",
+    "-youtubei.googleapis.com", "-youtube.googleapis.com", "-*.googlevideo.com",
+    "-ytimg.com", "-*.ytimg.com", "-youtube-nocookie.com",
+    "-*.youtube-nocookie.com", "-weixin110.qq.com", "-*.weixin110.qq.com",
+    "-security.wechat.com", "-*.security.wechat.com", "-pan.baidu.com",
+    "-*.pan.baidu.com",
+]
+
+PERSONAL_MITM_HOSTS = [
+    "api.douban.com",
+    "api-access.pangolin-sdk-toutiao.com",
+    "api-access.pangolin-sdk-toutiao1.com",
+    "api-access.pangolin-sdk-toutiao2.com",
+    "api-access.pangolin-sdk-toutiao3.com",
+    "api-access.pangolin-sdk-toutiao-b.com",
+]
 
 # High-confidence unlock/fake-entitlement signals. These are intentionally
 # narrower than a plain "vip" keyword so legitimate ad-cleaning code is kept.
@@ -469,6 +530,171 @@ def insert_source_block(text: str, source_id: str, section_name: str, entries):
     return "".join(lines)
 
 
+def normalized_line(value: str):
+    return re.sub(r"\s+", "", value).lower()
+
+
+def remove_personal_blocks(text: str):
+    output = []
+    skipping = False
+    for line in text.splitlines(keepends=True):
+        marker = line.strip()
+        if marker.startswith(PERSONAL_BEGIN):
+            skipping = True
+            continue
+        if skipping and marker.startswith(PERSONAL_END):
+            skipping = False
+            continue
+        if not skipping:
+            output.append(line)
+    return "".join(output)
+
+
+def remove_personal_duplicates_and_conflicts(text: str):
+    managed = {
+        normalized_line(entry)
+        for groups in PERSONAL_BLOCKS.values()
+        for entries in groups.values()
+        for entry in entries
+    }
+    output = []
+    removed = []
+    section = ""
+    seen_by_section = defaultdict(set)
+    for line in text.splitlines(keepends=True):
+        stripped = line.strip()
+        if stripped.startswith("[") and stripped.endswith("]"):
+            section = stripped[1:-1].strip().lower()
+            output.append(line)
+            continue
+
+        normalized = normalized_line(stripped)
+        reason = None
+        if normalized in managed:
+            reason = "deduplicated personal rule"
+        elif stripped and not stripped.startswith("#") and normalized in seen_by_section[section]:
+            reason = "exact duplicate fixed rule"
+        elif section == "rule" and "protocol,quic" in normalized and (
+            "youtubei.googleapis.com" in normalized or "googlevideo.com" in normalized
+        ):
+            reason = "YouTube Premium protection"
+        elif section == "rule" and normalized.startswith(
+            "domain-suffix,wxsnsdythumb.wxs.qq.com,reject,"
+        ):
+            reason = "covered by DOMAIN-SUFFIX,wxs.qq.com"
+        elif section == "rule" and normalized.startswith(
+            "domain-suffix,erebor.douban.com,reject,"
+        ):
+            reason = "replaced by exact Douban rule"
+        elif section == "url rewrite" and (
+            "googlevideo.com" in normalized or "googlevideo\\.com" in normalized
+        ):
+            reason = "YouTube Premium protection"
+        elif section == "url rewrite" and (
+            "pan\\.baidu\\.com" in normalized
+            or "update\\.pan\\.baidu\\.com" in normalized
+        ):
+            reason = "inactive under Baidu Netdisk MITM protection"
+        elif section == "url rewrite" and (
+            "api\\.douban\\.com\\/v\\d\\/app_ads\\/" in normalized
+            or (
+                ".pangolin-sdk-toutiao\\.com\\/api\\/ad\\/union\\/sdk\\/"
+                in normalized
+                and "(get_ads|stats|settings)" in normalized
+            )
+            or (
+                "api-access\\.pangolin-sdk-toutiao\\.com\\/api\\/ad\\/.+"
+                in normalized
+            )
+        ):
+            reason = "replaced by Douban v22 rule"
+        elif section == "script" and (
+            "youtube.response.js" in normalized or "baidupan.js" in normalized
+        ):
+            reason = "real membership protection"
+
+        if reason:
+            removed.append({"line": stripped, "reason": reason})
+            continue
+        if stripped and not stripped.startswith("#"):
+            seen_by_section[section].add(normalized)
+        output.append(line)
+    return "".join(output), removed
+
+
+def insert_personal_block(text: str, block_id: str, section_name: str, entries):
+    lines = text.splitlines(keepends=True)
+    start = None
+    end = len(lines)
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.lower() == f"[{section_name.lower()}]":
+            start = index
+            continue
+        if start is not None and index > start and stripped.startswith("[") and stripped.endswith("]"):
+            end = index
+            break
+    if start is None:
+        raise ValueError(f"target module section missing: {section_name}")
+
+    block = [
+        f"{PERSONAL_BEGIN} {block_id}\n",
+        *[entry.rstrip("\n") + "\n" for entry in entries],
+        f"{PERSONAL_END} {block_id}\n",
+    ]
+    lines[end:end] = block
+    return "".join(lines)
+
+
+def enforce_personal_mitm_exclusions(text: str):
+    protected_tokens = {
+        item.lower().removeprefix("-") for item in PERSONAL_MITM_EXCLUSIONS
+    }
+    lines = text.splitlines(keepends=True)
+    section = ""
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith("[") and stripped.endswith("]"):
+            section = stripped[1:-1].strip().lower()
+            continue
+        if section != "mitm" or not stripped.lower().startswith("hostname") or "=" not in line:
+            continue
+
+        prefix, raw_hosts = line.rstrip("\n").split("=", 1)
+        hosts = [host.strip() for host in raw_hosts.split(",") if host.strip()]
+        append_token = "%APPEND%" if "%APPEND%" in hosts else None
+        hosts = [host for host in hosts if host != "%APPEND%"]
+        hosts = [
+            host for host in hosts
+            if host.lower().removeprefix("-") not in protected_tokens
+        ]
+        hosts.extend(PERSONAL_MITM_HOSTS)
+        hosts.extend(PERSONAL_MITM_EXCLUSIONS)
+        deduped = []
+        seen = set()
+        for host in hosts:
+            key = host.lower()
+            if key not in seen:
+                seen.add(key)
+                deduped.append(host)
+        if append_token:
+            deduped.insert(0, append_token)
+        newline = "\n" if line.endswith("\n") else ""
+        lines[index] = f"{prefix.rstrip()} = {','.join(deduped)}{newline}"
+        return "".join(lines)
+    raise ValueError("target module MITM hostname line missing")
+
+
+def enforce_personal_merge(text: str):
+    text = remove_personal_blocks(text)
+    text, removed = remove_personal_duplicates_and_conflicts(text)
+    for section, groups in PERSONAL_BLOCKS.items():
+        for block_id, entries in groups.items():
+            text = insert_personal_block(text, block_id, section, entries)
+    text = enforce_personal_mitm_exclusions(text)
+    return text, removed
+
+
 def merge_mitm_hosts(text: str, hosts):
     if not hosts:
         return text, []
@@ -644,6 +870,7 @@ def main():
     text = MODULE.read_text("utf-8")
     text, forbidden_removed = remove_forbidden_module_lines(text)
     text, sync_results = sync_allowlisted_sources(text)
+    text, personal_removed = enforce_personal_merge(text)
     dependencies = extract_dependencies(text)
     audit = audit_dependencies(dependencies)
     confirmed_dead = {url for url, item in audit.items() if item["status"] == "DEAD"}
@@ -666,10 +893,10 @@ def main():
     )
     if re.search(r"^#!name\s*=.*$", text, flags=re.M):
         text = re.sub(
-            r"^#!name\s*=.*$", "#!name=融合模块·个人维护版", text, count=1, flags=re.M
+            r"^#!name\s*=.*$", "#!name=广告屏蔽", text, count=1, flags=re.M
         )
     else:
-        text = "#!name=融合模块·个人维护版\n" + text
+        text = "#!name=广告屏蔽\n" + text
     if re.search(r"^#!desc\s*=.*$", text, flags=re.M):
         text = re.sub(r"^#!desc\s*=.*$", description, text, count=1, flags=re.M)
     else:
@@ -694,10 +921,13 @@ def main():
         f"- Forbidden unlock declarations removed this run: **{len(forbidden_removed)}**",
         f"- Safe auto-sync sources passed: **{sum(1 for item in sync_results if item['state'] == 'SYNCED')}**",
         f"- Safe auto-sync sources blocked: **{sum(1 for item in sync_results if item['state'] == 'BLOCKED')}**",
+        "- Personal modules merged inline: **YouTube Premium + WeChat protection, Baidu Netdisk SVIP protection, Xianyu/Baidu splash supplement, Douban splash supplement**",
+        f"- Conflicting or duplicate personal declarations removed this run: **{len(personal_removed)}**",
         "- DEAD dependencies left in Module.sgmodule: **0**",
         "",
         "> Only twice-confirmed HTTP 404/410 is auto-removed. 403/429/timeouts remain UNKNOWN and are kept.",
         "> High-confidence VIP/unlock declarations are removed. An unsafe upstream sync is blocked and the previous managed block is retained.",
+        "> YouTube/WeChat/Baidu protection uses MITM exclusions; it protects real accounts and does not forge membership.",
         "",
         "## Removed this run",
         "",
@@ -721,6 +951,12 @@ def main():
             f"- Original line {item['line']}: `{md(item['reason'])}`"
             for item in forbidden_removed
         )
+    if personal_removed:
+        report += ["", "## Personal merge cleanup", ""]
+        report.extend(
+            f"- {item['reason']}: `{md(item['line'])}`"
+            for item in personal_removed
+        )
     STATUS.write_text("\n".join(report) + "\n", "utf-8")
     watch_interfaces(sync_results)
     print("Maintenance complete.")
@@ -730,6 +966,7 @@ def main():
     print(f"  forbidden declarations removed: {len(forbidden_removed)}")
     print(f"  safe sync passed: {sum(1 for item in sync_results if item['state'] == 'SYNCED')}")
     print(f"  safe sync blocked: {sum(1 for item in sync_results if item['state'] == 'BLOCKED')}")
+    print(f"  personal conflicts/deduplicates removed: {len(personal_removed)}")
 
 
 if __name__ == "__main__":

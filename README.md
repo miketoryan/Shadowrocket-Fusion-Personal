@@ -1,4 +1,4 @@
-# Shadowrocket Fusion Personal v3
+# Shadowrocket Fusion Personal v5
 
 这是完全独立维护的 Shadowrocket 融合模块仓库。压缩包已经内置处理完成的
 `Module.sgmodule`，不再从任何父融合仓库下载或覆盖模块。
@@ -30,7 +30,10 @@
 - 横店电影的404资源已替换为可用地址
 - 已删除2条伪造哔哩哔哩 VIP 状态的内联重写
 - 不再残留 `xiangwanguan.github.io` 地址
-- 个人保护模块仍保持独立，不合并进本仓库
+- 已把 YouTube Premium + 微信安全保护、百度网盘真实 SVIP 保护、闲鱼/百度网盘开屏补充、豆瓣开屏补充合并进唯一的 `Module.sgmodule`
+- YouTube 继续跟随主配置的手动节点，不单独固定代理节点
+- 豆瓣补充按“豆瓣开屏广告加强版 v22”合并，包含豆瓣自有广告与穿山甲/Pangle 开屏接口
+- 已清理重复规则、被更宽域名规则覆盖的条目，以及因会员保护排除 MITM 后不可能再生效的固定改写
 
 ## 自动维护规则
 
@@ -47,7 +50,9 @@
 ## 安全边界
 
 - 不自动引入 VIP、订阅、清晰度解锁、地区绕过或第三方 API 转发
-- 哔哩哔哩、YouTube、微信、百度网盘、闲鱼等个人规则继续独立维护
+- YouTube/微信/百度网盘保护只做 MITM 排除，不伪造会员状态
+- 闲鱼/百度网盘和豆瓣的开屏补充采用本地固定规则，并由维护程序每次运行时去重保留
+- 不需要再启用原来的 5 个独立模块，避免重复命中
 - 自动同步只允许 `sources.json` 中列出的仓库和区段
 - `reports/interface-updates.md` 会记录每个来源是 `SYNCED` 还是 `BLOCKED`
 
