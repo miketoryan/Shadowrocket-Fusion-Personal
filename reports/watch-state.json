@@ -1,7 +1,31 @@
 {
   "fmz200-exact-ad-domains": {
+    "type": "domain-source",
     "sha256": "513e9c5a5d6199d12df9720d743422b1581bdca9473f18c352b1e8edd36bd07f",
     "exact_rules": 438,
     "safe_rules": 83
+  },
+  "app2smile-bilibili-json": {
+    "type": "pinned-script",
+    "commit": "5380447220ea3df4abee8b77dd118de9165631fa",
+    "sha256": "748ad16a92532bde2c439a8b9975f465381d20e24328cf2a58ff3a2a27328d84",
+    "bytes": 4959
+  },
+  "app2smile-bilibili-proto": {
+    "type": "pinned-script",
+    "commit": "5890c30ff94aa619ed06ec4f343c609acb6bd461",
+    "sha256": "70fa7cf0e3390da24db93bcfbf0c81c2af17b16f99012b483783f046f62c476e",
+    "bytes": 106934
+  },
+  "zirawell-umetrip-ads": {
+    "type": "pinned-script",
+    "commit": "949840c97a58ea38deb14cb8d1bb4affdf26babd",
+    "sha256": "9e10b0f5cbe483fa46a6c6623feb9a48e640832eee568f301f183e67c56eb26a",
+    "bytes": 736
+  },
+  "local-baidupan-ads-only": {
+    "type": "local-script",
+    "sha256": "9e44b95be844213ed2f1f7195f827c02678b8e79a7c8ec2e9a7aa02d536a5a10",
+    "bytes": 970
   }
 }
