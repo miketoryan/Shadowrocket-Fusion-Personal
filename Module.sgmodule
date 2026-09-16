@@ -1,5 +1,5 @@
-#!name=广告屏蔽（稳定修正版）
-#!desc=稳定模式 v6：仅拦截明确广告域名；无 MITM、无脚本、无 URL 重写，不影响普通联网与真实会员状态
+#!name=广告屏蔽
+#!desc=受控自动更新 v6：62 条稳定核心 + 安全筛选增量；无 MITM、无脚本、无 URL 重写
 
 # 设计原则：
 # 1. 只使用精确 DOMAIN 规则，避免 DOMAIN-KEYWORD / 大范围 DOMAIN-SUFFIX 误伤。
@@ -83,3 +83,65 @@ DOMAIN,ad-h5-cdn.soulapp.cn,REJECT,extended-matching,pre-matching
 DOMAIN,ad-h5-station-cdn.soulapp.cn,REJECT,extended-matching,pre-matching
 DOMAIN,ad-r.soulapp.cn,REJECT,extended-matching,pre-matching
 DOMAIN,soul-ad.soulapp.cn,REJECT,extended-matching,pre-matching
+
+# BEGIN CONTROLLED AUTO RULES
+# Sources: fmz200-exact-ad-domains
+# Generated automatically; exact DOMAIN rules only.
+DOMAIN,ad-reward.soulapp.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ad.21cn.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.360in.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.hpplay.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ad.k.21cn.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.mcloud.139.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.mobile.youku.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.seeyouyima.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.yixin.im,REJECT,extended-matching,pre-matching
+DOMAIN,ad.zijieapi.com,REJECT,extended-matching,pre-matching
+DOMAIN,adcdn.hpplay.cn,REJECT,extended-matching,pre-matching
+DOMAIN,adcdn.tencentmusic.com,REJECT,extended-matching,pre-matching
+DOMAIN,adcdn6.tencentmusic.com,REJECT,extended-matching,pre-matching
+DOMAIN,adclick.tencentmusic.com,REJECT,extended-matching,pre-matching
+DOMAIN,adexpo.tencentmusic.com,REJECT,extended-matching,pre-matching
+DOMAIN,adfile.wifi8.com,REJECT,extended-matching,pre-matching
+DOMAIN,adlog.vivo.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,admarketing.yahoo.net,REJECT,extended-matching,pre-matching
+DOMAIN,admonitor.thepaper.cn,REJECT,extended-matching,pre-matching
+DOMAIN,adnew.wifi8.com,REJECT,extended-matching,pre-matching
+DOMAIN,adpai.thepaper.cn,REJECT,extended-matching,pre-matching
+DOMAIN,adproxy.autohome.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,adreport.adtianmai.com,REJECT,extended-matching,pre-matching
+DOMAIN,adreq.vivo.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads-img-al.xhscdn.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads-marketing-vivofs.vivo.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads-shopping.shouqianba.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.95516.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.aplus.pptv.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.aplusapi.pptv.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.auctions.yahoo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.cup.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.finance.yahoo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nicovideo.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.snapchat.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yahoo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yahoo.de,REJECT,extended-matching,pre-matching
+DOMAIN,adsapi.snapchat.com,REJECT,extended-matching,pre-matching
+DOMAIN,adsdk.vivo.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,adse.wsa.ximalaya.com,REJECT,extended-matching,pre-matching
+DOMAIN,adsehera.ximalaya.com,REJECT,extended-matching,pre-matching
+DOMAIN,adserviceretry.kugou.com,REJECT,extended-matching,pre-matching
+DOMAIN,adsstatic.vivo.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,adui.tg.meitu.com,REJECT,extended-matching,pre-matching
+DOMAIN,adx-bj.anythinktech.com,REJECT,extended-matching,pre-matching
+DOMAIN,adx-os.bridgeturbo.com,REJECT,extended-matching,pre-matching
+DOMAIN,adx.adtaipo.com,REJECT,extended-matching,pre-matching
+DOMAIN,adx.kuaiyiad.com,REJECT,extended-matching,pre-matching
+DOMAIN,adx.yiche.com,REJECT,extended-matching,pre-matching
+DOMAIN,adxapi.readgps.com,REJECT,extended-matching,pre-matching
+DOMAIN,adxlog.vivo.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,cdn-new-ad.wtzw.com,REJECT,extended-matching,pre-matching
+DOMAIN,iqiyim.adtrack.enlightent.cn,REJECT,extended-matching,pre-matching
+DOMAIN,mobads-pre-config.cdn.bcebos.com,REJECT,extended-matching,pre-matching
+DOMAIN,optimus-ads.amap.com,REJECT,extended-matching,pre-matching
+DOMAIN,optimus-ads.amap.com.w.alikunlun.com,REJECT,extended-matching,pre-matching
+DOMAIN,sdkconfig.ad.xiaomi.com,REJECT,extended-matching,pre-matching
+# END CONTROLLED AUTO RULES
