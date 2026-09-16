@@ -3,8 +3,8 @@
 - Source of truth: **this repository's bundled `Module.sgmodule`**
 - Parent fusion repository dependency: **none**
 - Current remote dependencies audited: **71**
-- ACTIVE: **32**
-- REACHABLE: **11**
+- ACTIVE: **43**
+- REACHABLE: **0**
 - STALE (> 365 days): **28**
 - UNKNOWN: **0**
 - Confirmed DEAD found this run: **0**
@@ -15,7 +15,7 @@
 - Safe auto-sync sources passed: **2**
 - Safe auto-sync sources blocked: **0**
 - Personal modules merged inline: **YouTube Premium + WeChat protection, Baidu Netdisk SVIP protection, Xianyu/Baidu splash supplement, Douban splash supplement**
-- Conflicting or duplicate personal declarations removed this run: **17**
+- Conflicting or duplicate personal declarations removed this run: **0**
 - DEAD dependencies left in Module.sgmodule: **0**
 
 > Only twice-confirmed HTTP 404/410 is auto-removed. 403/429/timeouts remain UNKNOWN and are kept.
@@ -51,6 +51,7 @@ None.
 | ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/foliday.js |
 | ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/freshippo.js |
 | ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/haier.js |
+| ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/javdb.js |
 | ACTIVE | script-path | 206 | 2026-04-09 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/jd.js |
 | ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/kkmh.js |
 | ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/manner.js |
@@ -62,17 +63,16 @@ None.
 | ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/peiyinxiu.js |
 | ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/qmai.js |
 | ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/quark.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/javdb.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/sdb.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/sougou.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/sptcc.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/taobao.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/tuhu.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/usmile.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/wechatApplet.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/wjx.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/yunda.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/zhihu.js |
+| ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/sdb.js |
+| ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/sougou.js |
+| ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/sptcc.js |
+| ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/taobao.js |
+| ACTIVE | script-path | 206 | 2026-04-24 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/tuhu.js |
+| ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/usmile.js |
+| ACTIVE | script-path | 206 | 2026-07-21 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/wechatApplet.js |
+| ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/wjx.js |
+| ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/yunda.js |
+| ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/zhihu.js |
 | STALE | script-path | 206 | 2025-02-19 | https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js |
 | STALE | script-path | 206 | 2021-07-04 | https://raw.githubusercontent.com/NobyDa/Script/master/QuantumultX/File/xjsp.js |
 | STALE | script-path | 206 | 2024-08-05 | https://raw.githubusercontent.com/Sliverkiss/QuantumultX/main/AdBlock/xmApp/wnbz.js |
@@ -101,23 +101,3 @@ None.
 | STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/refs/heads/main/Scripts/miguvideo/miguvideo_ads.js |
 | STALE | script-path | 206 | 2023-02-22 | https://raw.githubusercontent.com/kokoryh/Script/master/js/12306.js |
 | STALE | URL-Rewrite resource | 206 | 2025-05-13 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Data/hengdian.json |
-
-## Personal merge cleanup
-
-- YouTube Premium protection: `^https?:\/\/[\w-]+\.googlevideo\.com\/initplayback.+&oad - reject-200`
-- deduplicated personal rule: `DOMAIN-SUFFIX, pangle.io, REJECT, extended-matching, pre-matching`
-- covered by DOMAIN-SUFFIX,wxs.qq.com: `DOMAIN-SUFFIX, wxsnsdythumb.wxs.qq.com, REJECT, extended-matching, pre-matching`
-- replaced by Douban v22 rule: `^https?:\/\/.+\.pangolin-sdk-toutiao\.com\/api\/ad\/union\/sdk\/(get_ads\|stats\|settings)\/ - reject`
-- replaced by Douban v22 rule: `^https?:\/\/api-access\.pangolin-sdk-toutiao\.com\/api\/ad\/.+ - reject`
-- inactive under Baidu Netdisk MITM protection: `^https?:\/\/pan\.baidu\.com\/act\/api\/activityentry - reject`
-- inactive under Baidu Netdisk MITM protection: `^https?:\/\/pan\.baidu\.com\/act\/api\/conf\?.*conf_key=youa_core_config_ios - reject-dict`
-- inactive under Baidu Netdisk MITM protection: `^https?:\/\/pan\.baidu\.com\/act\/v\d\/(bchannel\|welfare)\/list - reject`
-- inactive under Baidu Netdisk MITM protection: `^https?:\/\/pan\.baidu\.com\/api\/certuser\/get - reject`
-- inactive under Baidu Netdisk MITM protection: `^https?:\/\/pan\.baidu\.com\/api\/useractivity\/activity - reject`
-- inactive under Baidu Netdisk MITM protection: `^https?:\/\/pan\.baidu\.com\/buy\/ad\/ - reject-200`
-- inactive under Baidu Netdisk MITM protection: `^https?:\/\/pan\.baidu\.com\/component\/view\/(1510\|1130)\?vip - reject`
-- inactive under Baidu Netdisk MITM protection: `^https?:\/\/pan\.baidu\.com\/pmall\/order\/privilege\/info - reject`
-- inactive under Baidu Netdisk MITM protection: `^https?:\/\/pan\.baidu\.com\/rest\/.+\/pcs\/adx - reject`
-- inactive under Baidu Netdisk MITM protection: `^https?:\/\/pan\.baidu\.com\/rest\/\d\.\d\/pcs\/ad - reject`
-- inactive under Baidu Netdisk MITM protection: `^https?:\/\/pan\.baidu\.com\/youai\/material\/v1\/getbynavid\?.*nav_id=1 - reject-dict`
-- inactive under Baidu Netdisk MITM protection: `^https?:\/\/update\.pan\.baidu\.com\/statistics - reject`

@@ -1,5 +1,5 @@
 #!name=广告屏蔽
-#!desc=个人维护 2026-09-16 | remote 71 | active 32 | stale 28 | reachable 11 | unknown 0 | risky 0 | dead-left 0
+#!desc=个人维护 2026-09-16 | remote 71 | active 43 | stale 28 | reachable 0 | unknown 0 | risky 0 | dead-left 0
 [Rule]
 DOMAIN, dorangesource.alicdn.com, DIRECT, extended-matching
 DOMAIN, push.m.youku.com, DIRECT, extended-matching
