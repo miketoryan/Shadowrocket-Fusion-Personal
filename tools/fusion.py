@@ -42,7 +42,7 @@ HOST_RE = re.compile(
 )
 
 FORBIDDEN_TOKENS = (
-    "script-path", "rule-set,", "domain-keyword,", "domain-suffix,",
+    "rule-set,", "domain-keyword,", "domain-suffix,",
     "url-regex,", "ip-cidr,", "pangolin-sdk-toutiao", "wxs.qq.com",
     "httpdns", "googlevideo.com", "youtube.com", "pan.baidu.com",
 )
@@ -74,6 +74,71 @@ AD_PREFIXES = (
     "advertise", "advertising", "adxapi", "adxlog", "mobad", "splash",
 )
 
+ALLOWED_MAP_LOCAL = {
+    r'^https:\/\/api\.douban\.com\/v\d\/app_ads\/splash data-type=text data="{}" status-code=200 header="Content-Type:application/json"',
+    r'^https:\/\/frodo\.douban\.com\/api\/v\d\/erebor\/feed_ad data-type=text data="{}" status-code=200 header="Content-Type:application/json"',
+    r'^https:\/\/m\.douban\.com\/rexxar\/api\/v\d\/market\/products\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"',
+    r'^https:\/\/frodo\.douban\.com\/api\/v\d\/movie\/ad data-type=text data="{}" status-code=200 header="Content-Type:application/json"',
+    r'^https:\/\/frodo\.douban\.com\/api\/v\d\/home_banner data-type=text data="{}" status-code=200 header="Content-Type:application/json"',
+    r'^https:\/\/frodo\.douban\.com\/api\/v\d\/search\/found_words data-type=text data="{}" status-code=200 header="Content-Type:application/json"',
+    r'^https?:\/\/oss\.umetrip\.com\/fs\/advert\/polite data-type=json data="{}" status-code=200',
+    r'^https?:\/\/api\.xiaoyuzhoufm\.com\/v\d\/flash data-type=json data="{}" status-code=200',
+    r'^https?:\/\/mp\.weixin\.qq\.com\/wapad\/getaddata\?action=getad data-type=text data="" status-code=200',
+    r'^https?:\/\/mp\.weixin\.qq\.com\/wapad\/reportaddata\?action=exposure_report data-type=text data="" status-code=200',
+}
+
+ALLOWED_URL_REWRITE = {
+    r'^https?:\/\/pan\.baidu\.com\/rest\/\d\.\d\/pcs\/(ad|adx) - reject',
+    r'^https?:\/\/pan\.baidu\.com\/act\/v\d\/(bchannel|welfare)\/list - reject',
+    r'^https?:\/\/pan\.baidu\.com\/act\/api\/activityentry - reject',
+    r'^https?:\/\/pan\.baidu\.com\/pmall\/order\/privilege\/info - reject',
+    r'^https?:\/\/pan\.baidu\.com\/api\/useractivity\/activity - reject',
+    r'^https?:\/\/ndstatic\.cdn\.bcebos\.com\/activity\/welfare - reject',
+    r'^https?:\/\/staticsns\.cdn\.bcebos\.com\/amis\/.+/banner\.png - reject',
+    r'^https?:\/\/issuecdn\.baidupcs\.com\/issue\/netdisk\/guanggao - reject',
+    r'^https?:\/\/update\.pan\.baidu\.com\/statistics - reject',
+}
+
+ALLOWED_MITM_LINE = (
+    "hostname = %APPEND% api.douban.com, frodo.douban.com, m.douban.com, "
+    "app.bilibili.com, grpc.biliapi.net, umerp.umetrip.com, "
+    "umerp.umetrip.com.cn, home.umetrip.com, bkclient.umetrip.com.cn, "
+    "oss.umetrip.com, api.xiaoyuzhoufm.com, pan.baidu.com, "
+    "ndstatic.cdn.bcebos.com, staticsns.cdn.bcebos.com, "
+    "issuecdn.baidupcs.com, update.pan.baidu.com, mp.weixin.qq.com"
+)
+
+SCRIPT_LINE_TEMPLATES = {
+    r"bili-json = type=http-response,pattern=^https:\/\/app\.bilibili\.com\/x\/"
+    r"(v2\/(splash\/(list|show)|feed\/index\?)|resource\/show\/tab\/v2),"
+    r"requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/"
+    r"app2smile/rules/{sha}/js/bilibili-json.js,script-update-interval=0",
+    r"bili-proto = type=http-response,pattern=^https:\/\/(grpc\.biliapi\.net|"
+    r"app\.bilibili\.com)\/bilibili\.app\.(viewunite\.v1\.View\/View|"
+    r"dynamic\.v2\.Dynamic\/DynAll)$,requires-body=1,binary-body-mode=1,"
+    r"max-size=0,script-path=https://raw.githubusercontent.com/app2smile/rules/"
+    r"{sha}/js/bilibili-proto.js,script-update-interval=0",
+    r"umetrip = type=http-response,pattern=^https?:\/\/(bkclient|umerp|home)"
+    r"\.umetrip\.com(\.cn){0,1}\/gateway\/api\/umetrip\/native,requires-body=0,"
+    r"max-size=0,script-path=https://raw.githubusercontent.com/zirawell/R-Store/"
+    r"{sha}/Res/Scripts/AntiAd/umetrip.js",
+    r"baidupan-ads = type=http-response,pattern=^https?:\/\/pan\.baidu\.com\/"
+    r"api\/getsyscfg\?,requires-body=1,max-size=0,script-path=https://raw."
+    r"githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/"
+    r"baidupan_ads_only.js",
+}
+
+PINNED_URL_RE = re.compile(
+    r"https://raw\.githubusercontent\.com/([^/]+/[^/]+)/([0-9a-f]{40})/([^,\s]+)"
+)
+FORBIDDEN_SCRIPT_PATTERNS = (
+    re.compile(r"(?i)revenuecat"),
+    re.compile(r"(?i)vip_type"),
+    re.compile(r"(?i)annual_vip"),
+    re.compile(r"(?i)due_date\s*[:=]"),
+    re.compile(r"(?i)\b(?:crack|unlock)\b"),
+)
+
 
 def load_settings() -> dict:
     data = json.loads(SOURCES.read_text("utf-8"))
@@ -99,6 +164,87 @@ def request_text(url: str) -> str:
             if attempt < 2:
                 time.sleep(2 * (attempt + 1))
     raise RuntimeError(f"source fetch failed: {last_error}")
+
+
+def normalized_script_line(line: str) -> str:
+    return PINNED_URL_RE.sub(
+        lambda match: (
+            f"https://raw.githubusercontent.com/{match.group(1)}/"
+            f"{{sha}}/{match.group(3)}"
+        ),
+        line,
+    )
+
+
+def valid_script_line(line: str) -> bool:
+    return normalized_script_line(line) in SCRIPT_LINE_TEMPLATES
+
+
+def latest_file_commit(entry: dict) -> str:
+    repository = str(entry["repository"])
+    branch = str(entry["branch"])
+    path = str(entry["path"])
+    query = urllib.parse.urlencode({"path": path, "sha": branch, "per_page": 1})
+    api = f"https://api.github.com/repos/{repository}/commits?{query}"
+    data = json.loads(request_text(api))
+    commit = data[0]["sha"] if isinstance(data, list) and data else ""
+    if not re.fullmatch(r"[0-9a-f]{40}", commit):
+        raise ValueError(f"{entry['id']}: invalid latest commit")
+    return commit
+
+
+def audit_script_content(entry: dict, content: str) -> None:
+    if len(content.encode("utf-8")) > int(entry["max_bytes"]):
+        raise ValueError(f"{entry['id']}: script unexpectedly large")
+    for required in entry.get("required_tokens", []):
+        if required not in content:
+            raise ValueError(f"{entry['id']}: required token missing: {required}")
+    for pattern in FORBIDDEN_SCRIPT_PATTERNS:
+        if pattern.search(content):
+            raise ValueError(f"{entry['id']}: forbidden content: {pattern.pattern}")
+
+
+def update_pinned_scripts(text: str, settings: dict) -> tuple[str, list[dict]]:
+    results = []
+    for entry in settings.get("pinned_scripts", []):
+        repository = str(entry["repository"])
+        path = str(entry["path"])
+        commit = latest_file_commit(entry)
+        raw_url = f"https://raw.githubusercontent.com/{repository}/{commit}/{path}"
+        content = request_text(raw_url)
+        audit_script_content(entry, content)
+        url_pattern = re.compile(
+            r"https://raw\.githubusercontent\.com/"
+            + re.escape(repository)
+            + r"/[0-9a-f]{40}/"
+            + re.escape(path)
+        )
+        text, replacements = url_pattern.subn(raw_url, text)
+        if replacements != 1:
+            raise ValueError(
+                f"{entry['id']}: expected one pinned module reference, got {replacements}"
+            )
+        results.append({
+            "id": entry["id"],
+            "commit": commit,
+            "sha256": hashlib.sha256(content.encode("utf-8")).hexdigest(),
+            "bytes": len(content.encode("utf-8")),
+        })
+    return text, results
+
+
+def audit_local_scripts(settings: dict) -> list[dict]:
+    results = []
+    for entry in settings.get("local_scripts", []):
+        path = ROOT / str(entry["path"])
+        content = path.read_text("utf-8")
+        audit_script_content(entry, content)
+        results.append({
+            "id": entry["id"],
+            "sha256": hashlib.sha256(content.encode("utf-8")).hexdigest(),
+            "bytes": len(content.encode("utf-8")),
+        })
+    return results
 
 
 def verify_source_url(entry: dict) -> None:
@@ -204,6 +350,10 @@ def hosts_from_text(text: str) -> set[str]:
 def validate_module(text: str) -> list[str]:
     errors = []
     rules = []
+    map_local = set()
+    url_rewrite = set()
+    scripts = set()
+    mitm = set()
     section = ""
     for number, raw in enumerate(text.splitlines(), 1):
         line = raw.strip()
@@ -211,27 +361,54 @@ def validate_module(text: str) -> list[str]:
             continue
         if line.startswith("[") and line.endswith("]"):
             section = line[1:-1].strip().lower()
-            if section != "rule":
+            if section not in {"rule", "map local", "url rewrite", "script", "mitm"}:
                 errors.append(f"line {number}: forbidden section [{section}]")
             continue
-        compact = line.lower().replace(" ", "")
-        token = next((item for item in FORBIDDEN_TOKENS if item in compact), None)
-        if token:
-            errors.append(f"line {number}: forbidden token {token}")
-        match = DOMAIN_RULE_RE.match(line) if section == "rule" else None
-        if not match:
-            errors.append(f"line {number}: only exact DOMAIN reject rules are allowed")
-            continue
-        host = normalize_host(match.group(1))
-        if not host:
-            errors.append(f"line {number}: invalid domain")
+        if section == "rule":
+            compact = line.lower().replace(" ", "")
+            token = next((item for item in FORBIDDEN_TOKENS if item in compact), None)
+            if token:
+                errors.append(f"line {number}: forbidden token {token}")
+            match = DOMAIN_RULE_RE.match(line)
+            if not match:
+                errors.append(f"line {number}: only exact DOMAIN reject rules are allowed")
+                continue
+            host = normalize_host(match.group(1))
+            if not host:
+                errors.append(f"line {number}: invalid domain")
+            else:
+                rules.append(host)
+        elif section == "map local":
+            if line not in ALLOWED_MAP_LOCAL:
+                errors.append(f"line {number}: unapproved Map Local entry")
+            map_local.add(line)
+        elif section == "url rewrite":
+            if line not in ALLOWED_URL_REWRITE:
+                errors.append(f"line {number}: unapproved URL Rewrite entry")
+            url_rewrite.add(line)
+        elif section == "script":
+            if not valid_script_line(line):
+                errors.append(f"line {number}: unapproved script declaration")
+            scripts.add(normalized_script_line(line))
+        elif section == "mitm":
+            if line != ALLOWED_MITM_LINE:
+                errors.append(f"line {number}: unapproved MITM hostname list")
+            mitm.add(line)
         else:
-            rules.append(host)
+            errors.append(f"line {number}: active content outside approved sections")
     duplicates = [host for host, count in Counter(rules).items() if count > 1]
     if duplicates:
         errors.append(f"duplicate domains: {len(duplicates)}")
     if not rules:
         errors.append("no active rules")
+    if map_local != ALLOWED_MAP_LOCAL:
+        errors.append("approved Map Local set is incomplete")
+    if url_rewrite != ALLOWED_URL_REWRITE:
+        errors.append("approved URL Rewrite set is incomplete")
+    if scripts != SCRIPT_LINE_TEMPLATES:
+        errors.append("approved script set is incomplete")
+    if mitm != {ALLOWED_MITM_LINE}:
+        errors.append("approved MITM list is incomplete")
     return errors
 
 
@@ -292,6 +469,8 @@ def main() -> None:
     rebuilt = before.rstrip() + "\n\n" + build_auto_block(new_auto, results) + after
     if not rebuilt.endswith("\n"):
         rebuilt += "\n"
+    rebuilt, script_results = update_pinned_scripts(rebuilt, settings)
+    local_script_results = audit_local_scripts(settings)
     errors = validate_module(rebuilt)
     if errors:
         raise SystemExit("Generated module failed validation:\n- " + "\n- ".join(errors))
@@ -307,8 +486,11 @@ def main() -> None:
             f"- Total exact DOMAIN rules: **{total}**",
             f"- Added this run: **{len(added)}**",
             f"- Removed this run: **{len(removed)}**",
-            "- Script declarations: **0**", "- URL rewrites: **0**",
-            "- MITM hosts: **0**", "- Broad match rules: **0**",
+            f"- Script declarations: **{len(SCRIPT_LINE_TEMPLATES)}**",
+            f"- URL rewrites: **{len(ALLOWED_URL_REWRITE)}**",
+            f"- Map Local entries: **{len(ALLOWED_MAP_LOCAL)}**",
+            f"- MITM hosts: **{len(ALLOWED_MITM_LINE.split('=', 1)[1].split(','))}**",
+            "- Broad match rules: **0**",
             "- Validation: **PASS**", "",
             "> Upstream content is filtered to exact advertising domains only.",
             "> A fetch, count, delta, or safety-check failure leaves Module.sgmodule unchanged.",
@@ -322,17 +504,42 @@ def main() -> None:
             f"- **{item['id']}**: PASS; {item['exact']} exact → {item['safe']} safe"
             for item in results
         )
+        + "\n"
+        + "\n".join(
+            f"- **{item['id']}**: PASS; pinned {item['commit'][:12]}; {item['bytes']} bytes"
+            for item in script_results
+        )
+        + "\n"
+        + "\n".join(
+            f"- **{item['id']}**: PASS; local audited; {item['bytes']} bytes"
+            for item in local_script_results
+        )
         + "\n",
         "utf-8",
     )
+    state = {
+        item["id"]: {
+            "type": "domain-source", "sha256": item["sha256"],
+            "exact_rules": item["exact"], "safe_rules": item["safe"],
+        }
+        for item in results
+    }
+    state.update({
+        item["id"]: {
+            "type": "pinned-script", "commit": item["commit"],
+            "sha256": item["sha256"], "bytes": item["bytes"],
+        }
+        for item in script_results
+    })
+    state.update({
+        item["id"]: {
+            "type": "local-script", "sha256": item["sha256"],
+            "bytes": item["bytes"],
+        }
+        for item in local_script_results
+    })
     WATCH_STATE.write_text(
-        json.dumps({
-            item["id"]: {
-                "sha256": item["sha256"], "exact_rules": item["exact"],
-                "safe_rules": item["safe"],
-            }
-            for item in results
-        }, ensure_ascii=False, indent=2) + "\n",
+        json.dumps(state, ensure_ascii=False, indent=2) + "\n",
         "utf-8",
     )
     print(
