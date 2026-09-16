@@ -1,63 +1,28 @@
-# Shadowrocket Fusion Personal v5
+# Shadowrocket Fusion Personal v6
 
-这是完全独立维护的 Shadowrocket 融合模块仓库。压缩包已经内置处理完成的
-`Module.sgmodule`，不再从任何父融合仓库下载或覆盖模块。
+这是以“联网稳定优先”为目标的个人 Shadowrocket 广告屏蔽模块。
 
-## 最简建库步骤
+## 修复内容
 
-1. 新建一个空 GitHub 仓库，建议名称：`Shadowrocket-Fusion-Personal`
-2. 上传：
-   - `tools/fusion.py`
-   - `sources.json`
-   - `README.md`
-   - `Module.sgmodule`
-3. 如果网页拖拽没有上传 `.github`，就在 GitHub 里：
-   `Add file → Create new file`
-   文件名填写：
-   `.github/workflows/fusion.yml`
-   然后把根目录 `WORKFLOW-fusion.yml` 的内容完整复制进去。
-4. `Settings → Actions → General → Workflow permissions`
-   选择 `Read and write permissions`
-5. `Actions → Maintain personal fusion module → Run workflow`
+- 删除 71 个远程依赖及全部远程脚本，避免脚本下载、执行或失效引发连锁故障。
+- 删除约 1690 条 URL 重写，不再对普通 HTTPS 流量做重写。
+- 完全关闭 MITM；YouTube、微信、百度网盘不会被解密或修改，真实会员状态保持原样。
+- 删除 `DOMAIN-KEYWORD,pangolin-sdk-toutiao`，避免广告 SDK 重试风暴。
+- 删除 `DOMAIN-SUFFIX,wxs.qq.com`，避免微信资源被误拦截。
+- 删除对 HTTPDNS、共用 CDN 和应用核心 API 的拦截。
+- 只保留精确 `DOMAIN` 广告主机规则；自动任务只做安全校验，不再自动合并上游内容。
 
-`Module.sgmodule` 是本仓库唯一主版本。维护程序只检查和维护这个文件；如果文件缺失，
-任务会直接报错，不会回头下载原融合仓库。
+## 使用方式
 
-## 本版已完成
+1. 在 Shadowrocket 的模块页面更新当前订阅。
+2. 确认模块名称显示为“广告屏蔽（稳定修正版）”。
+3. 重新启用模块后，先测试大陆网站，再测试代理网站。
+4. 如果仍显示旧名称，删除旧模块后使用下方地址重新添加。
 
-- 原融合模块中69项失效脚本地址已替换为当前存在的地址
-- 8个已确认不保留的脚本声明已删除
-- 横店电影的404资源已替换为可用地址
-- 已删除2条伪造哔哩哔哩 VIP 状态的内联重写
-- 不再残留 `xiangwanguan.github.io` 地址
-- 已把 YouTube Premium + 微信安全保护、百度网盘真实 SVIP 保护、闲鱼/百度网盘开屏补充、豆瓣开屏补充合并进唯一的 `Module.sgmodule`
-- YouTube 继续跟随主配置的手动节点，不单独固定代理节点
-- 豆瓣补充按“豆瓣开屏广告加强版 v22”合并，包含豆瓣自有广告与穿山甲/Pangle 开屏接口
-- 已清理重复规则、被更宽域名规则覆盖的条目，以及因会员保护排除 MITM 后不可能再生效的固定改写
-
-## 自动维护规则
-
-- 404 / 410：连续确认两次失效，才自动删除对应声明
-- 检查范围：`script-path`、`RULE-SET`、`[URL Rewrite]` 中的静态远程资源
-- 403 / 429 / 超时：标记 UNKNOWN，保留
-- 一年以上未更新但仍可访问：标记 STALE，保留
-- QQ 新闻、贴吧：从 `app2smile/rules` 自动同步白名单内的广告接口定义
-- 上游内容必须同时通过仓库、区段、依赖地址和风险内容检查；失败时不修改现有规则
-- 明确的 VIP/解锁伪造及 Crack 脚本声明会自动删除
-- 每日下载现有远程脚本做风险扫描；命中高可信解锁特征时自动停用对应声明
-- `fmz200` 合集及 Quantumult X 格式来源只监控变化，不整库自动合并
-
-## 安全边界
-
-- 不自动引入 VIP、订阅、清晰度解锁、地区绕过或第三方 API 转发
-- YouTube/微信/百度网盘保护只做 MITM 排除，不伪造会员状态
-- 闲鱼/百度网盘和豆瓣的开屏补充采用本地固定规则，并由维护程序每次运行时去重保留
-- 不需要再启用原来的 5 个独立模块，避免重复命中
-- 自动同步只允许 `sources.json` 中列出的仓库和区段
-- `reports/interface-updates.md` 会记录每个来源是 `SYNCED` 还是 `BLOCKED`
-
-## Shadowrocket 订阅地址
-
-如果仓库名就是 `Shadowrocket-Fusion-Personal`：
+## 订阅地址
 
 `https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/Module.sgmodule`
+
+## 自动维护边界
+
+`tools/fusion.py` 会拒绝以下内容进入主模块：脚本、URL 重写、MITM、远程规则集、`DOMAIN-KEYWORD`、HTTPDNS 拦截，以及 YouTube/百度网盘会员相关流量。
