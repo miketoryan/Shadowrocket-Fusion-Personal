@@ -15,6 +15,40 @@
       "note": "Never merge the whole module. Accept only exact DOMAIN,REJECT lines that pass all filters."
     }
   ],
+  "pinned_scripts": [
+    {
+      "id": "app2smile-bilibili-json",
+      "repository": "app2smile/rules",
+      "branch": "master",
+      "path": "js/bilibili-json.js",
+      "max_bytes": 20000,
+      "required_tokens": ["$response.body", "x/v2/feed/index", "$done"]
+    },
+    {
+      "id": "app2smile-bilibili-proto",
+      "repository": "app2smile/rules",
+      "branch": "master",
+      "path": "js/bilibili-proto.js",
+      "max_bytes": 180000,
+      "required_tokens": ["$response.body", "Dynamic/DynAll", "View/View", "$done"]
+    },
+    {
+      "id": "zirawell-umetrip-ads",
+      "repository": "zirawell/R-Store",
+      "branch": "main",
+      "path": "Res/Scripts/AntiAd/umetrip.js",
+      "max_bytes": 10000,
+      "required_tokens": ["$request.headers", "1000002", "1430064", "$done"]
+    }
+  ],
+  "local_scripts": [
+    {
+      "id": "local-baidupan-ads-only",
+      "path": "scripts/baidupan_ads_only.js",
+      "max_bytes": 10000,
+      "required_tokens": ["splash_advertise_fetch_config_area", "business_ad_config_area", "$done"]
+    }
+  ],
   "watch_only": [
     {
       "name": "app2smile QQ News",
