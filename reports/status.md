@@ -3,9 +3,9 @@
 - Source of truth: **this repository's bundled `Module.sgmodule`**
 - Parent fusion repository dependency: **none**
 - Current remote dependencies audited: **71**
-- ACTIVE: **41**
-- REACHABLE: **19**
-- STALE (> 365 days): **11**
+- ACTIVE: **43**
+- REACHABLE: **0**
+- STALE (> 365 days): **28**
 - UNKNOWN: **0**
 - Confirmed DEAD found this run: **0**
 - Confirmed dead declaration lines removed this run: **0**
@@ -27,6 +27,8 @@ None.
 
 | Status | Type | HTTP | Last commit | URL |
 |---|---|---:|---|---|
+| ACTIVE | script-path | 206 | 2026-08-13 | https://raw.githubusercontent.com/NobyDa/Script/master/Bahamut/BahamutAnimeAds.js |
+| ACTIVE | script-path | 206 | 2025-11-18 | https://raw.githubusercontent.com/app2smile/rules/master/js/tieba-proto.js |
 | ACTIVE | script-path | 206 | 2026-06-01 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/ithome/ithome.js |
 | ACTIVE | script-path | 206 | 2026-06-05 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/xiaohongshu/xiaohongshu.js |
 | ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/163news.js |
@@ -68,29 +70,27 @@ None.
 | ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/wjx.js |
 | ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/yunda.js |
 | ACTIVE | script-path | 206 | 2025-12-04 | https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/zhihu.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/NobyDa/Script/master/Bahamut/BahamutAnimeAds.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/NobyDa/Script/master/QuantumultX/File/xjsp.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/Sliverkiss/QuantumultX/main/AdBlock/xmApp/wnbz.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/Sliverkiss/QuantumultX/main/AdBlock/xmApp/xmApp.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/app2smile/rules/master/js/qq-news.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/app2smile/rules/master/js/tieba-json.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/app2smile/rules/master/js/tieba-proto.js |
-| REACHABLE | RULE-SET | 206 | - | https://raw.githubusercontent.com/app2smile/rules/master/rule/tieba-ad.list |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/fmz200/wool_scripts/main/QuantumultX/scripts/Flightradar24.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/51card.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/PupuSplashAds.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/QuDa.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/blued.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/bohe/bohe_ads.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/jingxiAd.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/lvtusuishenting/ltsst-ad.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/maimai/maimai_ads.js |
-| REACHABLE | script-path | 206 | - | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/rrtv_json.js |
+| STALE | script-path | 206 | 2025-02-19 | https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js |
+| STALE | script-path | 206 | 2021-07-04 | https://raw.githubusercontent.com/NobyDa/Script/master/QuantumultX/File/xjsp.js |
+| STALE | script-path | 206 | 2024-08-05 | https://raw.githubusercontent.com/Sliverkiss/QuantumultX/main/AdBlock/xmApp/wnbz.js |
+| STALE | script-path | 206 | 2024-04-02 | https://raw.githubusercontent.com/Sliverkiss/QuantumultX/main/AdBlock/xmApp/xmApp.js |
+| STALE | script-path | 206 | 2022-11-16 | https://raw.githubusercontent.com/app2smile/rules/master/js/qq-news.js |
+| STALE | script-path | 206 | 2025-08-28 | https://raw.githubusercontent.com/app2smile/rules/master/js/tieba-json.js |
+| STALE | RULE-SET | 206 | 2022-06-25 | https://raw.githubusercontent.com/app2smile/rules/master/rule/tieba-ad.list |
+| STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/QuantumultX/scripts/Flightradar24.js |
+| STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/51card.js |
+| STALE | script-path | 206 | 2025-09-04 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/PupuSplashAds.js |
+| STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/QuDa.js |
 | STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/adrive/adrive.js |
+| STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/blued.js |
+| STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/bohe/bohe_ads.js |
 | STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/caixin/caixinAd.js |
 | STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/cmschina/cmschina.js |
+| STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/jingxiAd.js |
+| STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/lvtusuishenting/ltsst-ad.js |
+| STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/maimai/maimai_ads.js |
 | STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/picc/picc_ads.js |
+| STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/rrtv_json.js |
 | STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/soul/soul_ads.js |
 | STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/umetrip/umetrip_ads.js |
 | STALE | script-path | 206 | 2025-06-30 | https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/yx.js |
