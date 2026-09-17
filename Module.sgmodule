@@ -1,11 +1,10 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-09-17 10:27
+#!desc=仓库更新时间：2026-09-17 10:29
 
 [Rule]
 
 # ===== 腾讯手机管家：本轮日志补漏 =====
 DOMAIN,rpt.gdt.qq.com,REJECT,extended-matching,pre-matching
-DOMAIN,hd2.3g.qq.com,REJECT,extended-matching,pre-matching
 
 # ===== 闲鱼补充 =====
 DOMAIN,df.tanx.com,REJECT,extended-matching,pre-matching
@@ -1004,4 +1003,4 @@ taobao =type=http-response, pattern=^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/m
 taobao =type=http-response, pattern=^https?:\/\/poplayer\.template\.alibaba\.com\/\w+\.json, script-path=https://xiangwanguan.github.io/Shadowrocket/Rewrite/JavaScript/taobao.js, requires-body=true, max-size=0
 
 [MITM]
-hostname = %APPEND% -youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtubei.googleapis.com,-youtube.googleapis.com,-*.googlevideo.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,bootpreload.uve.weibo.com,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m5.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,media.5th.zone,i.4009515151.com
+hostname = %APPEND% -youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtubei.googleapis.com,-youtube.googleapis.com,-*.googlevideo.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,bootpreload.uve.weibo.com,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m5.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,media.5th.zone,i.4009515151.com,data.ab.qq.com,hd2.3g.qq.com
