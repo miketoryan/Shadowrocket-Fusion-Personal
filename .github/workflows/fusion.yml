@@ -19,7 +19,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Apply targeted rules and diagnostic MITM
+      - name: Apply one-time diagnostic refinement
+        if: github.event_name == 'push' && github.event.head_commit.message == 'diag: safer diagnostic capture'
         shell: bash
         run: |
           set -euo pipefail
@@ -29,27 +30,25 @@ jobs:
           p = Path('Module.sgmodule')
           text = p.read_text('utf-8')
 
-          # 腾讯手机管家：本轮日志中仍然 DIRECT，且公开广告列表长期收录的两个精确域名。
-          rule_lines = [
-              'DOMAIN,rpt.gdt.qq.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,hd2.3g.qq.com,REJECT,extended-matching,pre-matching',
-          ]
-          missing = [line for line in rule_lines if line not in text]
-          if missing:
-              block = (
-                  '\n# ===== 腾讯手机管家：本轮日志补漏 =====\n'
-                  + '\n'.join(missing)
-                  + '\n'
-              )
-              text = text.replace('[Rule]\n', '[Rule]\n' + block, 1)
+          # hd2.3g.qq.com 在日志里只确认“腾讯手机管家会访问”，尚未确认是广告接口。
+          # 撤销整域 REJECT，改为临时 MITM 抓具体 HTTPS 路径，优先保证稳定性。
+          text = text.replace('DOMAIN,hd2.3g.qq.com,REJECT,extended-matching,pre-matching\n', '')
 
-          # 住这儿：保留已命中的精确广告 API；只临时解密两个素材/媒体主机以抓下一轮具体路径。
           lines = text.splitlines()
           for i, line in enumerate(lines):
               if line.startswith('hostname = '):
                   hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
+                  # 已确认只属于日志/心跳的临时抓包主机退出 MITM。
                   hosts = [h for h in hosts if h not in {'szmg.qq.com', 'content.rconfig.qq.com'}]
-                  for host in ['api.5th.zone', 'media.5th.zone', 'i.4009515151.com']:
+                  # 住这儿：广告列表已命中但广告仍显示，继续抓素材主机路径。
+                  # 腾讯手机管家：GDT 链路已拦截，继续抓 A/B/3G 配置路径，不整域封禁。
+                  for host in [
+                      'api.5th.zone',
+                      'media.5th.zone',
+                      'i.4009515151.com',
+                      'data.ab.qq.com',
+                      'hd2.3g.qq.com',
+                  ]:
                       if host not in hosts:
                           hosts.append(host)
                   seen = set()
@@ -108,10 +107,12 @@ jobs:
           grep -q '^\[MITM\]$' Module.sgmodule
           test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
           grep -q '^DOMAIN,rpt\.gdt\.qq\.com,REJECT' Module.sgmodule
-          grep -q '^DOMAIN,hd2\.3g\.qq\.com,REJECT' Module.sgmodule
-          grep -q 'api.5th.zone' Module.sgmodule
-          grep -q 'media.5th.zone' Module.sgmodule
-          grep -q 'i.4009515151.com' Module.sgmodule
+          ! grep -q '^DOMAIN,hd2\.3g\.qq\.com,REJECT' Module.sgmodule
+          grep '^hostname = ' Module.sgmodule | grep -q 'api.5th.zone'
+          grep '^hostname = ' Module.sgmodule | grep -q 'media.5th.zone'
+          grep '^hostname = ' Module.sgmodule | grep -q 'i.4009515151.com'
+          grep '^hostname = ' Module.sgmodule | grep -q 'data.ab.qq.com'
+          grep '^hostname = ' Module.sgmodule | grep -q 'hd2.3g.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'szmg.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'content.rconfig.qq.com'
           ! grep -q 'umetrip_ads\.js' Module.sgmodule
@@ -129,5 +130,5 @@ jobs:
             echo "No module or timestamp change needed."
             exit 0
           fi
-          git commit -m "fix: refine 住这儿 diagnostics and Tencent ad rules"
+          git commit -m "diag: capture remaining 住这儿 and Tencent ad paths"
           git push
