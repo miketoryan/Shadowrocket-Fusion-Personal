@@ -1,4 +1,4 @@
-name: Stamp and validate Shadowrocket module
+name: Validate Shadowrocket module
 
 on:
   workflow_dispatch:
@@ -7,120 +7,17 @@ on:
     paths:
       - 'Module.sgmodule'
       - '.github/workflows/fusion.yml'
+      - 'scripts/**'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  stamp-and-validate:
-    if: github.actor != 'github-actions[bot]'
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Apply stability repair
-        if: "${{ github.event_name == 'push' && github.event.head_commit.message == 'fix: rollback risky diagnostics and clean stale scripts' }}"
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-
-          p = Path('Module.sgmodule')
-          text = p.read_text('utf-8')
-          lines = text.splitlines()
-
-          # 1) 删除已确认失效的 B 站外部脚本，日志中反复出现 not found。
-          lines = [
-              line for line in lines
-              if 'script-path=https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili.js' not in line
-          ]
-
-          # 2) 住这儿：之前只拦 type/1，本轮日志又出现 type/5。
-          #    统一只拦明确的 /ads/v3/type/<数字>/items，不碰正常业务接口。
-          lines = [
-              line for line in lines
-              if not (line.startswith(r'^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/') and '/items' in line)
-          ]
-          url_idx = lines.index('[URL Rewrite]')
-          insert_at = url_idx + 1
-          while insert_at < len(lines) and (not lines[insert_at].strip() or lines[insert_at].lstrip().startswith('#')):
-              insert_at += 1
-          lines[insert_at:insert_at] = [
-              '# ===== 住这儿：广告接口 =====',
-              r'^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items(?:\?.*)?$ - reject-dict',
-              '',
-          ]
-
-          # 3) 住这儿关键正常业务域名强制直连。
-          #    日志显示这些请求此前被 FINAL 送往美国节点；节点/DoH 超时会导致首页内容全部空白。
-          direct_rules = [
-              'DOMAIN,api.5th.zone,DIRECT',
-              'DOMAIN,media.5th.zone,DIRECT',
-              'DOMAIN,i.4009515151.com,DIRECT',
-          ]
-          lines = [line for line in lines if line not in direct_rules]
-          rule_idx = lines.index('[Rule]')
-          lines[rule_idx+1:rule_idx+1] = [
-              '',
-              '# ===== 住这儿：正常业务直连（稳定性保护） =====',
-              *direct_rules,
-          ]
-
-          # 4) 撤销 10:29 为抓路径而加入的高风险/无必要 MITM。
-          #    data.ab.qq.com 与 hd2.3g.qq.com 已抓到具体路径，分别是 A/B 实验与活动接口，并非广告下发。
-          #    media.5th.zone 与 i.4009515151.com 是住这儿正常资源/首页接口，不应继续解密。
-          remove_mitm = {
-              'media.5th.zone',
-              'i.4009515151.com',
-              'data.ab.qq.com',
-              'hd2.3g.qq.com',
-          }
-          for i, line in enumerate(lines):
-              if line.startswith('hostname = '):
-                  hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
-                  hosts = [h for h in hosts if h not in remove_mitm]
-                  seen = set()
-                  deduped = []
-                  for host in hosts:
-                      if host not in seen:
-                          seen.add(host)
-                          deduped.append(host)
-                  lines[i] = 'hostname = ' + ','.join(deduped)
-                  break
-          else:
-              raise SystemExit('MITM hostname line not found')
-
-          p.write_text('\n'.join(lines) + '\n', 'utf-8')
-          PY
-
-      - name: Stamp Beijing update time
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          from datetime import datetime, timezone, timedelta
-          import re
-
-          ts = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M')
-
-          module = Path('Module.sgmodule')
-          lines = module.read_text('utf-8').splitlines()
-          if len(lines) < 2:
-              raise SystemExit('Module.sgmodule is too short')
-          lines[0] = '#!name=广告屏蔽联网版'
-          lines[1] = f'#!desc=仓库更新时间：{ts}'
-          module.write_text('\n'.join(lines) + '\n', 'utf-8')
-
-          readme = Path('README.md')
-          text = readme.read_text('utf-8')
-          text = re.sub(r'- \*\*最近更新时间：\*\* .*', f'- **最近更新时间：** {ts}', text)
-          text = re.sub(r'仓库更新时间：\d{4}-\d{2}-\d{2}(?: \d{2}:\d{2})?', f'仓库更新时间：{ts}', text)
-          readme.write_text(text, 'utf-8')
-          print(f'Stamped: {ts} Asia/Shanghai')
-          PY
 
       - name: Validate module structure
         shell: bash
@@ -137,30 +34,14 @@ jobs:
           grep -q '^\[MITM\]$' Module.sgmodule
           test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
 
+          # 已确认的稳定性保护继续保留。
           grep -q '^DOMAIN,api\.5th\.zone,DIRECT$' Module.sgmodule
           grep -q '^DOMAIN,media\.5th\.zone,DIRECT$' Module.sgmodule
           grep -q '^DOMAIN,i\.4009515151\.com,DIRECT$' Module.sgmodule
-          grep -Fq '^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items(?:\?.*)?$ - reject-dict' Module.sgmodule
 
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'media.5th.zone'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'i.4009515151.com'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'data.ab.qq.com'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'hd2.3g.qq.com'
+          # 已淘汰/失效脚本不得回归。
           ! grep -q 'app2smile/rules/master/js/bilibili\.js' Module.sgmodule
           ! grep -q 'umetrip_ads\.js' Module.sgmodule
           ! grep -q '/JavaScript/jd\.js' Module.sgmodule
-          echo "Module validation passed."
 
-      - name: Commit module changes
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Module.sgmodule README.md
-          if git diff --cached --quiet; then
-            echo "No module or timestamp change needed."
-            exit 0
-          fi
-          git commit -m "fix: restore app stability and clean stale script"
-          git push
+          echo "Module validation passed."
