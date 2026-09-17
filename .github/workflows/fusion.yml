@@ -1,51 +1,35 @@
-name: Assemble Shadowrocket module
+name: Validate Shadowrocket module
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - 'module_parts/gz*.b64'
+      - 'Module.sgmodule'
 
 permissions:
-  contents: write
-
-concurrency:
-  group: shadowrocket-module-assemble
-  cancel-in-progress: false
+  contents: read
 
 jobs:
-  assemble:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Assemble verified module
+      - name: Validate module structure
         shell: bash
         run: |
           set -euo pipefail
-          test -f module_parts/gz00.b64
-          test -f module_parts/gz01.b64
-          echo '4b382b6ec3511a43db878cde34a1902b3f50a852feb6bb080dcb2a956f0d3e65  module_parts/gz00.b64' | sha256sum -c -
-          echo '73463c858020297290c01baee68bb85898f47811765e456ae78f6d926aa790d8  module_parts/gz01.b64' | sha256sum -c -
-          cat module_parts/gz00.b64 module_parts/gz01.b64 | tr -d '\n\r ' | base64 --decode > /tmp/module.sgmodule.gz
-          gzip -dc /tmp/module.sgmodule.gz > Module.sgmodule
-          echo '9e29330959fc3beae7638be0b48a7f6397026422b01f3bb46f999515e5e5a31a  Module.sgmodule' | sha256sum -c -
+          test -s Module.sgmodule
           test "$(head -n 1 Module.sgmodule)" = '#!name=广告屏蔽'
           grep -q '^\[Rule\]$' Module.sgmodule
+          grep -q '^\[URL Rewrite\]$' Module.sgmodule
+          grep -q '^\[Body Rewrite\]$' Module.sgmodule
+          grep -q '^\[Map Local\]$' Module.sgmodule
+          grep -q '^\[Script\]$' Module.sgmodule
           grep -q '^\[MITM\]$' Module.sgmodule
-
-      - name: Commit assembled module
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Module.sgmodule
-          if git diff --cached --quiet; then
-            echo "Module already current."
-            exit 0
-          fi
-          git commit -m "update: sync latest ad-block module"
-          git push
+          test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
+          ! grep -q 'umetrip_ads\.js' Module.sgmodule
+          ! grep -q '/JavaScript/jd\.js' Module.sgmodule
+          echo "Module validation passed."
