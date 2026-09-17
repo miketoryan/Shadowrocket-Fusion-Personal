@@ -96,6 +96,29 @@ jobs:
               raise SystemExit('Weibo rule anchor not found')
           lines[idx:idx] = [weibo_comment, weibo_core_rule]
 
+          # 高德：把 m5 单点写法升级为 m1-m9 兼容，但仍只匹配原来的明确广告/启动路径。
+          # 上游成熟规则使用 m\d.amap.com；MITM 只加入 m1-m9，不扩大到整个 *.amap.com。
+          for i, line in enumerate(lines):
+              if line.startswith('^https?:\\/\\/m5\\.amap\\.com\\/ws\\/'):
+                  lines[i] = line.replace('m5\\.amap\\.com', 'm\\d\\.amap\\.com', 1)
+
+          # B站：原先固定 v2 的四条 splash 规则合并为版本通配规则。
+          # 仅覆盖 /x/v数字/splash/ 命名空间，不扩大到 B站其它 API。
+          bili_old_rules = {
+              '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/show(?:\\?.*)?$ - reject-dict',
+              '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/list(?:\\?.*)?$ - reject-dict',
+              '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/brand\\/list(?:\\?.*)?$ - reject-dict',
+              '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/event\\/list2(?:\\?.*)?$ - reject-dict',
+          }
+          bili_new_rule = '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v\\d+\\/splash\\/.* - reject-dict'
+          lines = [line for line in lines if line not in bili_old_rules and line != bili_new_rule]
+          bili_anchor = '# ===== B站：只保留开屏 ====='
+          try:
+              idx = lines.index(bili_anchor) + 1
+          except ValueError:
+              raise SystemExit('Bilibili splash anchor not found')
+          lines[idx:idx] = [bili_new_rule]
+
           # 腾讯手机管家已通过 App 内广告开关解决，撤销所有临时诊断 MITM。
           remove_mitm = {
               'content.rconfig.qq.com',
@@ -106,12 +129,22 @@ jobs:
               'hd2.3g.qq.com',
               'data.ab.qq.com',
           }
+          amap_hosts = [f'm{n}.amap.com' for n in range(1, 10)]
           for i, line in enumerate(lines):
               if line.startswith('hostname = '):
                   hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
                   hosts = [h for h in hosts if h not in remove_mitm]
                   if 'api.5th.zone' not in hosts:
                       hosts.append('api.5th.zone')
+
+                  # 高德 m1-m9 显式列入 MITM，避免使用过宽的 *.amap.com。
+                  hosts = [h for h in hosts if h not in amap_hosts]
+                  try:
+                      amap_pos = hosts.index('oss.amap.com')
+                  except ValueError:
+                      amap_pos = len(hosts)
+                  hosts[amap_pos:amap_pos] = amap_hosts
+
                   seen = set()
                   deduped = []
                   for host in hosts:
@@ -172,6 +205,19 @@ jobs:
           grep -q '^DOMAIN,v2mi\.gdt\.qq\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
           grep -Fq '^https?:\/\/api\.douban\.com\/v\d+\/app_ads\/.* - reject' Module.sgmodule
 
+          # 高德：4 条原 m5 路径全部升级为 m\d，MITM 仅显式扩展到 m1-m9。
+          test "$(grep -Fc '^https?:\/\/m\d\.amap\.com\/ws\/' Module.sgmodule)" -eq 4
+          ! grep -Fq '^https?:\/\/m5\.amap\.com\/ws\/' Module.sgmodule
+          for n in {1..9}; do
+            grep '^hostname = ' Module.sgmodule | grep -q "m${n}\.amap\.com"
+          done
+          ! grep '^hostname = ' Module.sgmodule | grep -q '\*\.amap\.com'
+
+          # B站：只把 splash 版本号从固定 v2 升级为 v数字通配，其它接口保持原状。
+          test "$(grep -Fc '^https?:\/\/app\.bilibili\.com\/x\/v\d+\/splash\/.* - reject-dict' Module.sgmodule)" -eq 1
+          ! grep -Fq '^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/' Module.sgmodule
+          grep '^hostname = ' Module.sgmodule | grep -q 'app.bilibili.com'
+
           # 本工作流维护的说明注释也必须保持单份，防止重复堆积。
           test "$(grep -Fc '# 高置信度补强：AWAvenue / Cats-Team / 217heidai 多源交叉确认的腾讯广告素材链路' Module.sgmodule)" -eq 1
           test "$(grep -Fc '# 豆瓣开屏：2026-09-17 日志实证漏网的 GDT 素材 / QUIC 主机' Module.sgmodule)" -eq 1
@@ -203,5 +249,5 @@ jobs:
             echo "No refined module change needed."
             exit 0
           fi
-          git commit -m "feat: add high-confidence ad endpoints"
+          git commit -m "feat: optimize Amap and Bilibili splash rules"
           git push
