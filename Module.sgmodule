@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-09-17 11:59
+#!desc=仓库更新时间：2026-09-17 12:00
 
 [Rule]
 
@@ -999,7 +999,9 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 
 [Script]
 # ===== 临时诊断：住这儿广告 API 真实响应（不修改内容） =====
-diag_5th_ads =type=http-response, pattern=^https?:\\/\\/api\\.5th\\.zone\\/ads\\/v3\\/type\\/\\d+\\/items(?:\\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/diag_5th_ads.js, requires-body=true, max-size=0
+diag_5th_ads =type=http-response, pattern=^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/diag_5th_ads.js, requires-body=true, max-size=0
+
+# ===== 临时诊断：住这儿广告 API 真实响应（不修改内容） =====
 
 # ===== 豆瓣 =====
 douban =type=http-response, pattern=^https?:\/\/api\.douban\.com\/.*, script-path=https://raw.githubusercontent.com/app2smile/rules/master/js/douban.js, requires-body=true, max-size=0
