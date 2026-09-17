@@ -44,7 +44,6 @@ jobs:
                   raise SystemExit(f'anchor not found: {anchor}')
               lines[idx:idx] = payload
 
-          # ---------- Existing high-confidence core ----------
           tencent_core_rules = [
               'DOMAIN,adsmind.gdtimg.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,adsmind.apdcdn.tc.qq.com,REJECT,extended-matching,pre-matching',
@@ -73,30 +72,21 @@ jobs:
           insert_after('DOMAIN,iad.g.163.com,REJECT,extended-matching,pre-matching', [netease_comment, netease_core_rule])
           insert_after('DOMAIN,sdkclick.biz.weibo.com,REJECT,extended-matching,pre-matching', [weibo_comment, weibo_core_rule])
 
-          # ---------- 2026-09-17: precise splash patches ----------
-          # Mature upstream references: fmz200/wool_scripts, zirawell/Ad-Cleaner,
-          # app2smile/rules, AWAvenue and 217heidai. Log-confirmed fallbacks stay exact.
           old_precise_comment = '# ===== 2026-09-17 精准开屏补丁：12306 / B站 / 百度地图 / 美图秀秀 / 微店 ====='
           precise_comment = '# ===== 2026-09-17 精准开屏补丁：12306 / B站 / 百度地图 / 美图秀秀 / 微店 / 微博 / QQ音乐 / 下厨房 ====='
           precise_rules = [
-              # 12306 dedicated ad host
               'DOMAIN,ad.12306.cn,REJECT,extended-matching,pre-matching',
-              # Baidu Maps own ad configuration + log-confirmed RTB fallback
               'DOMAIN,afd.baidu.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,afdconf.baidu.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,sdk.1rtb.net,REJECT,extended-matching,pre-matching',
               'DOMAIN,cdn.1rtb.com,REJECT,extended-matching,pre-matching',
-              # Meitu dedicated ad endpoints
               'DOMAIN,adui.tg.meitu.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,rabbit.tg.meitu.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,meitubeauty.meitudata.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,xiuxiu.mobile.meitudata.com,REJECT,extended-matching,pre-matching',
-              # Sigmob fallback observed in current logs / mature ad lists
               'DOMAIN,adservice.sigmob.cn,REJECT,extended-matching,pre-matching',
               'DOMAIN,tm.sigmob.cn,REJECT,extended-matching,pre-matching',
-              # Weibo preload host: covers current v2 and future path-version changes without MITM
               'DOMAIN,bootpreload.uve.weibo.com,REJECT,extended-matching,pre-matching',
-              # QQ Music: only dedicated advertising hosts; no music business hosts and no MITM
               'DOMAIN,adstats.tencentmusic.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,ad.tencentmusic.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,adcdn.tencentmusic.com,REJECT,extended-matching,pre-matching',
@@ -106,7 +96,6 @@ jobs:
               'DOMAIN,tmead.y.qq.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,tmeadbak.y.qq.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,tmeadcomm.y.qq.com,REJECT,extended-matching,pre-matching',
-              # Xiachufang: log-confirmed fallback ad SDK hosts cross-checked with public ad lists
               'DOMAIN,p4-ad.adukwai.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,p66-ad.adkwai.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,ssp.1rtb.com,REJECT,extended-matching,pre-matching',
@@ -115,20 +104,16 @@ jobs:
           remove_all([old_precise_comment, precise_comment, *precise_rules])
           insert_after('DOMAIN,i.4009515151.com,DIRECT', ['', precise_comment, *precise_rules])
 
-          # ---------- Amap compatibility retained ----------
           for i, line in enumerate(lines):
               if line.startswith('^https?:\\/\\/m5\\.amap\\.com\\/ws\\/'):
                   lines[i] = line.replace('m5\\.amap\\.com', 'm\\d\\.amap\\.com', 1)
 
-          # ---------- Precise URL rewrites ----------
           url_comment = '# ===== 精准开屏接口：成熟库规则 + 本机日志交叉验证 ====='
           baidu_map_rewrite = '^https?:\\/\\/newclient\\.map\\.baidu\\.com\\/client\\/phpui2\\/\\?qt=ads(?:&.*)?$ - reject-dict'
           meitu_rewrite = '^https?:\\/\\/mea\\.meitudata\\.com\\/kaiping(?:\\?.*)?$ - reject'
           weidian_rewrite = '^https?:\\/\\/thor\\.weidian\\.com\\/ares\\/home\\.splash(?:\\?.*)?$ - reject-200'
           xiachufang_rewrite = '^https?:\\/\\/api\\.xiachufang\\.com\\/v\\d\\/ad/ - reject'
           obsolete_weibo_rewrite = '^https?:\\/\\/bootpreload\\.uve\\.weibo\\.com\\/v1\\/ad\\/preload$ - reject'
-
-          # Bilibili: list/show use app2smile response cleanup; keep only two auxiliary splash endpoints as rewrites.
           bili_old = [
               '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v\\d+\\/splash\\/.* - reject-dict',
               '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/show(?:\\?.*)?$ - reject-dict',
@@ -146,8 +131,6 @@ jobs:
           lines[url_idx:url_idx] = ['', url_comment, baidu_map_rewrite, meitu_rewrite,
                                     weidian_rewrite, xiachufang_rewrite, bili_aux_rewrite, '']
 
-          # ---------- Bilibili pinned response script ----------
-          # Pin to the exact upstream commit instead of mutable master.
           bili_script_comment = '# ===== B站开屏 list/show：app2smile 固定版本，仅清理广告响应 ====='
           bili_script = ('bili-splash =type=http-response, pattern=^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/(list|show)(?:\\?.*)?$, '
                          'script-path=https://raw.githubusercontent.com/app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js, '
@@ -159,7 +142,6 @@ jobs:
               raise SystemExit('[Script] missing')
           lines[script_idx:script_idx] = ['', bili_script_comment, bili_script, '']
 
-          # ---------- MITM: exact hosts only ----------
           required_mitm = [
               'newclient.map.baidu.com',
               'mea.meitudata.com',
@@ -171,8 +153,8 @@ jobs:
               'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn',
               'luban.m.qq.com', 'tmfmazu.m.qq.com', 'tmfmazu4.m.qq.com',
               'hd2.3g.qq.com', 'data.ab.qq.com',
-              # QQ Music stays domain-only in this revision.
               'y.gtimg.cn', 'music.y.qq.com',
+              'bootpreload.uve.weibo.com',
           }
           amap_hosts = [f'm{n}.amap.com' for n in range(1, 10)]
           for i, line in enumerate(lines):
@@ -195,7 +177,6 @@ jobs:
           else:
               raise SystemExit('MITM hostname line not found')
 
-          # ---------- Timestamp + README ----------
           ts = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M')
           lines[0] = '#!name=广告屏蔽联网版'
           lines[1] = f'#!desc=仓库更新时间：{ts}'
@@ -223,37 +204,32 @@ jobs:
           grep -q '^\[MITM\]$' Module.sgmodule
           test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
 
-          # Existing core protections.
           grep -q '^DOMAIN,api\.5th\.zone,DIRECT$' Module.sgmodule
           grep -Fq 'zhuzher_ads_empty.js' Module.sgmodule
           grep -q '^DOMAIN,adsmind\.gdtimg\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
           grep -q '^DOMAIN,ad\.bn\.netease\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
           grep -q '^DOMAIN,adimg\.uve\.weibo\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
 
-          # All precise domain rules must remain single-copy.
           for d in ad.12306.cn afd.baidu.com afdconf.baidu.com sdk.1rtb.net cdn.1rtb.com adui.tg.meitu.com rabbit.tg.meitu.com meitubeauty.meitudata.com xiuxiu.mobile.meitudata.com adservice.sigmob.cn tm.sigmob.cn bootpreload.uve.weibo.com adstats.tencentmusic.com ad.tencentmusic.com adcdn.tencentmusic.com adcdn6.tencentmusic.com adexpo.tencentmusic.com adclick.tencentmusic.com tmead.y.qq.com tmeadbak.y.qq.com tmeadcomm.y.qq.com p4-ad.adukwai.com p66-ad.adkwai.com ssp.1rtb.com ztoken.uyunad.com; do
             test "$(grep -Fc "DOMAIN,$d,REJECT,extended-matching,pre-matching" Module.sgmodule)" -eq 1
           done
 
-          # Precise app rewrites.
           grep -Fq '^https?:\/\/newclient\.map\.baidu\.com\/client\/phpui2\/\?qt=ads(?:&.*)?$ - reject-dict' Module.sgmodule
           grep -Fq '^https?:\/\/mea\.meitudata\.com\/kaiping(?:\?.*)?$ - reject' Module.sgmodule
           grep -Fq '^https?:\/\/thor\.weidian\.com\/ares\/home\.splash(?:\?.*)?$ - reject-200' Module.sgmodule
           grep -Fq '^https?:\/\/api\.xiachufang\.com\/v\d\/ad/ - reject' Module.sgmodule
           ! grep -Fq '^https?:\/\/bootpreload\.uve\.weibo\.com\/v1\/ad\/preload$ - reject' Module.sgmodule
 
-          # Bilibili pinned script remains intact.
           grep -Fq 'app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js' Module.sgmodule
           ! grep -Fq '^https?:\/\/app\.bilibili\.com\/x\/v\d+\/splash\/.* - reject-dict' Module.sgmodule
 
-          # Only the exact MITM hosts we approved are added; QQ Music remains domain-only.
           for h in app.bilibili.com newclient.map.baidu.com mea.meitudata.com thor.weidian.com api.xiachufang.com; do
             grep '^hostname = ' Module.sgmodule | grep -q "$h"
           done
           ! grep '^hostname = ' Module.sgmodule | grep -q 'y.gtimg.cn'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'music.y.qq.com'
+          ! grep '^hostname = ' Module.sgmodule | grep -q 'bootpreload.uve.weibo.com'
 
-          # High-risk diagnostic MITM must stay absent.
           ! grep '^hostname = ' Module.sgmodule | grep -q 'hd2.3g.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'data.ab.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'tmfmazu.m.qq.com'
@@ -271,5 +247,5 @@ jobs:
             echo "No refined module change needed."
             exit 0
           fi
-          git commit -m "feat: add verified Weibo QQMusic and Xiachufang ad fixes"
+          git commit -m "chore: remove obsolete Weibo MITM host"
           git push
