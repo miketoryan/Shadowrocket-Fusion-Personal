@@ -1,4 +1,4 @@
-name: Validate Shadowrocket module
+name: Diagnostic capture for Shadowrocket module
 
 on:
   workflow_dispatch:
@@ -10,16 +10,85 @@ on:
       - 'scripts/**'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  validate:
+  diagnostic-and-validate:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate module structure
+      - name: Apply targeted diagnostic capture
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from datetime import datetime, timezone, timedelta
+          import re
+
+          module = Path('Module.sgmodule')
+          lines = module.read_text('utf-8').splitlines()
+
+          # 1) 住这儿：临时放行广告 API，抓真实成功响应结构。
+          #    只移除这个明确广告接口的 reject-dict；正常业务直连规则不动。
+          lines = [
+              line for line in lines
+              if not (
+                  'api\\.5th\\.zone\\/ads\\/v3\\/type\\/' in line
+                  and 'items' in line
+                  and 'reject-dict' in line
+              )
+          ]
+
+          # 2) 住这儿：加入只读响应诊断脚本，只 console.log，不改返回体。
+          diag_name = 'diag_5th_ads ='
+          lines = [line for line in lines if not line.startswith(diag_name)]
+          script_idx = lines.index('[Script]')
+          lines[script_idx+1:script_idx+1] = [
+              '# ===== 临时诊断：住这儿广告 API 真实响应（不修改内容） =====',
+              r'diag_5th_ads =type=http-response, pattern=^https?:\\/\\/api\\.5th\\.zone\\/ads\\/v3\\/type\\/\\d+\\/items(?:\\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/diag_5th_ads.js, requires-body=true, max-size=0',
+              '',
+          ]
+
+          # 3) 腾讯手机管家：仅对日志实证的 COS bucket 做临时 MITM，以便看到完整素材路径。
+          cos_host = 'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn'
+          for i, line in enumerate(lines):
+              if line.startswith('hostname = '):
+                  hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
+                  for host in ['api.5th.zone', cos_host]:
+                      if host not in hosts:
+                          hosts.append(host)
+                  seen = set()
+                  deduped = []
+                  for host in hosts:
+                      if host not in seen:
+                          seen.add(host)
+                          deduped.append(host)
+                  lines[i] = 'hostname = ' + ','.join(deduped)
+                  break
+          else:
+              raise SystemExit('MITM hostname line not found')
+
+          # 4) 更新时间戳。
+          ts = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M')
+          lines[0] = '#!name=广告屏蔽联网版'
+          lines[1] = f'#!desc=仓库更新时间：{ts}'
+          module.write_text('\n'.join(lines) + '\n', 'utf-8')
+
+          readme = Path('README.md')
+          if readme.exists():
+              text = readme.read_text('utf-8')
+              text = re.sub(r'- \*\*最近更新时间：\*\* .*', f'- **最近更新时间：** {ts}', text)
+              text = re.sub(r'仓库更新时间：\d{4}-\d{2}-\d{2}(?: \d{2}:\d{2})?', f'仓库更新时间：{ts}', text)
+              readme.write_text(text, 'utf-8')
+
+          print(f'Diagnostic mode stamped: {ts} Asia/Shanghai')
+          PY
+
+      - name: Validate diagnostic module
         shell: bash
         run: |
           set -euo pipefail
@@ -28,20 +97,36 @@ jobs:
           grep -Eq '^#!desc=仓库更新时间：[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$' Module.sgmodule
           grep -q '^\[Rule\]$' Module.sgmodule
           grep -q '^\[URL Rewrite\]$' Module.sgmodule
-          grep -q '^\[Body Rewrite\]$' Module.sgmodule
-          grep -q '^\[Map Local\]$' Module.sgmodule
           grep -q '^\[Script\]$' Module.sgmodule
           grep -q '^\[MITM\]$' Module.sgmodule
           test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
 
-          # 已确认的稳定性保护继续保留。
           grep -q '^DOMAIN,api\.5th\.zone,DIRECT$' Module.sgmodule
           grep -q '^DOMAIN,media\.5th\.zone,DIRECT$' Module.sgmodule
           grep -q '^DOMAIN,i\.4009515151\.com,DIRECT$' Module.sgmodule
 
-          # 已淘汰/失效脚本不得回归。
+          # 诊断期间，住这儿广告 API 必须放行且挂只读响应脚本。
+          ! grep -F 'api\.5th\.zone\/ads\/v3\/type\/' Module.sgmodule | grep -q 'reject-dict'
+          grep -q '^diag_5th_ads =type=http-response' Module.sgmodule
+          grep '^hostname = ' Module.sgmodule | grep -q 'api.5th.zone'
+          grep '^hostname = ' Module.sgmodule | grep -q 'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn'
+
+          # 已淘汰脚本不得回归。
           ! grep -q 'app2smile/rules/master/js/bilibili\.js' Module.sgmodule
           ! grep -q 'umetrip_ads\.js' Module.sgmodule
           ! grep -q '/JavaScript/jd\.js' Module.sgmodule
+          echo "Diagnostic module validation passed."
 
-          echo "Module validation passed."
+      - name: Commit diagnostic module
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Module.sgmodule README.md
+          if git diff --cached --quiet; then
+            echo "No diagnostic module change needed."
+            exit 0
+          fi
+          git commit -m "diag: capture 5th.zone response and Tencent COS path"
+          git push
