@@ -1,4 +1,4 @@
-name: Validate Shadowrocket module
+name: Stamp and validate Shadowrocket module
 
 on:
   workflow_dispatch:
@@ -6,16 +6,45 @@ on:
     branches: [main]
     paths:
       - 'Module.sgmodule'
+      - '.github/workflows/fusion.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  validate:
+  stamp-and-validate:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Stamp Beijing update time
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from datetime import datetime, timezone, timedelta
+          import re
+
+          ts = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M')
+
+          module = Path('Module.sgmodule')
+          lines = module.read_text('utf-8').splitlines()
+          if len(lines) < 2:
+              raise SystemExit('Module.sgmodule is too short')
+          lines[0] = '#!name=广告屏蔽联网版'
+          lines[1] = f'#!desc=仓库更新时间：{ts}'
+          module.write_text('\n'.join(lines) + '\n', 'utf-8')
+
+          readme = Path('README.md')
+          text = readme.read_text('utf-8')
+          text = re.sub(r'- \*\*最近更新时间：\*\* .*', f'- **最近更新时间：** {ts}', text)
+          text = re.sub(r'仓库更新时间：\d{4}-\d{2}-\d{2}(?: \d{2}:\d{2})?', f'仓库更新时间：{ts}', text)
+          readme.write_text(text, 'utf-8')
+          print(f'Stamped: {ts} Asia/Shanghai')
+          PY
 
       - name: Validate module structure
         shell: bash
@@ -23,7 +52,7 @@ jobs:
           set -euo pipefail
           test -s Module.sgmodule
           test "$(head -n 1 Module.sgmodule)" = '#!name=广告屏蔽联网版'
-          sed -n '2p' Module.sgmodule | grep -Eq '^#!desc=仓库更新时间：[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+          grep -Eq '^#!desc=仓库更新时间：[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$' Module.sgmodule
           grep -q '^\[Rule\]$' Module.sgmodule
           grep -q '^\[URL Rewrite\]$' Module.sgmodule
           grep -q '^\[Body Rewrite\]$' Module.sgmodule
@@ -34,3 +63,17 @@ jobs:
           ! grep -q 'umetrip_ads\.js' Module.sgmodule
           ! grep -q '/JavaScript/jd\.js' Module.sgmodule
           echo "Module validation passed."
+
+      - name: Commit timestamp if changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Module.sgmodule README.md
+          if git diff --cached --quiet; then
+            echo "No timestamp change needed."
+            exit 0
+          fi
+          git commit -m "chore: stamp module update time"
+          git push
