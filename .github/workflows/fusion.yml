@@ -1,57 +1,56 @@
-name: Maintain personal fusion module
+name: Assemble Shadowrocket module
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "17 3 * * *"
+  push:
+    branches: [main]
+    paths:
+      - 'module_parts/**'
 
 permissions:
   contents: write
 
 concurrency:
-  group: personal-fusion-maintenance
+  group: shadowrocket-module-assemble
   cancel-in-progress: false
 
 jobs:
-  maintain:
+  assemble:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Validate local scripts
-        run: node --check scripts/baidupan_ads_only.js
-
-      - name: Maintain independent module
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          STALE_DAYS: "365"
-          MAX_WORKERS: "12"
-        run: python tools/fusion.py
-
-      - name: Show health summary
+      - name: Assemble when all chunks exist
+        shell: bash
         run: |
-          cat reports/status.md >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          cat reports/interface-updates.md >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Commit actual changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add Module.sgmodule sources.json scripts/ reports/
-
-          if git diff --cached --quiet; then
-            echo "No changes."
+          set -euo pipefail
+          shopt -s nullglob
+          parts=(module_parts/chunk*.b64)
+          if [ "${#parts[@]}" -ne 7 ]; then
+            echo "Waiting for 7 chunks; found ${#parts[@]}."
             exit 0
           fi
+          cat "${parts[@]}" | tr -d '\n\r ' | base64 --decode > Module.sgmodule
+          test "$(head -n 1 Module.sgmodule)" = '#!name=广告屏蔽'
+          grep -q '^\[Rule\]$' Module.sgmodule
+          grep -q '^\[MITM\]$' Module.sgmodule
 
-          git commit -m "chore: maintain personal fusion module"
+      - name: Commit assembled module
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          parts=(module_parts/chunk*.b64)
+          if [ "${#parts[@]}" -ne 7 ]; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Module.sgmodule
+          if git diff --cached --quiet; then
+            echo "Module already current."
+            exit 0
+          fi
+          git commit -m "update: sync latest ad-block module"
           git push
