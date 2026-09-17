@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Apply verified Douban fix and clean diagnostics
+      - name: Apply approved high-confidence rules and keep diagnostics clean
         shell: bash
         run: |
           set -euo pipefail
@@ -32,7 +32,20 @@ jobs:
           module = Path('Module.sgmodule')
           lines = module.read_text('utf-8').splitlines()
 
-          # 豆瓣 7.133.0 本轮日志实证：豆瓣自有 splash API 和常规 SDK 请求已被拦截，
+          # 第一梯队：多上游交叉确认、广告属性明确，仅做精确 DOMAIN 拦截。
+          # 不扩大为 qq.com / weibo.com / netease.com 等宽泛后缀，避免误伤正常业务。
+          tencent_core_rules = [
+              'DOMAIN,adsmind.gdtimg.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,adsmind.apdcdn.tc.qq.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,adsmind.tc.qq.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,pgdt.gtimg.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,adslvfile.qq.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,adslvseed.qq.com,REJECT,extended-matching,pre-matching',
+          ]
+          netease_core_rule = 'DOMAIN,ad.bn.netease.com,REJECT,extended-matching,pre-matching'
+          weibo_core_rule = 'DOMAIN,adimg.uve.weibo.com,REJECT,extended-matching,pre-matching'
+
+          # 豆瓣 7.133.0 日志实证：豆瓣自有 splash API 已被拦截，
           # 但腾讯广告素材/竞价链路仍从以下 3 个主机直连成功。
           douban_rules = [
               'DOMAIN,pgdt.ugdtimg.com,REJECT,extended-matching,pre-matching',
@@ -40,18 +53,45 @@ jobs:
               'DOMAIN,v2mi.gdt.qq.com,REJECT,extended-matching,pre-matching',
           ]
 
-          # 去重后插入到腾讯广点通规则旁边。
-          lines = [line for line in lines if line not in douban_rules]
+          # 先全局去重，再按功能区重新插入，保证工作流可重复执行。
+          approved_exact_rules = set(tencent_core_rules + douban_rules + [netease_core_rule, weibo_core_rule])
+          lines = [line for line in lines if line not in approved_exact_rules]
+
+          # 腾讯 / GDT：放在现有腾讯广点通规则附近。
           anchor = 'DOMAIN,p.l.qq.com,REJECT,extended-matching,pre-matching'
           try:
               idx = lines.index(anchor) + 1
           except ValueError:
               raise SystemExit('Tencent GDT rule anchor not found')
           insert = [
+              '# 高置信度补强：AWAvenue / Cats-Team / 217heidai 多源交叉确认的腾讯广告素材链路',
+              *tencent_core_rules,
               '# 豆瓣开屏：2026-09-17 日志实证漏网的 GDT 素材 / QUIC 主机',
               *douban_rules,
           ]
           lines[idx:idx] = insert
+
+          # 网易：只补一个明确广告主机，不碰统计、HTTPDNS 或账号链路。
+          netease_anchor = 'DOMAIN,iad.g.163.com,REJECT,extended-matching,pre-matching'
+          try:
+              idx = lines.index(netease_anchor) + 1
+          except ValueError:
+              raise SystemExit('NetEase rule anchor not found')
+          lines[idx:idx] = [
+              '# 高置信度补强：fmz200 / AWAvenue / 217heidai 均收录的网易广告主机',
+              netease_core_rule,
+          ]
+
+          # 微博：补充广告图片素材主机，保持现有 SDK 拦截逻辑不变。
+          weibo_anchor = 'DOMAIN,sdkclick.biz.weibo.com,REJECT,extended-matching,pre-matching'
+          try:
+              idx = lines.index(weibo_anchor) + 1
+          except ValueError:
+              raise SystemExit('Weibo rule anchor not found')
+          lines[idx:idx] = [
+              '# 高置信度补强：AWAvenue / 217heidai 均收录的微博广告素材主机',
+              weibo_core_rule,
+          ]
 
           # 腾讯手机管家已通过 App 内广告开关解决，撤销所有临时诊断 MITM。
           remove_mitm = {
@@ -113,13 +153,23 @@ jobs:
           grep -Fq 'zhuzher_ads_empty.js' Module.sgmodule
           grep '^hostname = ' Module.sgmodule | grep -q 'api.5th.zone'
 
-          # 豆瓣本轮日志实证补漏。
+          # 第一梯队高置信度广告域：必须全部存在且保持精确 DOMAIN。
+          grep -q '^DOMAIN,adsmind\.gdtimg\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
+          grep -q '^DOMAIN,adsmind\.apdcdn\.tc\.qq\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
+          grep -q '^DOMAIN,adsmind\.tc\.qq\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
+          grep -q '^DOMAIN,pgdt\.gtimg\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
+          grep -q '^DOMAIN,adslvfile\.qq\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
+          grep -q '^DOMAIN,adslvseed\.qq\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
+          grep -q '^DOMAIN,ad\.bn\.netease\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
+          grep -q '^DOMAIN,adimg\.uve\.weibo\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
+
+          # 豆瓣日志实证补漏继续保留。
           grep -q '^DOMAIN,pgdt\.ugdtimg\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
           grep -q '^DOMAIN,adsmind\.ugdtimg\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
           grep -q '^DOMAIN,v2mi\.gdt\.qq\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
           grep -Fq '^https?:\/\/api\.douban\.com\/v\d+\/app_ads\/.* - reject' Module.sgmodule
 
-          # 临时腾讯诊断已清理。
+          # 临时腾讯诊断必须保持清理状态。
           ! grep '^hostname = ' Module.sgmodule | grep -q 'hd2.3g.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'data.ab.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'tmfmazu.m.qq.com'
@@ -144,5 +194,5 @@ jobs:
             echo "No refined module change needed."
             exit 0
           fi
-          git commit -m "fix: block Douban GDT splash CDN"
+          git commit -m "feat: add high-confidence ad endpoints"
           git push
