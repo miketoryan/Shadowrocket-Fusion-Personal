@@ -14,7 +14,6 @@ AND,((DOMAIN,g-acs.m.goofish.com),(PROTOCOL,UDP)),REJECT
 # ===== 腾讯手机助手 / 手机管家补充 =====
 DOMAIN,snowflake.qq.com,REJECT,extended-matching,pre-matching
 
-
 # ===== 后续增强：腾讯手机助手 / 腾讯广点通广告链路 =====
 DOMAIN,tangram.e.qq.com,REJECT,extended-matching,pre-matching
 DOMAIN,sdkreport.e.qq.com,REJECT,extended-matching,pre-matching
@@ -26,7 +25,6 @@ DOMAIN,p.l.qq.com,REJECT,extended-matching,pre-matching
 DOMAIN,iadmusicmatvideo.music.126.net,REJECT,extended-matching,pre-matching
 DOMAIN,admusicpic.music.126.net,REJECT,extended-matching,pre-matching
 DOMAIN,iad.g.163.com,REJECT,extended-matching,pre-matching
-
 
 # ===== 后续增强：高德地图 =====
 DOMAIN,amap-aos-info-nogw.amap.com,REJECT,extended-matching,pre-matching
@@ -43,12 +41,11 @@ DOMAIN,sdkaction.biz.weibo.com,REJECT,extended-matching,pre-matching
 DOMAIN,sdkmonitor.biz.weibo.com,REJECT,extended-matching,pre-matching
 DOMAIN,sdkclick.biz.weibo.com,REJECT,extended-matching,pre-matching
 
-
 # ===== 日志实证：途强智能开屏广告 =====
 # com.tuqiang.smart / slot_id=11499
 # 主广告请求
 DOMAIN-SUFFIX,adgain.cn,REJECT,extended-matching,pre-matching
-# 广告素材 CDN（日志中的 material_url 指向此域名）
+# 广告素材 CDN（日 志中的 material_url 指向此域名）
 DOMAIN,dspvideo.umeng.com,REJECT,extended-matching,pre-matching
 # 广告曝光 / 点击 / DeepLink
 DOMAIN-SUFFIX,madboxi.com,REJECT,extended-matching,pre-matching
@@ -56,7 +53,6 @@ DOMAIN-SUFFIX,madboxi.com,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,datads.cn,REJECT,extended-matching,pre-matching
 # 本次开屏广告伴随调用
 DOMAIN,api.yellow-river.cn,REJECT,extended-matching,pre-matching
-
 
 # ===== 合并补充：YouTube 路由保护 =====
 DOMAIN,youtubei.googleapis.com,📹 油管视频
@@ -66,7 +62,7 @@ DOMAIN-SUFFIX,googlevideo.com,📹 油管视频
 DOMAIN-SUFFIX,ytimg.com,📹 油管视频
 DOMAIN-SUFFIX,youtu.be,📹 油管视频
 
-# ===== 合并补充：豆瓣 / 穿山甲广告 =====
+# ===== 合并补充：夸克 / 穿山甲广告 =====
 DOMAIN-KEYWORD,pangolin-sdk-toutiao,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,pangolin.snssdk.com,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,pglstatp-toutiao.com,REJECT,extended-matching,pre-matching
@@ -87,407 +83,813 @@ DOMAIN-SUFFIX,58iclick.com,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,yunxish.com,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,zhangyuyidong.cn,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,mentamob.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,hubcloud.com.cn,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,vlion.cn,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,advlion.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,adnplus.cn,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,anythinktech.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,adscope.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,adxvip.com,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,beizi.biz,REJECT,extended-matching,pre-matching
-DOMAIN,sdktmp.hubcloud.com.cn,REJECT,extended-matching,pre-matching
-DOMAIN,cpc-service-square.iggrowth.cn,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,bulldogcpi.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,dpstack.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,effirst.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,gromore.pangolin-sdk-toutiao.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,gyunw.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,hzsod.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,imp-adedge.appion.app,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,ksapisrv.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,kuaiyiad.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,mi.gdt.qq.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,open.e.kuaishou.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,ps.map.baidu.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,rtbasia.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,s2s.adjust.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,tanx.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,tapdb.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,trafficjunky.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,umengjmacs.m.taobao.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,win.gdt.qq.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,zhanzhang.baidu.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,zjtoolbar.com,REJECT,extended-matching,pre-matching
 
-DOMAIN, dorangesource.alicdn.com, DIRECT, extended-matching
-DOMAIN, push.m.youku.com, DIRECT, extended-matching
-DOMAIN, un-acs.youku.com, DIRECT, extended-matching
-DOMAIN-SUFFIX, soulapp.cn, DIRECT, extended-matching
-IP-CIDR, 8.210.3.170/32, DIRECT, no-resolve
-IP-CIDR, 47.75.72.47/32, DIRECT, no-resolve
-DOMAIN, access.if.iqiyi.com, REJECT, extended-matching, pre-matching
-DOMAIN, ad-analysis.pconline.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, ad-cdn.qingting.fm, REJECT, extended-matching, pre-matching
-DOMAIN, ad-h5-cdn.soulapp.cn, REJECT, extended-matching, pre-matching
-DOMAIN, ad-h5-station-cdn.soulapp.cn, REJECT, extended-matching, pre-matching
-DOMAIN, ad-r.soulapp.cn, REJECT, extended-matching, pre-matching
-DOMAIN, ad-stat.ksosoft.com, REJECT, extended-matching, pre-matching
-DOMAIN, ad.21cn.com, REJECT, extended-matching, pre-matching
-DOMAIN, ad.api.moji.com, REJECT, extended-matching, pre-matching
-DOMAIN, ad.chelaile.net.cn, REJECT, extended-matching, pre-matching
-DOMAIN, ad.cyapi.cn, REJECT, extended-matching, pre-matching
-DOMAIN, ad.iot.360.cn, REJECT, extended-matching, pre-matching
-DOMAIN, ad.jia.360.cn, REJECT, extended-matching, pre-matching
-DOMAIN, ad.k.21cn.com, REJECT, extended-matching, pre-matching
-DOMAIN, ad.mcloud.139.com, REJECT, extended-matching, pre-matching
-DOMAIN, ad.qingting.fm, REJECT, extended-matching, pre-matching
-DOMAIN, ad.seeyouyima.com, REJECT, extended-matching, pre-matching
-DOMAIN, ad.tencentmusic.com, REJECT, extended-matching, pre-matching
-DOMAIN, adbehavior.wsa.ximalaya.com, REJECT, extended-matching, pre-matching
-DOMAIN, adbehavior.ximalaya.com, REJECT, extended-matching, pre-matching
-DOMAIN, adlaunch.moji.com, REJECT, extended-matching, pre-matching
-DOMAIN, adlaunch.qingting.fm, REJECT, extended-matching, pre-matching
-DOMAIN, admarket.21cn.com, REJECT, extended-matching, pre-matching
-DOMAIN, admarketing.yahoo.net, REJECT, extended-matching, pre-matching
-DOMAIN, ads-img-qc.xhscdn.com, REJECT, extended-matching, pre-matching
-DOMAIN, ads-shopping.shouqianba.com, REJECT, extended-matching, pre-matching
-DOMAIN, ads-video-al.xhscdn.com, REJECT, extended-matching, pre-matching
-DOMAIN, ads-video-qc.xhscdn.com, REJECT, extended-matching, pre-matching
-DOMAIN, ads.auctions.yahoo.com, REJECT, extended-matching, pre-matching
-DOMAIN, ads.finance.yahoo.com, REJECT, extended-matching, pre-matching
-DOMAIN, ads.mojicdn.com, REJECT, extended-matching, pre-matching
-DOMAIN, ads.reader.yueyouxs.com, REJECT, extended-matching, pre-matching
-DOMAIN, ads.service.kugou.com, REJECT, extended-matching, pre-matching
-DOMAIN, ads.ysepay.com, REJECT, extended-matching, pre-matching
-DOMAIN, adse.wsa.ximalaya.com, REJECT, extended-matching, pre-matching
-DOMAIN, adse.ximalaya.com, REJECT, extended-matching, pre-matching
-DOMAIN, adsehera.ximalaya.com, REJECT, extended-matching, pre-matching
-DOMAIN, adservice.kugou.com, REJECT, extended-matching, pre-matching
-DOMAIN, adserviceretry.kglink.cn, REJECT, extended-matching, pre-matching
-DOMAIN, adserviceretry.kugou.com, REJECT, extended-matching, pre-matching
-DOMAIN, adshows.21cn.com, REJECT, extended-matching, pre-matching
-DOMAIN, adsmind.gdtimg.com, REJECT, extended-matching, pre-matching
-DOMAIN, adsmind.ugdtimg.com, REJECT, extended-matching, pre-matching
-DOMAIN, adsp.xunlei.com, REJECT, extended-matching, pre-matching
-DOMAIN, adstats.tencentmusic.com, REJECT, extended-matching, pre-matching
-DOMAIN, adui.tg.meitu.com, REJECT, extended-matching, pre-matching
-DOMAIN, adv-adlog.variflight.com, REJECT, extended-matching, pre-matching
-DOMAIN, adv-ads.variflight.com, REJECT, extended-matching, pre-matching
-DOMAIN, advert.mafengwo.cn, REJECT, extended-matching, pre-matching
-DOMAIN, advertise.baicizhan.com, REJECT, extended-matching, pre-matching
-DOMAIN, advertise.baicizhan.org, REJECT, extended-matching, pre-matching
-DOMAIN, adx-api.zdmimg.com, REJECT, extended-matching, pre-matching
-DOMAIN, adx-core.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN, adx-open-service.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN, adx-os.bridgeturbo.com, REJECT, extended-matching, pre-matching
-DOMAIN, adx.yiche.com, REJECT, extended-matching, pre-matching
-DOMAIN, adx.zuoyebang.com, REJECT, extended-matching, pre-matching
-DOMAIN, afdconf.baidu.com, REJECT, extended-matching, pre-matching
-DOMAIN, amap-aos-info-nogw.amap.com, REJECT, extended-matching, pre-matching
-DOMAIN, amdc.m.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN, analytics.umetrip.com, REJECT, extended-matching, pre-matching
-DOMAIN, api.biliapi.com, REJECT, extended-matching, pre-matching
-DOMAIN, api.biliapi.net, REJECT, extended-matching, pre-matching
-DOMAIN, api.iqiyi.com, REJECT, extended-matching, pre-matching
-DOMAIN, apm-a.pinduoduo.com, REJECT, extended-matching, pre-matching
-DOMAIN, apm.gotokeep.com, REJECT, extended-matching, pre-matching
-DOMAIN, apm.pinduoduo.com, REJECT, extended-matching, pre-matching
-DOMAIN, apmplus.volces.com, REJECT, extended-matching, pre-matching
-DOMAIN, app-ad.variflight.com, REJECT, extended-matching, pre-matching
-DOMAIN, app.biliapi.com, REJECT, extended-matching, pre-matching
-DOMAIN, app.biliapi.net, REJECT, extended-matching, pre-matching
-DOMAIN, appcloud.zhihu.com, REJECT, extended-matching, pre-matching
-DOMAIN, appcloud2.in.zhihu.com, REJECT, extended-matching, pre-matching
-DOMAIN, apps-booster.xiaopeng.com, REJECT, extended-matching, pre-matching
-DOMAIN, axxd.xmseeyouyima.com, REJECT, extended-matching, pre-matching
-DOMAIN, badjs.weixinbridge.com, REJECT, extended-matching, pre-matching
-DOMAIN, cad.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN, cd-1.pddpic.com, REJECT, extended-matching, pre-matching
-DOMAIN, cdl-1.pddpic.com, REJECT, extended-matching, pre-matching
-DOMAIN, cdl-p2.pddpic.com, REJECT, extended-matching, pre-matching
-DOMAIN, cdn-ad.wtzw.com, REJECT, extended-matching, pre-matching
-DOMAIN, cdn-new-ad.wtzw.com, REJECT, extended-matching, pre-matching
-DOMAIN, collect.xiaopeng.com, REJECT, extended-matching, pre-matching
-DOMAIN, counter.kingsoft.com, REJECT, extended-matching, pre-matching
-DOMAIN, counter.ksosoft.com, REJECT, extended-matching, pre-matching
-DOMAIN, crash2.zhihu.com, REJECT, extended-matching, pre-matching
-DOMAIN, credits.bz.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN, credits2.bz.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN, credits3.bz.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN, csc-apm.sgcc.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, da.bridgeturbo.com, REJECT, extended-matching, pre-matching
-DOMAIN, ddfs-public.ddimg.mobi, REJECT, extended-matching, pre-matching
-DOMAIN, dflow.bz.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN, dpmtpush.dianping.com, REJECT, extended-matching, pre-matching
-DOMAIN, dr-danmu.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN, dsp-ad.yy.com, REJECT, extended-matching, pre-matching
-DOMAIN, dwtracking.jk.cn, REJECT, extended-matching, pre-matching
-DOMAIN, dynamicf.sankuai.com, REJECT, extended-matching, pre-matching
-DOMAIN, emdcadvertise.eastmoney.com, REJECT, extended-matching, pre-matching
-DOMAIN, emdcadvertisepj.eastmoney.com, REJECT, extended-matching, pre-matching
-DOMAIN, encounter.bz.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN, et.ykccn.com, REJECT, extended-matching, pre-matching
-DOMAIN, etl.xlmc.sandai.net, REJECT, extended-matching, pre-matching
-DOMAIN, floor.bz.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN, free-aos-cdn-image.amap.com, REJECT, extended-matching, pre-matching
-DOMAIN, group-ssl-danmu-ori.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN, gwp.xiaojukeji.com, REJECT, extended-matching, pre-matching
-DOMAIN, h-adashx.ut.taobao.com, REJECT, extended-matching, pre-matching
-DOMAIN, hc-ssp.sm.cn, REJECT, extended-matching, pre-matching
-DOMAIN, hlx.meituan.com, REJECT, extended-matching, pre-matching
-DOMAIN, httpdns-sdk.n.netease.com, REJECT, extended-matching, pre-matching
-DOMAIN, httpdns.baidubce.com, REJECT, extended-matching, pre-matching
-DOMAIN, httpdns.calorietech.com, REJECT, extended-matching, pre-matching
-DOMAIN, httpdns.music.163.com, REJECT, extended-matching, pre-matching
-DOMAIN, httpdns.n.netease.com, REJECT, extended-matching, pre-matching
-DOMAIN, httpdns.yunxindns.com, REJECT, extended-matching, pre-matching
-DOMAIN, httpdnsmultiapi.meituan.com, REJECT, extended-matching, pre-matching
-DOMAIN, httpdnsmultiapivip.meituan.com, REJECT, extended-matching, pre-matching
-DOMAIN, huyafile.msstatic.com, REJECT, extended-matching, pre-matching
-DOMAIN, iad0ssl.pcauto.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, iad0ssl.pconline.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, iadmat.nosdn.127.net, REJECT, extended-matching, pre-matching
-DOMAIN, iadmatapk.nosdn.127.net, REJECT, extended-matching, pre-matching
-DOMAIN, iadmusicmat.music.126.net, REJECT, extended-matching, pre-matching
-DOMAIN, img.auction-ads.wpscdn.cn, REJECT, extended-matching, pre-matching
-DOMAIN, imgad0.pcauto.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, imgad0.pconline.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, ivy.pchouse.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, kad.gotokeep.com, REJECT, extended-matching, pre-matching
-DOMAIN, layer.bz.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN, layout.meituan.net, REJECT, extended-matching, pre-matching
-DOMAIN, lc.map.baidu.com, REJECT, extended-matching, pre-matching
-DOMAIN, live-monitor-broker.sankuai.com, REJECT, extended-matching, pre-matching
-DOMAIN, livewebbs2.msstatic.com, REJECT, extended-matching, pre-matching
-DOMAIN, livewebbs2pcdn.msstatic.com, REJECT, extended-matching, pre-matching
-DOMAIN, lofter.httpdns.c.163.com, REJECT, extended-matching, pre-matching
-DOMAIN, log.17gwx.com, REJECT, extended-matching, pre-matching
-DOMAIN, log.ycapp.yiche.com, REJECT, extended-matching, pre-matching
-DOMAIN, logs.chelaile.net.cn, REJECT, extended-matching, pre-matching
-DOMAIN, lx0.meituan.com, REJECT, extended-matching, pre-matching
-DOMAIN, m.atm.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN, mall-dsp2.qinlinkeji.com, REJECT, extended-matching, pre-matching
-DOMAIN, mallapi2.qinlinkeji.com, REJECT, extended-matching, pre-matching
-DOMAIN, mbads.paas.cmbchina.com, REJECT, extended-matching, pre-matching
-DOMAIN, mc.atm.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN, mdap.mpaas.cn-hangzhou.aliyuncs.com, REJECT, extended-matching, pre-matching
-DOMAIN, mdap.wallet.pbcdci.cn, REJECT, extended-matching, pre-matching
-DOMAIN, mdc.wallet.pbcdci.cn, REJECT, extended-matching, pre-matching
-DOMAIN, meta.pinduoduo.com, REJECT, extended-matching, pre-matching
-DOMAIN, minfo.wps.cn, REJECT, extended-matching, pre-matching
-DOMAIN, mob.bz.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN, mobad.ijinshan.com, REJECT, extended-matching, pre-matching
-DOMAIN, mqtt.zhihu.com, REJECT, extended-matching, pre-matching
-DOMAIN, msmp.abchina.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, music.httpdns.c.163.com, REJECT, extended-matching, pre-matching
-DOMAIN, nbsdk-baichuan.alicdn.com, REJECT, extended-matching, pre-matching
-DOMAIN, o2o-ad-log-gateway.alibaba.com, REJECT, extended-matching, pre-matching
-DOMAIN, open-pixon.ads-pixiv.net, REJECT, extended-matching, pre-matching
-DOMAIN, popup.dushu365.com, REJECT, extended-matching, pre-matching
-DOMAIN, pp-cdnfile2pcdn.msstatic.com, REJECT, extended-matching, pre-matching
-DOMAIN, pre-acs.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN, r.dianping.com, REJECT, extended-matching, pre-matching
-DOMAIN, rc-topic-api.bz.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN, richmanapi.jxedt.com, REJECT, extended-matching, pre-matching
-DOMAIN, richmanmain.jxedt.com, REJECT, extended-matching, pre-matching
-DOMAIN, richmanrules.jxedt.com, REJECT, extended-matching, pre-matching
-DOMAIN, rprain.bz.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN, rprain.log.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN, rttrack.ddxq.mobi, REJECT, extended-matching, pre-matching
-DOMAIN, saad.ms.zhangyue.net, REJECT, extended-matching, pre-matching
-DOMAIN, sax.sina.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, saxn.sina.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, saxs.sina.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, sdk.ad.sfys365.com, REJECT, extended-matching, pre-matching
-DOMAIN, sdkconfig.ad.xiaomi.com, REJECT, extended-matching, pre-matching
-DOMAIN, sensors.umetrip.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, smad.ms.zhangyue.net, REJECT, extended-matching, pre-matching
-DOMAIN, smartop-sdkapi-ipv6.jiguang.cn, REJECT, extended-matching, pre-matching
-DOMAIN, smartop-sdkapi.jiguang.cn, REJECT, extended-matching, pre-matching
-DOMAIN, soul-ad.soulapp.cn, REJECT, extended-matching, pre-matching
-DOMAIN, splash.yy.com, REJECT, extended-matching, pre-matching
-DOMAIN, splashimgretrybssdl.cloud.kugou.com, REJECT, extended-matching, pre-matching
-DOMAIN, stat.youpin.mi.com, REJECT, extended-matching, pre-matching
-DOMAIN, stun1.douyucdn.cn, REJECT, extended-matching, pre-matching
-DOMAIN, stun1.qvb.qcloud.com, REJECT, extended-matching, pre-matching
-DOMAIN, sugar.zhihu.com, REJECT, extended-matching, pre-matching
-DOMAIN, t-ads.xiaohongshu.com, REJECT, extended-matching, pre-matching
-DOMAIN, ta-a.pinduoduo.com, REJECT, extended-matching, pre-matching
-DOMAIN, ta.pinduoduo.com, REJECT, extended-matching, pre-matching
-DOMAIN, th-a.pinduoduo.com, REJECT, extended-matching, pre-matching
-DOMAIN, th-b.pinduoduo.com, REJECT, extended-matching, pre-matching
-DOMAIN, th.pinduoduo.com, REJECT, extended-matching, pre-matching
-DOMAIN, titan.babytree.com, REJECT, extended-matching, pre-matching
-DOMAIN, titan.pinduoduo.com, REJECT, extended-matching, pre-matching
-DOMAIN, titan01.babytree.com, REJECT, extended-matching, pre-matching
-DOMAIN, track.58.com, REJECT, extended-matching, pre-matching
-DOMAIN, trackercollect.ddxq.mobi, REJECT, extended-matching, pre-matching
-DOMAIN, tracklog.58.com, REJECT, extended-matching, pre-matching
-DOMAIN, tte.meituan.com, REJECT, extended-matching, pre-matching
-DOMAIN, u1.img.mobile.sina.cn, REJECT, extended-matching, pre-matching
-DOMAIN, union.chinalifeonline.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN, ups.ksmobile.net, REJECT, extended-matching, pre-matching
-DOMAIN, vali-g1.cp31.ott.cibntv.net, REJECT, extended-matching, pre-matching
-DOMAIN, vali-ugc.cp31.ott.cibntv.net, REJECT, extended-matching, pre-matching
-DOMAIN, vip.bz.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN, vstlog.17usoft.com, REJECT, extended-matching, pre-matching
-DOMAIN, ws.ksmobile.net, REJECT, extended-matching, pre-matching
-DOMAIN, xg.pinduoduo.com, REJECT, extended-matching, pre-matching
-DOMAIN, yk-ssp.ad.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN, ykad-data.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN, yl.zh.cmbchina.com, REJECT, extended-matching, pre-matching
-DOMAIN, ymg-api.terabox.com, REJECT, extended-matching, pre-matching
-DOMAIN, youku-acs.m.taobao.com, REJECT, extended-matching, pre-matching
-DOMAIN, youku-crm-product.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN, ysad.yy.com, REJECT, extended-matching, pre-matching
-DOMAIN, zxid-m.mobileservice.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, 3rd.t.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, 888.tv.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, ad.10010.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, ad.csdn.net, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, ad.doubanio.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, ad.e.waimai.sankuai.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, ad.hpplay.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, ad.mail.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, ad.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, adcanvas.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, adeng.hpplay.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, adjust.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, adnet.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, ads.linkedin.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, ads.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, adserver.yahoo.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, adsmoloco.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, adspecs.yahoo.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, advertising.yahoo.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, adx-api.hupu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, adx.hupu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, afp.zol-img.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, alexametrics.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, api.dsp.yhd.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, api.union.vip.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, apilog.qbb6.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, apollo.caixin.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, app-measurement.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, app-monitor.ele.me, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, appier.net, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, applovin.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, applvn.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, apppv.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, aty.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, beacon.sina.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, client-api.ele.me, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, corp.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, counter.csdn.net, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, cpc.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, cpro.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, d.meituan.net, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, da.mgtv.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, dc.csdn.net, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, dc2.csdn.net, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, dynamic.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, ehaier.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, erebor.douban.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, fds.api.moji.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, gdt.qq.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, gemini.yahoo.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, go.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, grand.ele.me, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, httpdns.meituan.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, hui.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, imp.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, iyes.youku.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, js.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, log.moji.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, logstat.caixin.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, lx.meituan.net, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, mads.meituan.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, me.api.moji.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, medal.blog.csdn.net, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, medproad.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, meituan.xn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, meituan.yoga, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, meituangov.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, mistat.xiaomi.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, mobile-pubt.ele.me, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, ms.vipstatic.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, mstat.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, n-st.vip.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, new.xiongzhangad.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, newton-api.ele.me, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, pangle.io, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, pic.zol-img.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, promote.caixin.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, push-service-ios.sginput.qq.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, pv.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, pvc.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, pvm.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, pvmsite.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, pvnapp.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, pvsite.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, pvtest.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, suvset.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, tappx.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, track.bankcomm.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, track.mm.taou.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, track.sohu.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, tracker.yhd.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, v.smtcdns.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, v1d.szbdyd.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, v3.fstats.xyz, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, wappv.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, wmlog.meituan.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, wss.haoyundmn.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, wxs.qq.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, wxsnsdythumb.wxs.qq.com, REJECT, extended-matching, pre-matching
-DOMAIN-SUFFIX, ydjs.zol.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-KEYWORD, ads.yahoo, REJECT, extended-matching, pre-matching
-DOMAIN-KEYWORD, apimg.qunliao.info, REJECT, extended-matching, pre-matching
-DOMAIN-KEYWORD, c-hzgt2.getui.com, REJECT, extended-matching, pre-matching
-DOMAIN-KEYWORD, cm-10-134.getui.com, REJECT, extended-matching, pre-matching
-DOMAIN-KEYWORD, cm-10-35.getui.com, REJECT, extended-matching, pre-matching
-DOMAIN-KEYWORD, dnspod.meituan.httpdns, REJECT, extended-matching, pre-matching
-DOMAIN-KEYWORD, iflyad.bj.openstorage.cn, REJECT, extended-matching, pre-matching
-DOMAIN-KEYWORD, in-page-push, REJECT, extended-matching, pre-matching
-DOMAIN-KEYWORD, medicine.lanjiyin.com.cn, REJECT, extended-matching, pre-matching
-DOMAIN-KEYWORD, ossp.voicecloud.cn, REJECT, extended-matching, pre-matching
-DOMAIN-KEYWORD, report.meituan, REJECT, extended-matching, pre-matching
-DOMAIN-KEYWORD, sdk.open.talk.getui.com, REJECT, extended-matching, pre-matching
-IP-CIDR, 1.202.85.193/32, REJECT, no-resolve
-IP-CIDR, 47.56.131.76/32, REJECT, no-resolve
-IP-CIDR, 47.97.215.55/32, REJECT, no-resolve
-IP-CIDR, 47.99.42.29/32, REJECT, no-resolve
-IP-CIDR, 47.110.187.87/32, REJECT, no-resolve
-IP-CIDR, 47.243.147.125/32, REJECT, no-resolve
-IP-CIDR, 59.111.239.61/32, REJECT, no-resolve
-IP-CIDR, 59.111.239.62/32, REJECT, no-resolve
-IP-CIDR, 101.32.16.204/32, REJECT, no-resolve
-IP-CIDR, 103.37.155.60/32, REJECT, no-resolve
-IP-CIDR, 103.41.167.237/32, REJECT, no-resolve
-IP-CIDR, 103.44.59.54/32, REJECT, no-resolve
-IP-CIDR, 111.63.147.158/32, REJECT, no-resolve
-IP-CIDR, 111.206.98.63/32, REJECT, no-resolve
-IP-CIDR, 115.236.121.51/32, REJECT, no-resolve
-IP-CIDR, 115.236.121.195/32, REJECT, no-resolve
-IP-CIDR, 116.211.198.237/32, REJECT, no-resolve
-IP-CIDR, 118.89.204.198/32, REJECT, no-resolve
-IP-CIDR, 119.29.126.137/32, REJECT, no-resolve
-IP-CIDR, 120.27.235.201/32, REJECT, no-resolve
-IP-CIDR, 120.240.95.37/32, REJECT, no-resolve
-IP-CIDR, 121.196.197.147/32, REJECT, no-resolve
-IP-CIDR, 122.229.8.47/32, REJECT, no-resolve
-IP-CIDR, 122.229.29.89/32, REJECT, no-resolve
-IP-CIDR, 180.76.76.200/32, REJECT, no-resolve
-IP-CIDR, 182.61.194.7/32, REJECT, no-resolve
-IP-CIDR, 2402:4e00:1200:ed00:0:9089:6dac:96b6/128, REJECT, no-resolve
-AND, ((DOMAIN-SUFFIX,chat.bilibili.com),(OR,((DOMAIN-KEYWORD,stun),(DOMAIN-KEYWORD,tracker)))), REJECT
-AND, ((PROTOCOL,QUIC),(DOMAIN,api.pinduoduo.com)), REJECT-NO-DROP
-AND, ((PROTOCOL,QUIC),(DOMAIN,youtubei.googleapis.com)), REJECT-NO-DROP
-AND, ((PROTOCOL,QUIC),(DOMAIN-SUFFIX,googlevideo.com)), REJECT-NO-DROP
-AND, ((PROTOCOL,QUIC),(DOMAIN-SUFFIX,spotify.com)), REJECT-NO-DROP
-AND, ((PROTOCOL,QUIC),(DOMAIN-SUFFIX,xiaohongshu.com)), REJECT-NO-DROP
-AND, ((PROTOCOL,TCP),(DST-PORT,25641),(IP-ASN,45090,no-resolve)), REJECT
-AND, ((PROTOCOL,TCP),(DST-PORT,25641),(IP-ASN,55990,no-resolve)), REJECT
-AND, ((PROTOCOL,TCP),(DST-PORT,25641),(IP-ASN,63646,no-resolve)), REJECT
-AND, ((URL-REGEX,"^https?:\/\/((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/d(\d)?"),(USER-AGENT,"*com.xunmeng.pinduoduo*")), REJECT
-AND, ((URL-REGEX,"^https?:\/\/.+\/amdc\/mobileDispatch"),(USER-AGENT,"%E6%B7%98%E5%AE%9D*")), REJECT
-AND, ((URL-REGEX,"^https?:\/\/.+\/amdc\/mobileDispatch"),(USER-AGENT,"%E9%97%B2%E9%B1%BC*")), REJECT
-AND, ((URL-REGEX,"^https?:\/\/.+\/amdc\/mobileDispatch"),(USER-AGENT,"AMapiPhone*")), REJECT
-AND, ((URL-REGEX,"^https?:\/\/.+\/amdc\/mobileDispatch"),(USER-AGENT,"Cainiao4iPhone*")), REJECT
-AND, ((URL-REGEX,"^https?:\/\/gw\.xiaocantech\.com\/rpc"),(USER-AGENT,"GetBannerList*")), REJECT
-AND, ((URL-REGEX,"^https?:\/\/[((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))\]\/d(\d)?\?"),(USER-AGENT,"*com.xunmeng.pinduoduo*")), REJECT
-URL-REGEX, "^https?:\/\/file-share\.izuiyou\.com\/octopus\/media\/templates\/search_home_page_(nv|nv_v2)\/search_home_page_nv", REJECT
-URL-REGEX, "^https?:\/\/log\.stat\.kugou\.com\/mobile\/ad\.html", REJECT
-URL-REGEX, "^https?:\/\/mercury-gateway\.ixiaochuan\.cn\/mercury\/v1\/ad\/", REJECT-TINYGIF
-URL-REGEX, "^https?:\/\/rich\.kuwo\.cn\/AdService\/", REJECT-TINYGIF
-URL-REGEX, "^https?:\/\/rich\.kuwo\.cn\/EcomResourceServer\/", REJECT-TINYGIF
-URL-REGEX, "^https?:\/\/searchrecterm\.kuwo\.cn\/recterm\.s", REJECT-TINYGIF
-URL-REGEX, "^https?:\/\/vip\d\.kuwo\.cn\/vip\/v\d\/sysinfo\?op=getRePayAndDoPayBox", REJECT-TINYGIF
-URL-REGEX, "^https?:\/\/wapi\.kuwo\.cn\/openapi\/v\d\/album\/adBar\/", REJECT-TINYGIF
-URL-REGEX, "^https?:\/\/wapi\.kuwo\.cn\/openapi\/v\d\/app\/newMenuList\/menuListInfo", REJECT-TINYGIF
-URL-REGEX, "^https?:\/\/wapi\.kuwo\.cn\/openapi\/v\d\/app\/pasterAdvert\/", REJECT-TINYGIF
-URL-REGEX, "^https?:\/\/wapi\.kuwo\.cn\/openapi\/v\d\/app\/startup\/config", REJECT-TINYGIF
-URL-REGEX, "^https?:\/\/wapi\.kuwo\.cn\/openapi\/v\d\/user\/freeMode\/", REJECT-TINYGIF
-URL-REGEX, "^https?:\/\/w{32}\.jddebug\.com\/diagnose\?", REJECT
+# ========== 广告域名 ========== 
+DOMAIN,ad.smaato.net,REJECT,extended-matching,pre-matching
+DOMAIN,ad.inmobi.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.inmobi.com,REJECT,extended-matching,pre-matching
+DOMAIN,i.l.inmobicdn.net,REJECT,extended-matching,pre-matching
+DOMAIN,m.l.inmobicdn.net,REJECT,extended-matching,pre-matching
+DOMAIN,api.vungle.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.api.vungle.com,REJECT,extended-matching,pre-matching
+DOMAIN,cdn-lb.vungle.com,REJECT,extended-matching,pre-matching
+DOMAIN,events3alt.adcolony.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads30.adcolony.com,REJECT,extended-matching,pre-matching
+DOMAIN,wd.adcolony.com,REJECT,extended-matching,pre-matching
+DOMAIN,config.unityads.unity3d.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.prd.ie.internal.unity3d.com,REJECT,extended-matching,pre-matching
+DOMAIN,webview.unityads.unity3d.com,REJECT,extended-matching,pre-matching
+DOMAIN,adservice.google.com,REJECT,extended-matching,pre-matching
+DOMAIN,adservice.google.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,pagead2.googlesyndication.com,REJECT,extended-matching,pre-matching
+DOMAIN,googleads.g.doubleclick.net,REJECT,extended-matching,pre-matching
+DOMAIN,static.doubleclick.net,REJECT,extended-matching,pre-matching
+DOMAIN,m.doubleclick.net,REJECT,extended-matching,pre-matching
+DOMAIN,s0.2mdn.net,REJECT,extended-matching,pre-matching
+DOMAIN,securepubads.g.doubleclick.net,REJECT,extended-matching,pre-matching
+DOMAIN,app-measurement.com,REJECT,extended-matching,pre-matching
+DOMAIN,admob.com,REJECT,extended-matching,pre-matching
+DOMAIN,appsflyer.com,REJECT,extended-matching,pre-matching
+DOMAIN,events.appsflyer.com,REJECT,extended-matching,pre-matching
+DOMAIN,t.appsflyer.com,REJECT,extended-matching,pre-matching
+DOMAIN,branch.io,REJECT,extended-matching,pre-matching
+DOMAIN,api.branch.io,REJECT,extended-matching,pre-matching
+DOMAIN,api2.branch.io,REJECT,extended-matching,pre-matching
+DOMAIN,cdn.branch.io,REJECT,extended-matching,pre-matching
+DOMAIN,adjust.com,REJECT,extended-matching,pre-matching
+DOMAIN,app.adjust.com,REJECT,extended-matching,pre-matching
+DOMAIN,app.adjust.net.in,REJECT,extended-matching,pre-matching
+DOMAIN,log.outbrain.com,REJECT,extended-matching,pre-matching
+DOMAIN,widgets.outbrain.com,REJECT,extended-matching,pre-matching
+DOMAIN,amplify.outbrain.com,REJECT,extended-matching,pre-matching
+DOMAIN,api.taboola.com,REJECT,extended-matching,pre-matching
+DOMAIN,trc.taboola.com,REJECT,extended-matching,pre-matching
+DOMAIN,cdn.taboola.com,REJECT,extended-matching,pre-matching
+DOMAIN,trc-events.taboola.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads-twitter.com,REJECT,extended-matching,pre-matching
+DOMAIN,analytics.twitter.com,REJECT,extended-matching,pre-matching
+DOMAIN,static.ads-twitter.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.linkedin.com,REJECT,extended-matching,pre-matching
+DOMAIN,analytics.pointdrive.linkedin.com,REJECT,extended-matching,pre-matching
+DOMAIN,px.ads.linkedin.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads-api.twitter.com,REJECT,extended-matching,pre-matching
+DOMAIN,adnxs.com,REJECT,extended-matching,pre-matching
+DOMAIN,secure.adnxs.com,REJECT,extended-matching,pre-matching
+DOMAIN,ib.adnxs.com,REJECT,extended-matching,pre-matching
+DOMAIN,acdn.adnxs.com,REJECT,extended-matching,pre-matching
+DOMAIN,adsrvr.org,REJECT,extended-matching,pre-matching
+DOMAIN,insight.adsrvr.org,REJECT,extended-matching,pre-matching
+DOMAIN,match.adsrvr.org,REJECT,extended-matching,pre-matching
+DOMAIN,adform.net,REJECT,extended-matching,pre-matching
+DOMAIN,track.adform.net,REJECT,extended-matching,pre-matching
+DOMAIN,cm.adform.net,REJECT,extended-matching,pre-matching
+DOMAIN,a.dlqm.net,REJECT,extended-matching,pre-matching
+DOMAIN,a.quora.com,REJECT,extended-matching,pre-matching
+DOMAIN,clickserv.sitescout.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.pubmatic.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.pubmatic.co.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.pubmatic.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,image6.pubmatic.com,REJECT,extended-matching,pre-matching
+DOMAIN,openbid.pubmatic.com,REJECT,extended-matching,pre-matching
+DOMAIN,ow.pubmatic.com,REJECT,extended-matching,pre-matching
+DOMAIN,showads.pubmatic.com,REJECT,extended-matching,pre-matching
+DOMAIN,track.pubmatic.com,REJECT,extended-matching,pre-matching
+DOMAIN,adn.adnxs.com,REJECT,extended-matching,pre-matching
+DOMAIN,aidps.atdmt.com,REJECT,extended-matching,pre-matching
+DOMAIN,adserver.adtech.de,REJECT,extended-matching,pre-matching
+DOMAIN,adserver.adtechus.com,REJECT,extended-matching,pre-matching
+DOMAIN,aka-cdn-ns.adtech.de,REJECT,extended-matching,pre-matching
+DOMAIN,ad.atdmt.com,REJECT,extended-matching,pre-matching
+DOMAIN,adimg.woopra.com,REJECT,extended-matching,pre-matching
+DOMAIN,admaster.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,track.admaster.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,admaster.com,REJECT,extended-matching,pre-matching
+DOMAIN,admaster.net.cn,REJECT,extended-matching,pre-matching
+DOMAIN,admaster.cn,REJECT,extended-matching,pre-matching
+DOMAIN,statics.woopra.com,REJECT,extended-matching,pre-matching
+DOMAIN,api.woopra.com,REJECT,extended-matching,pre-matching
+DOMAIN,static.woopra.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yahoo.com,REJECT,extended-matching,pre-matching
+DOMAIN,adserver.yahoo.com,REJECT,extended-matching,pre-matching
+DOMAIN,adtech.yahooinc.com,REJECT,extended-matching,pre-matching
+DOMAIN,adspecs.yahoo.com,REJECT,extended-matching,pre-matching
+DOMAIN,gemini.yahoo.com,REJECT,extended-matching,pre-matching
+DOMAIN,global.adserver.yahoo.com,REJECT,extended-matching,pre-matching
+DOMAIN,partners.tremorhub.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.youtube.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.youtube.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nicovideo.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ookla.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sportradar.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sports.qq.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tiktok.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.snapchat.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.pinterest.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.reddit.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.facebook.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.instagram.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.twitch.tv,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tumblr.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.weather.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.spotify.com,REJECT,extended-matching,pre-matching
+DOMAIN,adserver.snapads.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.threads.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.duolingo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tinder.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bumble.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hinge.co,REJECT,extended-matching,pre-matching
+DOMAIN,ads.booking.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.airbnb.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.uber.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lyft.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.doordash.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.grubhub.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ubereats.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.instacart.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.amazon.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ebay.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.walmart.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.target.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bestbuy.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.etsy.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.shopify.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.alibaba.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.aliexpress.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jd.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.taobao.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tmall.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.pinduoduo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.meituan.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.dianping.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ele.me,REJECT,extended-matching,pre-matching
+DOMAIN,ads.douban.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.weibo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zhihu.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xiaohongshu.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bilibili.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kuaishou.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.douyin.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.iqiyi.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.youku.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.qq.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tencent.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.baidu.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sogou.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.360.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.163.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sina.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sohu.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.autohome.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ctrip.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.qunar.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tuniu.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.12306.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.58.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ganji.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.anjuke.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ke.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lianjia.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zhaopin.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.boss.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lagou.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.51job.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.51jobcdn.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zhipin.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.maimai.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.moka.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.liepin.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.didi.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hellobike.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.cainiao.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sf-express.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.deppon.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zto.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yto.net.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sto.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yundaex.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jdwl.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.aliyun.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.huawei.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mi.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.oppo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.vivo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lenovo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.samsung.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.oneplus.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.meizu.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nubia.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zte.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.honor.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.uc.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.quark.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.alipay.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.wechat.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.qqmail.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.163mail.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.126.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.outlook.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.office.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.microsoft.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bing.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.skype.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.teams.microsoft.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zoom.us,REJECT,extended-matching,pre-matching
+DOMAIN,ads.slack.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.discord.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.telegram.org,REJECT,extended-matching,pre-matching
+DOMAIN,ads.whatsapp.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.signal.org,REJECT,extended-matching,pre-matching
+DOMAIN,ads.line.me,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kakao.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.viber.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.snap.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.pandora.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.deezer.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.soundcloud.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.apple.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.itunes.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.applemusic.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.netflix.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hulu.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.disneyplus.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hbomax.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.max.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.primevideo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.peacocktv.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.paramountplus.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.crunchyroll.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tubitv.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.pluto.tv,REJECT,extended-matching,pre-matching
+DOMAIN,ads.roku.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xumo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sling.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fubo.tv,REJECT,extended-matching,pre-matching
+DOMAIN,ads.dazn.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.espn.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.foxsports.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nbcsports.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.cbssports.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nfl.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nba.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mlb.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nhl.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fifa.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.uefa.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.olympics.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.formula1.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.motogp.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.wwe.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ufc.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.golfchannel.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tennis.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.f1tv.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.pga.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.atptour.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.wtatennis.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nascar.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.indycar.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.motorsport.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bleacherreport.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.si.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.goal.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.transfermarkt.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.365scores.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sofascore.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.flashscore.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.livescore.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.onefootball.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fotmob.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.espncricinfo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.cricbuzz.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.icc-cricket.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nytimes.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.washingtonpost.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.wsj.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.reuters.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bloomberg.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.cnn.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bbc.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.foxnews.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nbcnews.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.cbsnews.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.abcnews.go.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.theguardian.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.dailymail.co.uk,REJECT,extended-matching,pre-matching
+DOMAIN,ads.usatoday.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.latimes.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.forbes.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.businessinsider.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.cnbc.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.theverge.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.techcrunch.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.wired.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.engadget.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.arstechnica.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.macrumors.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.9to5mac.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xda-developers.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.stackoverflow.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.github.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.gitlab.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bitbucket.org,REJECT,extended-matching,pre-matching
+DOMAIN,ads.digitalocean.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.cloudflare.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.aws.amazon.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.azure.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.oracle.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ibm.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nvidia.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.amd.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.intel.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.qualcomm.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mediatek.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.arm.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tesla.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bmw.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mercedes-benz.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.audi.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.volkswagen.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.toyota.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.honda.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ford.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.gm.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hyundai.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kia.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nissan.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mazda.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.subaru.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lexus.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.porsche.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ferrari.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lamborghini.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.volvo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.polestar.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.rivian.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lucidmotors.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nio.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xpeng.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lixiang.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.byd.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.geely.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.changan.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.gac.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.saicmotor.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.gwm.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.chery.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.haval.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zeekr.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.smart.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mg.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mini.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.rolls-roycemotorcars.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bentleymotors.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.astonmartin.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mclaren.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lotus.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.maserati.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.alfa-romeo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jeep.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.dodge.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.chrysler.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ramtrucks.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.chevrolet.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.cadillac.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.buick.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.gmc.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lincoln.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.acura.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.infiniti.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.genesis.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mitsubishi-motors.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.suzuki.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.isuzu.co.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.daihatsu.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tata.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mahindra.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.proton.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.perodua.com.my,REJECT,extended-matching,pre-matching
+DOMAIN,ads.vinfastauto.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.gacmotor.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.baicmotor.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jac.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.dongfeng.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.faw.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hongqi-auto.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.wuling.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.baojun.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lynkco.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.avatr.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.arcfox.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.deepal.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.leapmotor.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.oraev.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.aion.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hyptec.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.aito.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.luxeed.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.stelato.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.maextro.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.im.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.risingauto.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hozonauto.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.netaauto.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.seres.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.denza.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yangwangauto.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fangchengbao.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.geelygalaxy.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.icar.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.exeedcars.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jetour.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.roewe.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.maxus.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.imotors.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.beijingauto.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bestune.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.venucia.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.geelyauto.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.greatwallmotor.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.changanford.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jointventure.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yemaauto.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.soueast-motor.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lifan.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zotye.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.haima.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hantengauto.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.weichai.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.foton.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jmc.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kinglong.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yutong.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zhongtong.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.higer.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ankai.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nanjinggoldendragon.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sinotruk.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.shacman.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.dongfengtrucks.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fawjiefang.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.dayun.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.beiben.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.camc.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jacmotors.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xcmg.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sanyglobal.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zoomlion.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.liugong.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lovol.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.shantui.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.johndeere.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.caterpillar.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.komatsu.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hitachicm.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kubota.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.volvoce.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jcb.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.casece.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.newholland.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.doosan.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.develon.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bobcat.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.manitou.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.terex.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.genielift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.skyjack.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.haulotte.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.snorkellifts.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.konecranes.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.liebherr.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.groveworldwide.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.linkbelt.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tadano.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kobelco-cranes.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sumitomokenki.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.takeuchi-us.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yanmar.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ihi.co.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kato-works.co.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.aichi-corp.co.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tcmglobal.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.toyotaforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mitsubishilogisnext.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.crown.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hyster-yale.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.raymondcorp.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.unicarriers.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.clarkmhc.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.komatsu-forklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.doosanlift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hyundai-forklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ep-ep.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hangcha.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.helichina.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.noblelift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.unforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bydforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lithiumforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xilin.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sinolift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mima.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.vmaxforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.klift.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zoomlion-forklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.good-sense.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.gseriesforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.linde-mh.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.still.de,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jungheinrich.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.baoli-mh.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kiongroup.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.toyota-industries.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mhi.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.cargotec.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kalmar.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.terberg.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.konecraneslifttrucks.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sennebogen.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fantuzzi.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sanyforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lovol-forklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xcmgforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.shantuiforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.liugongforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.caterpillarforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mitsubishiforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hyster.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yale.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nissan-forklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tcm-forklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.unicarriers.co.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.clarkforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.toyotaforklift.eu,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lindemh.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jungheinrich.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.still.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.baoli.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.heli.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hangcha.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.epforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.noblelift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mima-forklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.vmax.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sinoliftforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bydforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xilinlift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.unlift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zoomlionforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hc-forklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ce-forklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jacforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fotonforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sinotrukforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.dongfengforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fawforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jmc-forklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.golden-dragon.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yutongforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kinglongforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zhongtongforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.higerforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ankaiforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nanjinggoldendragonforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fawjiefangforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.shacmanforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.beibenforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.dayunforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.camcforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xcmgforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sanyforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zoomlionforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.liugongforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lovolforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.shantuiforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.johndeereforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.caterpillarforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.komatsuforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hitachiforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kubotaforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.volvoceforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jcbforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.caseforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.newhollandforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.develonforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bobcatforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.manitouforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.terexforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.genieforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.skyjackforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.haulotteforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.snorkelliftsforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.konecranesforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.liebherrforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.groveforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.linkbeltforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tadanoforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kobelcoforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sumitomoforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.takeuchiforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yanmarforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ihiforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.katoforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.aichiforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tcmforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.toyota-forklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mitsubishilogisnextforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.crownforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hysterforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.raymondforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.unicarriersforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.clarkforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.komatsuforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.doosanforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hyundaiforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.epforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hangchaforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.heliforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.noble-lift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.unforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bydforklift.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xilinforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sinoliftforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mimaforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.vmaxforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kliftforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zoomlionforklift.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.goodsenseforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.gseries-forklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lindeforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.stillforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jungheinrichforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.baoliforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kionforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.toyotaindustriesforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mhiforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.cargotecforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kalmarforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.terbergforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.konecraneslifttrucksforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sennebogenforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fantuzziforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sanyforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lovolforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xcmgforklift.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.shantuiforklift.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.liugongforklift.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.caterpillarforklift.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mitsubishiforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hysterforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yaleforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nissanforklift.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tcmforklift.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads.unicarriersforklift.co.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.clarkforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.toyotaforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lindemh.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jungheinrich.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.still.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.baoli.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.heli.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hangcha.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.epforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.noblelift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mima.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.vmax.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sinolift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bydforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xilin.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.unlift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zoomlion.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hcforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ceforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jacforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fotonforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sinotrukforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.dongfengforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fawforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jmcforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.golden-dragon.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yutongforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kinglongforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zhongtongforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.higerforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ankaiforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.nanjinggoldendragonforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fawjiefangforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.shacmanforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.beibenforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.dayunforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.camcforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xcmgforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sanyforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zoomlionforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.liugongforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lovolforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.shantuiforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.johndeereforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.caterpillarforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.komatsuforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hitachiforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kubotaforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.volvoceforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jcbforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.caseforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.newhollandforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.develonforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bobcatforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.manitouforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.terexforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.genieforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.skyjackforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.haulotteforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.snorkelliftsforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.konecranesforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.liebherrforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.groveforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.linkbeltforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tadanoforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kobelcoforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sumitomoforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.takeuchiforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yanmarforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.ihiforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.katoforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.aichiforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.tcmforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.toyota-forklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mitsubishilogisnextforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.crownforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hysterforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.raymondforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.unicarriersforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.clarkforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.komatsuforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.doosanforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hyundaiforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.epforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.hangchaforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.heliforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.noblelift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.unforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.bydforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.xilinforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sinoliftforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mimaforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.vmaxforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kliftforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.zoomlionforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.goodsenseforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.gseriesforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.lindeforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.stillforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.jungheinrichforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.baoliforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kionforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.toyotaindustriesforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mhiforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.cargotecforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.kalmarforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.terbergforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.konecraneslifttrucksforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.sennebogenforklift.jp,REJECT,extended-matching,pre-matching
+DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 
 [URL Rewrite]
 
 # ===== 腾讯手机管家 + 住这儿 开屏广告 =====
 ^https?:\/\/mmgr\.gtimg\.com\/gjsmall\/qqpim\/public\/ios\/splash\/.+?\/\d{4}_\d{4} - reject-200
 ^https?:\/\/z\.onewo\.com\/passer\/api\/ads\/v1\/8\/list - reject-200
+# 住这儿当前版本：日志实证广告列表接口
+^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/1\/items(?:\?.*)?$ - reject-dict
 
 
 # ===== 后续增强：网易云音乐广告下发 =====
@@ -550,48 +952,52 @@ URL-REGEX, "^https?:\/\/w{32}\.jddebug\.com\/diagnose\?", REJECT
 ^https?:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlecommerce\.splash\.ads\/ - reject-dict
 ^https?:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\.shade\/ - reject-dict
 
-[Header Rewrite]
-
-
 [Body Rewrite]
-# ===== B站信息流 / 开屏广告 =====
-http-response-jq ^https?:\/\/app\.bilibili\.com\/x\/v2\/feed\/index\/story\? 'if .data.items then .data.items |= map(select((.ad_info == null) and (.card_goto | IN("vertical_ad_av", "vertical_ad_live", "vertical_ad_picture") | not)) | del(.story_cart_icon, .free_flow_toast, .image_infos, .course_info, .game_info)) end'
-http-response-jq ^https?:\/\/app\.bilibili\.com\/x\/v2\/feed\/index\? 'if .data.items then .data.items |= map(select((.banner_item == null) and (.ad_info == null) and (.card_goto == "av") and (.card_type | IN("small_cover_v2", "large_cover_single_v9", "large_cover_v1")))) end'
-http-response-jq ^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(list|show|event\/list2)\? '.data |= with_entries(if .key | IN("show", "event_list") then .value = [] else . end)'
 
-# ===== 微博信息流广告 =====
-http-response-jq ^https?:\/\/api\.weibo\.cn\/2\/cardlist\?aid= '.cards |= map(select((.mblog?|(.ad_marked?|type=="boolean")and.ad_marked==true)or(.card_group?|type=="array"and any(.[]?;.mblog?|(.ad_marked?|type=="boolean")and.ad_marked==true))|not))'
-http-response-jq ^https?:\/\/api\.weibo\.cn\/2\/statuses\/friends\/timeline$ '.statuses|=map(select(.ad_marked!=true))'
-http-response-jq ^https?:\/\/api\.weibo\.cn\/2\/statuses\/friends\/timeline$ 'delpaths([["ad"]])'
-http-response-jq ^https?:\/\/api\.weibo\.cn\/2\/statuses\/friends\/timeline$ 'delpaths([["ad_version_2_weibo"]])'
-http-response-jq ^https?:\/\/api\.weibo\.cn\/2\/statuses\/friends\/timeline$ 'delpaths([["advertises"]])'
-http-response-jq ^https?:\/\/api\.weibo\.cn\/2\/statuses\/unread_hot_timeline$ '.statuses|=map(select(.ad_marked!=true))'
-http-response-jq ^https?:\/\/api\.weibo\.cn\/2\/statuses\/unread_hot_timeline$ 'delpaths([["ad"]])'
-http-response-jq ^https?:\/\/api\.weibo\.cn\/2\/statuses\/unread_hot_timeline$ 'delpaths([["ad_version_2_weibo"]])'
-http-response-jq ^https?:\/\/weibointl\.api\.weibo\.cn\/portal\.php\?a=trends 'delpaths([["data","banner"]])'
-http-response-jq ^https?:\/\/weibointl\.api\.weibo\.cn\/portal\.php\?a=trends 'delpaths([["data","native_content"]])'
+# ===== 豆瓣 =====
+# feed 中常见广告数组
+^https?:\/\/api\.douban\.com\/.* response-body-replace-regex "\"ad_info\":\{.*?\}," ""
+^https?:\/\/api\.douban\.com\/.* response-body-replace-regex "\"ads\":\[.*?\]" "\"ads\":[]"
+^https?:\/\/api\.douban\.com\/.* response-body-replace-regex "\"splash_ad\":\{.*?\}" "\"splash_ad\":{}"
 
-# ===== 京东 Lite 广告字段 =====
-http-response ^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=lite_advertising jdLiteAdvertisingVO SUCCEED
+# ===== 小宇宙 =====
+^https?:\/\/api\.xiaoyuzhoufm\.com\/.* response-body-replace-regex "\"adInfo\":\{.*?\}," ""
+^https?:\/\/api\.xiaoyuzhoufm\.com\/.* response-body-replace-regex "\"ads\":\[.*?\]" "\"ads\":[]"
 
-# ===== 闲鱼搜索广告 =====
-http-response-jq ^https?:\/\/g-acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\/ '.data.resultList |= map(if .data.item.main.exContent.dislikeFeedback.clickParam.args.bizType == "ad" then empty else . end)'
+# ===== 微信公众号 =====
+^https?:\/\/mp\.weixin\.qq\.com\/s\?.* response-body-replace-regex "<div[^>]+class=\"[^\"]*(?:ad|advert)[^\"]*\"[^>]*>[\s\S]*?<\/div>" ""
+^https?:\/\/mp\.weixin\.qq\.com\/s\?.* response-body-replace-regex "<section[^>]+class=\"[^\"]*(?:ad|advert)[^\"]*\"[^>]*>[\s\S]*?<\/section>" ""
+^https?:\/\/mp\.weixin\.qq\.com\/s\?.* response-body-replace-regex "<div[^>]+id=\"js_bottom_ad_area\"[\s\S]*?<\/div>" ""
 
-[Map Local]
-^https?:\/\/ap[ip]\.bilibili\.com\/x\/(resource\/(top\/activity|patch\/tab)|v2\/search\/square|vip\/ads\/materials)\? data-type=text data="{"code":-404,"message":"-404","ttl":1,"data":null}" status-code=200 header="content-type: application/json"
-^https?:\/\/api\.bilibili\.com\/pgc\/activity\/deliver\/material\/receive\? data-type=text data="{"code":0,"data":{"closeType":"close_win","container":[],"showTime":""},"message":"success"}" status-code=200 header="content-type: application/json"
+# ===== B站 =====
+^https?:\/\/app\.bilibili\.com\/x\/v2\/feed\/index response-body-replace-regex "\{[^\{\}]*\"card_type\":\"ad\"[^\{\}]*\},?" ""
+^https?:\/\/app\.bilibili\.com\/x\/v2\/feed\/index response-body-replace-regex "\{[^\{\}]*\"ad_info\"[^\{\}]*\},?" ""
+^https?:\/\/app\.bilibili\.com\/x\/v2\/feed\/index response-body-replace-regex "\{[^\{\}]*\"ad_cb\"[^\{\}]*\},?" ""
 
-[Script]
-# ===== 微信公众号广告 =====
-WeChat-Official-Ads = type=http-response, pattern=^(http|https):\/\/mp\.weixin\.qq\.com\/mp\/getappmsgad, script-path=https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/scripts/replace-body.js, requires-body=true, max-size=-1, timeout=30, argument=advertisement-%3Eddgksf2013
+# ===== 百度网盘 =====
+^https?:\/\/pan\.baidu\.com\/.* response-body-replace-regex "\"advertise\":\{.*?\}," ""
+^https?:\/\/pan\.baidu\.com\/.* response-body-replace-regex "\"ads\":\[.*?\]" "\"ads\":[]"
 
 # ===== 航旅纵横 =====
-# ===== 京东 =====
-jingxiAd =type=http-response, pattern=^https?:\/\/api\.m\.jd\.com\/api\?functionId=delivery_show, script-path=https://xiangwanguan.github.io/Shadowrocket/Rewrite/JavaScript/jingxiAd.js, requires-body=true, max-size=0
+^https?:\/\/home\.umetrip\.com\/gateway\/api\/umetrip\/native response-body-replace-regex "\"advertise\":\[.*?\]" "\"advertise\":[]"
+^https?:\/\/home\.umetrip\.com\/gateway\/api\/umetrip\/native response-body-replace-regex "\"ads\":\[.*?\]" "\"ads\":[]"
+
+[Map Local]
+
+# ===== B站广告资源 =====
+^https?:\/\/i0\.hdslb\.com\/bfs\/archive\/.* data-type=text data="" status-code=200
+^https?:\/\/i1\.hdslb\.com\/bfs\/archive\/.* data-type=text data="" status-code=200
+
+[Script]
+# ===== 豆瓣 =====
+douban =type=http-response, pattern=^https?:\/\/api\.douban\.com\/.*, script-path=https://raw.githubusercontent.com/app2smile/rules/master/js/douban.js, requires-body=true, max-size=0
+
+# ===== B站 =====
+bilibili =type=http-response, pattern=^https?:\/\/(app\.bilibili\.com|api\.bilibili\.com)\/.*, script-path=https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili.js, requires-body=true, max-size=0
 
 # ===== 淘宝 =====
 taobao =type=http-response, pattern=^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.taobao\.(cloudvideo\.video\.query|wireless\.home\.splash\.awesome\.get), script-path=https://xiangwanguan.github.io/Shadowrocket/Rewrite/JavaScript/taobao.js, requires-body=true, max-size=0
 taobao =type=http-response, pattern=^https?:\/\/poplayer\.template\.alibaba\.com\/\w+\.json, script-path=https://xiangwanguan.github.io/Shadowrocket/Rewrite/JavaScript/taobao.js, requires-body=true, max-size=0
 
 [MITM]
-hostname = %APPEND% -youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtubei.googleapis.com,-youtube.googleapis.com,-*.googlevideo.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,bootpreload.uve.weibo.com,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m5.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,szmg.qq.com
+hostname = %APPEND% -youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtubei.googleapis.com,-youtube.googleapis.com,-*.googlevideo.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,bootpreload.uve.weibo.com,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m5.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,content.rconfig.qq.com
