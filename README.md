@@ -1,39 +1,32 @@
-# Shadowrocket Fusion Personal v6
+# Shadowrocket Fusion Personal
 
-这是以联网稳定为前提、支持受控自动更新和应用级定向处理的个人 Shadowrocket 广告屏蔽模块。
+这是我的 Shadowrocket 广告屏蔽模块仓库。当前以 **联网稳定优先**，`Module.sgmodule` 是唯一正式使用版本。
 
-## 当前结构
+## 当前规则版本
 
-- 稳定核心：人工确认的精确广告域名规则。
-- 自动增量：只接受通过全部安全检查的精确 `DOMAIN,REJECT` 广告域名。
-- 定向处理：豆瓣、B站、航旅纵横、小宇宙、百度网盘、微信公众号及微信原生小程序广告。
-- 不包含远程规则集、`DOMAIN-SUFFIX` 或 `DOMAIN-KEYWORD`。
+当前 `Module.sgmodule` 为“核心稳定版综合修正版”，在核心稳定版基础上保留广谱广告拦截，并增加/修正了高德地图、爱思全能版、微信公众号、腾讯手机助手/手机管家、网易云、闲鱼、住这儿、航旅纵横等定向规则。
 
-## 自动更新流程
+已删除日志中确认失效的 `jd.js` 与 `umetrip_ads.js`，并移除容易产生大量 SSL verify failed 的 `api.m.jd.com` MITM。
 
-1. 每日读取 `sources.json` 中固定仓库、固定路径的上游文件。
-2. 通用上游只提取精确 `DOMAIN,REJECT`，忽略其脚本、重写、MITM、规则集和广域规则。
-3. 域名必须带明确广告特征，并通过核心服务保护列表。
-4. 自动排除 YouTube、微信、百度、Apple、Google、哔哩哔哩、爱奇艺、淘宝、京东、美团等核心域名。
-5. 校验上游规模、筛选后规模、单次增删数量及变化比例。
-6. B站和航旅纵横脚本更新时先扫描内容，再固定到通过审核的 Git 提交版本。
-7. 任一检查失败，原 `Module.sgmodule` 保持不变。
+## 更新方式
 
-目前 `fmz200` 仅作为候选域名数据源，绝不会整库合并。B站只使用 `app2smile` 的两个定向去广告脚本；航旅纵横只使用一个广告位识别脚本。百度网盘使用本仓库的广告专用脚本，不读取或修改会员接口。
+- **仓库优先**：以后规则有修改，先更新本仓库的 `Module.sgmodule`。
+- 手机端不再手工替换整份模块，只需要在 Shadowrocket 中更新订阅。
+- GitHub Actions 只负责检查 `Module.sgmodule` 的基本结构和已知失效脚本，不再自动合并上游规则，也不会自动覆盖人工确认的版本。
+- 旧的 `tools/fusion.py`、`sources.json` 等文件仅作为历史/开发资料，不参与当前手机订阅的生成。
 
-微信公众号只处理 `mp.weixin.qq.com/wapad` 广告接口；微信原生小程序广告只拦截 `wxsmsdy.video.qq.com`，不会封锁 `wxs.qq.com` 或微信安全接口。第三方小程序自身业务接口的广告仍需按具体小程序单独添加。
+## Shadowrocket 订阅地址
 
-## 更新限制
+```text
+https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/Module.sgmodule
+```
 
-- 自动规则总量最多 200 条。
-- 单次最多新增 20 条、删除 20 条。
-- 自动规则总数变化超过 25% 时拒绝更新。
-- 自动更新只能改动 `BEGIN/END CONTROLLED AUTO RULES` 标记之间的内容。
+在 Shadowrocket 中使用上面的链接添加模块。以后仓库更新后，在模块页面点击更新即可获取最新规则。
 
-## 使用方式
+## 当前维护原则
 
-在 Shadowrocket 模块页面更新当前订阅，名称应显示为“广告屏蔽”。
-
-订阅地址：
-
-`https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/Module.sgmodule`
+1. 优先根据实际日志补规则，不盲目扩大 MITM。
+2. 能用域名级 `REJECT` 解决的，不增加 HTTPS 解密。
+3. 对微信、银行、支付、京东等敏感链路尽量保守处理。
+4. 不为了“去广告”修改会员状态、解锁功能或大规模重排 App UI。
+5. 出现联网异常时优先回滚新增 MITM / Script，而不是继续叠加规则。
