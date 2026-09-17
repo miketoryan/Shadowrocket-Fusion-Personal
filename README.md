@@ -16,6 +16,9 @@
 - 百度地图
 - 美图秀秀
 - 微店
+- 微博 / 微博国际版
+- QQ音乐
+- 下厨房
 - 高德地图
 - 爱思全能版
 - 微信公众号文章广告
@@ -24,7 +27,6 @@
 - 网易云音乐
 - 闲鱼
 - 住这儿
-- 微博 / 微博国际版
 - 途强智能
 - 豆瓣
 - 小宇宙
@@ -44,6 +46,9 @@
 - **百度地图：** 增加 `newclient.map.baidu.com/...qt=ads` 精确广告接口，并补充 `afd.baidu.com`、`afdconf.baidu.com` 与日志实证的 1RTB 兜底。
 - **美图秀秀：** 增加 `mea.meitudata.com/kaiping` 开屏接口以及 `adui.tg.meitu.com` 等美图广告域名。
 - **微店：** 增加 `thor.weidian.com/ares/home.splash` 精确开屏接口，并保留第三方广告 SDK 兜底。
+- **微博：** 将旧的 `/v1/ad/preload` 单一路径规则升级为 `bootpreload.uve.weibo.com` 精确广告主机拦截，覆盖当前日志中的 `/v2/ad/preload`，无需额外 MITM。
+- **QQ音乐：** 仅加入 `ad*.tencentmusic.com` 与 `tmead*.y.qq.com` 等专用广告主机，不加入音乐业务域名，也不新增 QQ音乐 MITM。
+- **下厨房：** 增加 `api.xiachufang.com/v*/ad/` 精确广告接口，并补充日志实证且被多库交叉确认的快手、1RTB、UYUN 广告备用通道。
 
 ## 这个库的作用
 
