@@ -19,6 +19,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Ensure diagnostic MITM hosts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('Module.sgmodule')
+          text = p.read_text('utf-8')
+          lines = text.splitlines()
+          for i, line in enumerate(lines):
+              if line.startswith('hostname = '):
+                  hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
+                  for host in ['api.5th.zone', 'szmg.qq.com']:
+                      if host not in hosts:
+                          hosts.append(host)
+                  lines[i] = 'hostname = ' + ','.join(hosts)
+                  break
+          else:
+              raise SystemExit('MITM hostname line not found')
+          p.write_text('\n'.join(lines) + '\n', 'utf-8')
+          PY
+
       - name: Stamp Beijing update time
         shell: bash
         run: |
@@ -60,6 +83,8 @@ jobs:
           grep -q '^\[Script\]$' Module.sgmodule
           grep -q '^\[MITM\]$' Module.sgmodule
           test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
+          grep -q 'api.5th.zone' Module.sgmodule
+          grep -q 'szmg.qq.com' Module.sgmodule
           ! grep -q 'umetrip_ads\.js' Module.sgmodule
           ! grep -q '/JavaScript/jd\.js' Module.sgmodule
           echo "Module validation passed."
@@ -72,8 +97,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add Module.sgmodule README.md
           if git diff --cached --quiet; then
-            echo "No timestamp change needed."
+            echo "No module or timestamp change needed."
             exit 0
           fi
-          git commit -m "chore: stamp module update time"
+          git commit -m "chore: enable diagnostic MITM capture"
           git push
