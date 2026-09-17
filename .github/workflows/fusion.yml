@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Apply one-time diagnostic refinement
-        if: github.event_name == 'push' && github.event.head_commit.message == 'diag: safer diagnostic capture'
+        if: "${{ github.event_name == 'push' && github.event.head_commit.message == 'diag: safer diagnostic capture' }}"
         shell: bash
         run: |
           set -euo pipefail
@@ -38,10 +38,7 @@ jobs:
           for i, line in enumerate(lines):
               if line.startswith('hostname = '):
                   hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
-                  # 已确认只属于日志/心跳的临时抓包主机退出 MITM。
                   hosts = [h for h in hosts if h not in {'szmg.qq.com', 'content.rconfig.qq.com'}]
-                  # 住这儿：广告列表已命中但广告仍显示，继续抓素材主机路径。
-                  # 腾讯手机管家：GDT 链路已拦截，继续抓 A/B/3G 配置路径，不整域封禁。
                   for host in [
                       'api.5th.zone',
                       'media.5th.zone',
