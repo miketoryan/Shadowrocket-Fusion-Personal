@@ -1,4 +1,4 @@
-name: Refine Shadowrocket ad diagnostics
+name: Refine Shadowrocket ad rules
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Apply targeted Tencent diagnostic
+      - name: Apply verified Douban fix and clean diagnostics
         shell: bash
         run: |
           set -euo pipefail
@@ -32,27 +32,43 @@ jobs:
           module = Path('Module.sgmodule')
           lines = module.read_text('utf-8').splitlines()
 
-          # 1) 住这儿正式空列表脚本保持不变；当前已确认开屏广告消失。
+          # 豆瓣 7.133.0 本轮日志实证：豆瓣自有 splash API 和常规 SDK 请求已被拦截，
+          # 但腾讯广告素材/竞价链路仍从以下 3 个主机直连成功。
+          douban_rules = [
+              'DOMAIN,pgdt.ugdtimg.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,adsmind.ugdtimg.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,v2mi.gdt.qq.com,REJECT,extended-matching,pre-matching',
+          ]
 
-          # 2) 腾讯手机管家：tmfmazu 主/备域名解密后所有请求都落在根路径“/”，
-          #    无法做安全的 URL 级精确拦截；而它属于高频基础框架通信，不做整域阻断。
-          #    下一轮仅观察启动时仍然直连的 hd2.3g.qq.com 与 data.ab.qq.com，
-          #    前者在公开广告规则中有命中记录，后者是 A/B 实验配置候选；均只解密、不阻断。
+          # 去重后插入到腾讯广点通规则旁边。
+          lines = [line for line in lines if line not in douban_rules]
+          anchor = 'DOMAIN,p.l.qq.com,REJECT,extended-matching,pre-matching'
+          try:
+              idx = lines.index(anchor) + 1
+          except ValueError:
+              raise SystemExit('Tencent GDT rule anchor not found')
+          insert = [
+              '# 豆瓣开屏：2026-09-17 日志实证漏网的 GDT 素材 / QUIC 主机',
+              *douban_rules,
+          ]
+          lines[idx:idx] = insert
+
+          # 腾讯手机管家已通过 App 内广告开关解决，撤销所有临时诊断 MITM。
           remove_mitm = {
               'content.rconfig.qq.com',
               'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn',
               'luban.m.qq.com',
               'tmfmazu.m.qq.com',
               'tmfmazu4.m.qq.com',
+              'hd2.3g.qq.com',
+              'data.ab.qq.com',
           }
-          add_mitm = ['api.5th.zone', 'hd2.3g.qq.com', 'data.ab.qq.com']
           for i, line in enumerate(lines):
               if line.startswith('hostname = '):
                   hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
                   hosts = [h for h in hosts if h not in remove_mitm]
-                  for host in add_mitm:
-                      if host not in hosts:
-                          hosts.append(host)
+                  if 'api.5th.zone' not in hosts:
+                      hosts.append('api.5th.zone')
                   seen = set()
                   deduped = []
                   for host in hosts:
@@ -64,7 +80,7 @@ jobs:
           else:
               raise SystemExit('MITM hostname line not found')
 
-          # 3) 更新时间戳。
+          # 更新时间戳。
           ts = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M')
           lines[0] = '#!name=广告屏蔽联网版'
           lines[1] = f'#!desc=仓库更新时间：{ts}'
@@ -76,7 +92,7 @@ jobs:
               text = re.sub(r'- \*\*最近更新时间：\*\* .*', f'- **最近更新时间：** {ts}', text)
               text = re.sub(r'仓库更新时间：\d{4}-\d{2}-\d{2}(?: \d{2}:\d{2})?', f'仓库更新时间：{ts}', text)
               readme.write_text(text, 'utf-8')
-          print(f'Refined module stamped: {ts} Asia/Shanghai')
+          print(f'Module refined and stamped: {ts} Asia/Shanghai')
           PY
 
       - name: Validate refined module
@@ -91,18 +107,27 @@ jobs:
           grep -q '^\[Script\]$' Module.sgmodule
           grep -q '^\[MITM\]$' Module.sgmodule
           test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
+
+          # 住这儿正式修复继续保留。
           grep -q '^DOMAIN,api\.5th\.zone,DIRECT$' Module.sgmodule
-          grep -q '^DOMAIN,media\.5th\.zone,DIRECT$' Module.sgmodule
-          grep -q '^DOMAIN,i\.4009515151\.com,DIRECT$' Module.sgmodule
           grep -Fq 'zhuzher_ads_empty.js' Module.sgmodule
           grep '^hostname = ' Module.sgmodule | grep -q 'api.5th.zone'
-          grep '^hostname = ' Module.sgmodule | grep -q 'hd2.3g.qq.com'
-          grep '^hostname = ' Module.sgmodule | grep -q 'data.ab.qq.com'
+
+          # 豆瓣本轮日志实证补漏。
+          grep -q '^DOMAIN,pgdt\.ugdtimg\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
+          grep -q '^DOMAIN,adsmind\.ugdtimg\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
+          grep -q '^DOMAIN,v2mi\.gdt\.qq\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
+          grep -Fq '^https?:\/\/api\.douban\.com\/v\d+\/app_ads\/.* - reject' Module.sgmodule
+
+          # 临时腾讯诊断已清理。
+          ! grep '^hostname = ' Module.sgmodule | grep -q 'hd2.3g.qq.com'
+          ! grep '^hostname = ' Module.sgmodule | grep -q 'data.ab.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'tmfmazu.m.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'tmfmazu4.m.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'luban.m.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'content.rconfig.qq.com'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn'
+
+          # 已知失效脚本不能回归。
           ! grep -q 'app2smile/rules/master/js/bilibili\.js' Module.sgmodule
           ! grep -q 'umetrip_ads\.js' Module.sgmodule
           ! grep -q '/JavaScript/jd\.js' Module.sgmodule
@@ -119,5 +144,5 @@ jobs:
             echo "No refined module change needed."
             exit 0
           fi
-          git commit -m "diag: inspect Tencent hd2 and AB config"
+          git commit -m "fix: block Douban GDT splash CDN"
           git push
