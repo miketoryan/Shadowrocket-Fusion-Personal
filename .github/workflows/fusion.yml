@@ -1,4 +1,4 @@
-name: Diagnostic capture for Shadowrocket module
+name: Refine Shadowrocket ad diagnostics
 
 on:
   workflow_dispatch:
@@ -13,14 +13,14 @@ permissions:
   contents: write
 
 jobs:
-  diagnostic-and-validate:
+  refine-and-validate:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Apply targeted diagnostic capture
+      - name: Apply Zhuzher fix and Tencent diagnostic
         shell: bash
         run: |
           set -euo pipefail
@@ -32,7 +32,7 @@ jobs:
           module = Path('Module.sgmodule')
           lines = module.read_text('utf-8').splitlines()
 
-          # 1) 住这儿：临时放行广告 API，抓真实成功响应结构。
+          # 1) 住这儿：取消旧的 reject-dict / 诊断脚本，正式返回“200 + 空 data”。
           lines = [
               line for line in lines
               if not (
@@ -41,23 +41,29 @@ jobs:
                   and 'reject-dict' in line
               )
           ]
+          lines = [line for line in lines if not line.startswith('diag_5th_ads =')]
+          lines = [line for line in lines if not line.startswith('zhuzher_ads_empty =')]
+          lines = [line for line in lines if line.strip() not in {
+              '# ===== 临时诊断：住这儿广告 API 真实响应（不修改内容） =====',
+              '# ===== 住这儿：广告 API 返回空列表 =====',
+          }]
 
-          # 2) 住这儿：只读响应诊断脚本，只记录返回，不修改内容。
-          diag_name = 'diag_5th_ads ='
-          lines = [line for line in lines if not line.startswith(diag_name)]
           script_idx = lines.index('[Script]')
           lines[script_idx+1:script_idx+1] = [
-              '# ===== 临时诊断：住这儿广告 API 真实响应（不修改内容） =====',
-              r'diag_5th_ads =type=http-response, pattern=^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/diag_5th_ads.js, requires-body=true, max-size=0',
+              '# ===== 住这儿：广告 API 返回空列表 =====',
+              r'zhuzher_ads_empty =type=http-response, pattern=^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/zhuzher_ads_empty.js, requires-body=true, max-size=0',
               '',
           ]
 
-          # 3) 腾讯手机管家：仅对日志实证的 COS bucket 做临时 MITM，看完整素材路径。
-          cos_host = 'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn'
+          # 2) 腾讯手机管家：COS 路径的 UA=cloudd，确定不是手机管家广告，撤掉该 MITM。
+          #    下一轮只观察 content.rconfig.qq.com 的具体路径，不阻断。
+          remove_mitm = {'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn'}
+          add_mitm = ['api.5th.zone', 'content.rconfig.qq.com']
           for i, line in enumerate(lines):
               if line.startswith('hostname = '):
                   hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
-                  for host in ['api.5th.zone', cos_host]:
+                  hosts = [h for h in hosts if h not in remove_mitm]
+                  for host in add_mitm:
                       if host not in hosts:
                           hosts.append(host)
                   seen = set()
@@ -71,7 +77,7 @@ jobs:
           else:
               raise SystemExit('MITM hostname line not found')
 
-          # 4) 更新时间戳。
+          # 3) 更新时间戳。
           ts = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M')
           lines[0] = '#!name=广告屏蔽联网版'
           lines[1] = f'#!desc=仓库更新时间：{ts}'
@@ -83,10 +89,10 @@ jobs:
               text = re.sub(r'- \*\*最近更新时间：\*\* .*', f'- **最近更新时间：** {ts}', text)
               text = re.sub(r'仓库更新时间：\d{4}-\d{2}-\d{2}(?: \d{2}:\d{2})?', f'仓库更新时间：{ts}', text)
               readme.write_text(text, 'utf-8')
-          print(f'Diagnostic mode stamped: {ts} Asia/Shanghai')
+          print(f'Refined module stamped: {ts} Asia/Shanghai')
           PY
 
-      - name: Validate diagnostic module
+      - name: Validate refined module
         shell: bash
         run: |
           set -euo pipefail
@@ -101,16 +107,16 @@ jobs:
           grep -q '^DOMAIN,api\.5th\.zone,DIRECT$' Module.sgmodule
           grep -q '^DOMAIN,media\.5th\.zone,DIRECT$' Module.sgmodule
           grep -q '^DOMAIN,i\.4009515151\.com,DIRECT$' Module.sgmodule
-          ! grep -F 'api\.5th\.zone\/ads\/v3\/type\/' Module.sgmodule | grep -q 'reject-dict'
-          grep -Fq 'pattern=^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items' Module.sgmodule
-          grep '^hostname = ' Module.sgmodule | grep -q 'api.5th.zone'
-          grep '^hostname = ' Module.sgmodule | grep -q 'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn'
+          grep -Fq 'zhuzher_ads_empty.js' Module.sgmodule
+          ! grep -q '^diag_5th_ads =' Module.sgmodule
+          grep '^hostname = ' Module.sgmodule | grep -q 'content.rconfig.qq.com'
+          ! grep '^hostname = ' Module.sgmodule | grep -q 'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn'
           ! grep -q 'app2smile/rules/master/js/bilibili\.js' Module.sgmodule
           ! grep -q 'umetrip_ads\.js' Module.sgmodule
           ! grep -q '/JavaScript/jd\.js' Module.sgmodule
-          echo "Diagnostic module validation passed."
+          echo "Refined module validation passed."
 
-      - name: Commit diagnostic module
+      - name: Commit refined module
         shell: bash
         run: |
           set -euo pipefail
@@ -118,8 +124,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add Module.sgmodule README.md
           if git diff --cached --quiet; then
-            echo "No diagnostic module change needed."
+            echo "No refined module change needed."
             exit 0
           fi
-          git commit -m "diag: capture 5th.zone response and Tencent COS path"
+          git commit -m "fix: empty Zhuzher ads and narrow Tencent diagnostic"
           git push
