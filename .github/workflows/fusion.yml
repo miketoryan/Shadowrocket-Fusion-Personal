@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Ensure diagnostic MITM hosts
+      - name: Apply targeted rules and diagnostic MITM
         shell: bash
         run: |
           set -euo pipefail
@@ -28,17 +28,41 @@ jobs:
 
           p = Path('Module.sgmodule')
           text = p.read_text('utf-8')
+
+          # 腾讯手机管家：本轮日志中仍然 DIRECT，且公开广告列表长期收录的两个精确域名。
+          rule_lines = [
+              'DOMAIN,rpt.gdt.qq.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,hd2.3g.qq.com,REJECT,extended-matching,pre-matching',
+          ]
+          missing = [line for line in rule_lines if line not in text]
+          if missing:
+              block = (
+                  '\n# ===== 腾讯手机管家：本轮日志补漏 =====\n'
+                  + '\n'.join(missing)
+                  + '\n'
+              )
+              text = text.replace('[Rule]\n', '[Rule]\n' + block, 1)
+
+          # 住这儿：保留已命中的精确广告 API；只临时解密两个素材/媒体主机以抓下一轮具体路径。
           lines = text.splitlines()
           for i, line in enumerate(lines):
               if line.startswith('hostname = '):
                   hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
-                  for host in ['api.5th.zone', 'szmg.qq.com']:
+                  hosts = [h for h in hosts if h not in {'szmg.qq.com', 'content.rconfig.qq.com'}]
+                  for host in ['api.5th.zone', 'media.5th.zone', 'i.4009515151.com']:
                       if host not in hosts:
                           hosts.append(host)
-                  lines[i] = 'hostname = ' + ','.join(hosts)
+                  seen = set()
+                  deduped = []
+                  for host in hosts:
+                      if host not in seen:
+                          seen.add(host)
+                          deduped.append(host)
+                  lines[i] = 'hostname = ' + ','.join(deduped)
                   break
           else:
               raise SystemExit('MITM hostname line not found')
+
           p.write_text('\n'.join(lines) + '\n', 'utf-8')
           PY
 
@@ -83,13 +107,18 @@ jobs:
           grep -q '^\[Script\]$' Module.sgmodule
           grep -q '^\[MITM\]$' Module.sgmodule
           test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
+          grep -q '^DOMAIN,rpt\.gdt\.qq\.com,REJECT' Module.sgmodule
+          grep -q '^DOMAIN,hd2\.3g\.qq\.com,REJECT' Module.sgmodule
           grep -q 'api.5th.zone' Module.sgmodule
-          grep -q 'szmg.qq.com' Module.sgmodule
+          grep -q 'media.5th.zone' Module.sgmodule
+          grep -q 'i.4009515151.com' Module.sgmodule
+          ! grep '^hostname = ' Module.sgmodule | grep -q 'szmg.qq.com'
+          ! grep '^hostname = ' Module.sgmodule | grep -q 'content.rconfig.qq.com'
           ! grep -q 'umetrip_ads\.js' Module.sgmodule
           ! grep -q '/JavaScript/jd\.js' Module.sgmodule
           echo "Module validation passed."
 
-      - name: Commit timestamp if changed
+      - name: Commit module changes
         shell: bash
         run: |
           set -euo pipefail
@@ -100,5 +129,5 @@ jobs:
             echo "No module or timestamp change needed."
             exit 0
           fi
-          git commit -m "chore: enable diagnostic MITM capture"
+          git commit -m "fix: refine 住这儿 diagnostics and Tencent ad rules"
           git push
