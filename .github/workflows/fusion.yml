@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Apply approved high-confidence rules and keep diagnostics clean
+      - name: Apply approved precise ad rules
         shell: bash
         run: |
           set -euo pipefail
@@ -32,8 +32,19 @@ jobs:
           module = Path('Module.sgmodule')
           lines = module.read_text('utf-8').splitlines()
 
-          # 第一梯队：多上游交叉确认、广告属性明确，仅做精确 DOMAIN 拦截。
-          # 不扩大为 qq.com / weibo.com / netease.com 等宽泛后缀，避免误伤正常业务。
+          def remove_all(items):
+              targets = set(items)
+              global lines
+              lines = [line for line in lines if line not in targets]
+
+          def insert_after(anchor, payload):
+              try:
+                  idx = lines.index(anchor) + 1
+              except ValueError:
+                  raise SystemExit(f'anchor not found: {anchor}')
+              lines[idx:idx] = payload
+
+          # ---------- Existing high-confidence core ----------
           tencent_core_rules = [
               'DOMAIN,adsmind.gdtimg.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,adsmind.apdcdn.tc.qq.com,REJECT,extended-matching,pre-matching',
@@ -42,121 +53,124 @@ jobs:
               'DOMAIN,adslvfile.qq.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,adslvseed.qq.com,REJECT,extended-matching,pre-matching',
           ]
-          netease_core_rule = 'DOMAIN,ad.bn.netease.com,REJECT,extended-matching,pre-matching'
-          weibo_core_rule = 'DOMAIN,adimg.uve.weibo.com,REJECT,extended-matching,pre-matching'
-
-          # 豆瓣 7.133.0 日志实证：豆瓣自有 splash API 已被拦截，
-          # 但腾讯广告素材/竞价链路仍从以下 3 个主机直连成功。
           douban_rules = [
               'DOMAIN,pgdt.ugdtimg.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,adsmind.ugdtimg.com,REJECT,extended-matching,pre-matching',
               'DOMAIN,v2mi.gdt.qq.com,REJECT,extended-matching,pre-matching',
           ]
-
+          netease_core_rule = 'DOMAIN,ad.bn.netease.com,REJECT,extended-matching,pre-matching'
+          weibo_core_rule = 'DOMAIN,adimg.uve.weibo.com,REJECT,extended-matching,pre-matching'
           tencent_comment = '# 高置信度补强：AWAvenue / Cats-Team / 217heidai 多源交叉确认的腾讯广告素材链路'
           douban_comment = '# 豆瓣开屏：2026-09-17 日志实证漏网的 GDT 素材 / QUIC 主机'
           netease_comment = '# 高置信度补强：fmz200 / AWAvenue / 217heidai 均收录的网易广告主机'
           weibo_comment = '# 高置信度补强：AWAvenue / 217heidai 均收录的微博广告素材主机'
 
-          # 全局去重规则和由本工作流维护的注释，再按功能区重新插入，保证重复执行不会堆积。
-          approved_exact_rules = set(tencent_core_rules + douban_rules + [netease_core_rule, weibo_core_rule])
-          managed_comments = {tencent_comment, douban_comment, netease_comment, weibo_comment}
-          lines = [
-              line for line in lines
-              if line not in approved_exact_rules and line not in managed_comments
+          remove_all(tencent_core_rules + douban_rules + [netease_core_rule, weibo_core_rule,
+                     tencent_comment, douban_comment, netease_comment, weibo_comment])
+          insert_after('DOMAIN,p.l.qq.com,REJECT,extended-matching,pre-matching', [
+              tencent_comment, *tencent_core_rules, douban_comment, *douban_rules,
+          ])
+          insert_after('DOMAIN,iad.g.163.com,REJECT,extended-matching,pre-matching', [netease_comment, netease_core_rule])
+          insert_after('DOMAIN,sdkclick.biz.weibo.com,REJECT,extended-matching,pre-matching', [weibo_comment, weibo_core_rule])
+
+          # ---------- 2026-09-17: five-app precise splash patch ----------
+          # Mature upstream references: fmz200/wool_scripts, zirawell/Ad-Cleaner,
+          # and app2smile/rules. Log-confirmed SDK fallbacks are kept exact.
+          precise_comment = '# ===== 2026-09-17 精准开屏补丁：12306 / B站 / 百度地图 / 美图秀秀 / 微店 ====='
+          precise_rules = [
+              # 12306 dedicated ad host
+              'DOMAIN,ad.12306.cn,REJECT,extended-matching,pre-matching',
+              # Baidu Maps own ad configuration + log-confirmed RTB fallback
+              'DOMAIN,afd.baidu.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,afdconf.baidu.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,sdk.1rtb.net,REJECT,extended-matching,pre-matching',
+              'DOMAIN,cdn.1rtb.com,REJECT,extended-matching,pre-matching',
+              # Meitu dedicated ad endpoints
+              'DOMAIN,adui.tg.meitu.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,rabbit.tg.meitu.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,meitubeauty.meitudata.com,REJECT,extended-matching,pre-matching',
+              'DOMAIN,xiuxiu.mobile.meitudata.com,REJECT,extended-matching,pre-matching',
+              # Sigmob fallback observed in current logs / mature ad lists
+              'DOMAIN,adservice.sigmob.cn,REJECT,extended-matching,pre-matching',
+              'DOMAIN,tm.sigmob.cn,REJECT,extended-matching,pre-matching',
           ]
+          remove_all([precise_comment, *precise_rules])
+          insert_after('DOMAIN,i.4009515151.com,DIRECT', ['', precise_comment, *precise_rules])
 
-          # 腾讯 / GDT：放在现有腾讯广点通规则附近。
-          anchor = 'DOMAIN,p.l.qq.com,REJECT,extended-matching,pre-matching'
-          try:
-              idx = lines.index(anchor) + 1
-          except ValueError:
-              raise SystemExit('Tencent GDT rule anchor not found')
-          insert = [
-              tencent_comment,
-              *tencent_core_rules,
-              douban_comment,
-              *douban_rules,
-          ]
-          lines[idx:idx] = insert
-
-          # 网易：只补一个明确广告主机，不碰统计、HTTPDNS 或账号链路。
-          netease_anchor = 'DOMAIN,iad.g.163.com,REJECT,extended-matching,pre-matching'
-          try:
-              idx = lines.index(netease_anchor) + 1
-          except ValueError:
-              raise SystemExit('NetEase rule anchor not found')
-          lines[idx:idx] = [netease_comment, netease_core_rule]
-
-          # 微博：补充广告图片素材主机，保持现有 SDK 拦截逻辑不变。
-          weibo_anchor = 'DOMAIN,sdkclick.biz.weibo.com,REJECT,extended-matching,pre-matching'
-          try:
-              idx = lines.index(weibo_anchor) + 1
-          except ValueError:
-              raise SystemExit('Weibo rule anchor not found')
-          lines[idx:idx] = [weibo_comment, weibo_core_rule]
-
-          # 高德：把 m5 单点写法升级为 m1-m9 兼容，但仍只匹配原来的明确广告/启动路径。
-          # 上游成熟规则使用 m\d.amap.com；MITM 只加入 m1-m9，不扩大到整个 *.amap.com。
+          # ---------- Amap compatibility retained ----------
           for i, line in enumerate(lines):
               if line.startswith('^https?:\\/\\/m5\\.amap\\.com\\/ws\\/'):
                   lines[i] = line.replace('m5\\.amap\\.com', 'm\\d\\.amap\\.com', 1)
 
-          # B站：原先固定 v2 的四条 splash 规则合并为版本通配规则。
-          # 仅覆盖 /x/v数字/splash/ 命名空间，不扩大到 B站其它 API。
-          bili_old_rules = {
+          # ---------- Precise URL rewrites ----------
+          url_comment = '# ===== 精准开屏接口：成熟库规则 + 本机日志交叉验证 ====='
+          baidu_map_rewrite = '^https?:\\/\\/newclient\\.map\\.baidu\\.com\\/client\\/phpui2\\/\\?qt=ads(?:&.*)?$ - reject-dict'
+          meitu_rewrite = '^https?:\\/\\/mea\\.meitudata\\.com\\/kaiping(?:\\?.*)?$ - reject'
+          weidian_rewrite = '^https?:\\/\\/thor\\.weidian\\.com\\/ares\\/home\\.splash(?:\\?.*)?$ - reject-200'
+
+          # Bilibili: list/show use app2smile response cleanup; keep only two auxiliary splash endpoints as rewrites.
+          bili_old = [
+              '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v\\d+\\/splash\\/.* - reject-dict',
               '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/show(?:\\?.*)?$ - reject-dict',
               '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/list(?:\\?.*)?$ - reject-dict',
               '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/brand\\/list(?:\\?.*)?$ - reject-dict',
               '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/event\\/list2(?:\\?.*)?$ - reject-dict',
-          }
-          bili_new_rule = '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v\\d+\\/splash\\/.* - reject-dict'
-          lines = [line for line in lines if line not in bili_old_rules and line != bili_new_rule]
-          bili_anchor = '# ===== B站：只保留开屏 ====='
+          ]
+          bili_aux_rewrite = '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/(brand\\/list|event\\/list2)(?:\\?.*)?$ - reject-dict'
+          remove_all([url_comment, baidu_map_rewrite, meitu_rewrite, weidian_rewrite, bili_aux_rewrite, *bili_old])
           try:
-              idx = lines.index(bili_anchor) + 1
+              url_idx = lines.index('[URL Rewrite]') + 1
           except ValueError:
-              raise SystemExit('Bilibili splash anchor not found')
-          lines[idx:idx] = [bili_new_rule]
+              raise SystemExit('[URL Rewrite] missing')
+          lines[url_idx:url_idx] = ['', url_comment, baidu_map_rewrite, meitu_rewrite, weidian_rewrite, bili_aux_rewrite, '']
 
-          # 腾讯手机管家已通过 App 内广告开关解决，撤销所有临时诊断 MITM。
+          # ---------- Bilibili pinned response script ----------
+          # Pin to the exact upstream commit instead of mutable master.
+          bili_script_comment = '# ===== B站开屏 list/show：app2smile 固定版本，仅清理广告响应 ====='
+          bili_script = ('bili-splash =type=http-response, pattern=^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/(list|show)(?:\\?.*)?$, '
+                         'script-path=https://raw.githubusercontent.com/app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js, '
+                         'requires-body=true, max-size=0')
+          remove_all([bili_script_comment, bili_script])
+          try:
+              script_idx = lines.index('[Script]') + 1
+          except ValueError:
+              raise SystemExit('[Script] missing')
+          lines[script_idx:script_idx] = ['', bili_script_comment, bili_script, '']
+
+          # ---------- MITM: exact hosts only ----------
+          required_mitm = [
+              'newclient.map.baidu.com',
+              'mea.meitudata.com',
+              'thor.weidian.com',
+          ]
           remove_mitm = {
               'content.rconfig.qq.com',
               'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn',
-              'luban.m.qq.com',
-              'tmfmazu.m.qq.com',
-              'tmfmazu4.m.qq.com',
-              'hd2.3g.qq.com',
-              'data.ab.qq.com',
+              'luban.m.qq.com', 'tmfmazu.m.qq.com', 'tmfmazu4.m.qq.com',
+              'hd2.3g.qq.com', 'data.ab.qq.com',
           }
           amap_hosts = [f'm{n}.amap.com' for n in range(1, 10)]
           for i, line in enumerate(lines):
-              if line.startswith('hostname = '):
-                  hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
-                  hosts = [h for h in hosts if h not in remove_mitm]
-                  if 'api.5th.zone' not in hosts:
-                      hosts.append('api.5th.zone')
-
-                  # 高德 m1-m9 显式列入 MITM，避免使用过宽的 *.amap.com。
-                  hosts = [h for h in hosts if h not in amap_hosts]
-                  try:
-                      amap_pos = hosts.index('oss.amap.com')
-                  except ValueError:
-                      amap_pos = len(hosts)
-                  hosts[amap_pos:amap_pos] = amap_hosts
-
-                  seen = set()
-                  deduped = []
-                  for host in hosts:
-                      if host not in seen:
-                          seen.add(host)
-                          deduped.append(host)
-                  lines[i] = 'hostname = ' + ','.join(deduped)
-                  break
+              if not line.startswith('hostname = '):
+                  continue
+              hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
+              hosts = [h for h in hosts if h not in remove_mitm and h not in amap_hosts]
+              for host in ['api.5th.zone', *required_mitm]:
+                  if host not in hosts:
+                      hosts.append(host)
+              try:
+                  amap_pos = hosts.index('oss.amap.com')
+              except ValueError:
+                  amap_pos = len(hosts)
+              hosts[amap_pos:amap_pos] = amap_hosts
+              seen = set()
+              hosts = [h for h in hosts if not (h in seen or seen.add(h))]
+              lines[i] = 'hostname = ' + ','.join(hosts)
+              break
           else:
               raise SystemExit('MITM hostname line not found')
 
-          # 更新时间戳。
+          # ---------- Timestamp + README ----------
           ts = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M')
           lines[0] = '#!name=广告屏蔽联网版'
           lines[1] = f'#!desc=仓库更新时间：{ts}'
@@ -184,57 +198,31 @@ jobs:
           grep -q '^\[MITM\]$' Module.sgmodule
           test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
 
-          # 住这儿正式修复继续保留。
+          # Existing core protections.
           grep -q '^DOMAIN,api\.5th\.zone,DIRECT$' Module.sgmodule
           grep -Fq 'zhuzher_ads_empty.js' Module.sgmodule
-          grep '^hostname = ' Module.sgmodule | grep -q 'api.5th.zone'
-
-          # 第一梯队高置信度广告域：必须全部存在且保持精确 DOMAIN。
           grep -q '^DOMAIN,adsmind\.gdtimg\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
-          grep -q '^DOMAIN,adsmind\.apdcdn\.tc\.qq\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
-          grep -q '^DOMAIN,adsmind\.tc\.qq\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
-          grep -q '^DOMAIN,pgdt\.gtimg\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
-          grep -q '^DOMAIN,adslvfile\.qq\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
-          grep -q '^DOMAIN,adslvseed\.qq\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
           grep -q '^DOMAIN,ad\.bn\.netease\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
           grep -q '^DOMAIN,adimg\.uve\.weibo\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
 
-          # 豆瓣日志实证补漏继续保留。
-          grep -q '^DOMAIN,pgdt\.ugdtimg\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
-          grep -q '^DOMAIN,adsmind\.ugdtimg\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
-          grep -q '^DOMAIN,v2mi\.gdt\.qq\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
-          grep -Fq '^https?:\/\/api\.douban\.com\/v\d+\/app_ads\/.* - reject' Module.sgmodule
-
-          # 高德：4 条原 m5 路径全部升级为 m\d，MITM 仅显式扩展到 m1-m9。
-          test "$(grep -Fc '^https?:\/\/m\d\.amap\.com\/ws\/' Module.sgmodule)" -eq 4
-          ! grep -Fq '^https?:\/\/m5\.amap\.com\/ws\/' Module.sgmodule
-          for n in {1..9}; do
-            grep '^hostname = ' Module.sgmodule | grep -q "m${n}\.amap\.com"
+          # Five-app patch must remain single-copy and precise.
+          for d in ad.12306.cn afd.baidu.com afdconf.baidu.com sdk.1rtb.net cdn.1rtb.com adui.tg.meitu.com rabbit.tg.meitu.com meitubeauty.meitudata.com xiuxiu.mobile.meitudata.com adservice.sigmob.cn tm.sigmob.cn; do
+            test "$(grep -Fc "DOMAIN,$d,REJECT,extended-matching,pre-matching" Module.sgmodule)" -eq 1
           done
-          ! grep '^hostname = ' Module.sgmodule | grep -q '\*\.amap\.com'
+          grep -Fq '^https?:\/\/newclient\.map\.baidu\.com\/client\/phpui2\/\?qt=ads(?:&.*)?$ - reject-dict' Module.sgmodule
+          grep -Fq '^https?:\/\/mea\.meitudata\.com\/kaiping(?:\?.*)?$ - reject' Module.sgmodule
+          grep -Fq '^https?:\/\/thor\.weidian\.com\/ares\/home\.splash(?:\?.*)?$ - reject-200' Module.sgmodule
+          grep -Fq 'app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js' Module.sgmodule
+          ! grep -Fq '^https?:\/\/app\.bilibili\.com\/x\/v\d+\/splash\/.* - reject-dict' Module.sgmodule
 
-          # B站：只把 splash 版本号从固定 v2 升级为 v数字通配，其它接口保持原状。
-          test "$(grep -Fc '^https?:\/\/app\.bilibili\.com\/x\/v\d+\/splash\/.* - reject-dict' Module.sgmodule)" -eq 1
-          ! grep -Fq '^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/' Module.sgmodule
-          grep '^hostname = ' Module.sgmodule | grep -q 'app.bilibili.com'
+          for h in app.bilibili.com newclient.map.baidu.com mea.meitudata.com thor.weidian.com; do
+            grep '^hostname = ' Module.sgmodule | grep -q "$h"
+          done
 
-          # 本工作流维护的说明注释也必须保持单份，防止重复堆积。
-          test "$(grep -Fc '# 高置信度补强：AWAvenue / Cats-Team / 217heidai 多源交叉确认的腾讯广告素材链路' Module.sgmodule)" -eq 1
-          test "$(grep -Fc '# 豆瓣开屏：2026-09-17 日志实证漏网的 GDT 素材 / QUIC 主机' Module.sgmodule)" -eq 1
-          test "$(grep -Fc '# 高置信度补强：fmz200 / AWAvenue / 217heidai 均收录的网易广告主机' Module.sgmodule)" -eq 1
-          test "$(grep -Fc '# 高置信度补强：AWAvenue / 217heidai 均收录的微博广告素材主机' Module.sgmodule)" -eq 1
-
-          # 临时腾讯诊断必须保持清理状态。
+          # High-risk diagnostic MITM must stay absent.
           ! grep '^hostname = ' Module.sgmodule | grep -q 'hd2.3g.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'data.ab.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'tmfmazu.m.qq.com'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'tmfmazu4.m.qq.com'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'luban.m.qq.com'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'content.rconfig.qq.com'
-
-          # 已知失效脚本不能回归。
-          ! grep -q 'app2smile/rules/master/js/bilibili\.js' Module.sgmodule
-          ! grep -q 'umetrip_ads\.js' Module.sgmodule
           ! grep -q '/JavaScript/jd\.js' Module.sgmodule
           echo "Refined module validation passed."
 
@@ -249,5 +237,5 @@ jobs:
             echo "No refined module change needed."
             exit 0
           fi
-          git commit -m "feat: optimize Amap and Bilibili splash rules"
+          git commit -m "feat: add precise splash fixes for five apps"
           git push
