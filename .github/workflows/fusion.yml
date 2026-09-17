@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Apply Zhuzher fix and Tencent diagnostic
+      - name: Apply targeted Tencent diagnostic
         shell: bash
         run: |
           set -euo pipefail
@@ -32,33 +32,16 @@ jobs:
           module = Path('Module.sgmodule')
           lines = module.read_text('utf-8').splitlines()
 
-          # 1) 住这儿：取消旧的 reject-dict / 诊断脚本，正式返回“200 + 空 data”。
-          lines = [
-              line for line in lines
-              if not (
-                  'api\\.5th\\.zone\\/ads\\/v3\\/type\\/' in line
-                  and 'items' in line
-                  and 'reject-dict' in line
-              )
-          ]
-          lines = [line for line in lines if not line.startswith('diag_5th_ads =')]
-          lines = [line for line in lines if not line.startswith('zhuzher_ads_empty =')]
-          lines = [line for line in lines if line.strip() not in {
-              '# ===== 临时诊断：住这儿广告 API 真实响应（不修改内容） =====',
-              '# ===== 住这儿：广告 API 返回空列表 =====',
-          }]
+          # 1) 住这儿正式空列表脚本保持不变。
+          #    本轮日志已确认脚本实际执行；若首屏仍出现，更符合“先展示旧缓存、再联网更新”的行为。
 
-          script_idx = lines.index('[Script]')
-          lines[script_idx+1:script_idx+1] = [
-              '# ===== 住这儿：广告 API 返回空列表 =====',
-              r'zhuzher_ads_empty =type=http-response, pattern=^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/zhuzher_ads_empty.js, requires-body=true, max-size=0',
-              '',
-          ]
-
-          # 2) 腾讯手机管家：COS 路径的 UA=cloudd，确定不是手机管家广告，撤掉该 MITM。
-          #    下一轮只观察 content.rconfig.qq.com 的具体路径，不阻断。
-          remove_mitm = {'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn'}
-          add_mitm = ['api.5th.zone', 'content.rconfig.qq.com']
+          # 2) 腾讯手机管家：content.rconfig.qq.com 只命中 GetLogConfigService，排除为广告源。
+          #    下一轮只观察 luban.m.qq.com 的具体 HTTPS 路径，不阻断。
+          remove_mitm = {
+              'content.rconfig.qq.com',
+              'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn',
+          }
+          add_mitm = ['api.5th.zone', 'luban.m.qq.com']
           for i, line in enumerate(lines):
               if line.startswith('hostname = '):
                   hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
@@ -108,8 +91,9 @@ jobs:
           grep -q '^DOMAIN,media\.5th\.zone,DIRECT$' Module.sgmodule
           grep -q '^DOMAIN,i\.4009515151\.com,DIRECT$' Module.sgmodule
           grep -Fq 'zhuzher_ads_empty.js' Module.sgmodule
-          ! grep -q '^diag_5th_ads =' Module.sgmodule
-          grep '^hostname = ' Module.sgmodule | grep -q 'content.rconfig.qq.com'
+          grep '^hostname = ' Module.sgmodule | grep -q 'api.5th.zone'
+          grep '^hostname = ' Module.sgmodule | grep -q 'luban.m.qq.com'
+          ! grep '^hostname = ' Module.sgmodule | grep -q 'content.rconfig.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn'
           ! grep -q 'app2smile/rules/master/js/bilibili\.js' Module.sgmodule
           ! grep -q 'umetrip_ads\.js' Module.sgmodule
@@ -127,5 +111,5 @@ jobs:
             echo "No refined module change needed."
             exit 0
           fi
-          git commit -m "fix: empty Zhuzher ads and narrow Tencent diagnostic"
+          git commit -m "diag: inspect Tencent luban path"
           git push
