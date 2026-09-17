@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-09-17 13:06
+#!desc=仓库更新时间：2026-09-17 15:40
 
 [Rule]
 
@@ -28,15 +28,25 @@ DOMAIN,sdkreport.e.qq.com,REJECT,extended-matching,pre-matching
 DOMAIN,pgdt.gtimg.cn,REJECT,extended-matching,pre-matching
 DOMAIN,us.l.qq.com,REJECT,extended-matching,pre-matching
 DOMAIN,p.l.qq.com,REJECT,extended-matching,pre-matching
+# 高置信度补强：AWAvenue / Cats-Team / 217heidai 多源交叉确认的腾讯广告素材链路
+DOMAIN,adsmind.gdtimg.com,REJECT,extended-matching,pre-matching
+DOMAIN,adsmind.apdcdn.tc.qq.com,REJECT,extended-matching,pre-matching
+DOMAIN,adsmind.tc.qq.com,REJECT,extended-matching,pre-matching
+DOMAIN,pgdt.gtimg.com,REJECT,extended-matching,pre-matching
+DOMAIN,adslvfile.qq.com,REJECT,extended-matching,pre-matching
+DOMAIN,adslvseed.qq.com,REJECT,extended-matching,pre-matching
 # 豆瓣开屏：2026-09-17 日志实证漏网的 GDT 素材 / QUIC 主机
 DOMAIN,pgdt.ugdtimg.com,REJECT,extended-matching,pre-matching
 DOMAIN,adsmind.ugdtimg.com,REJECT,extended-matching,pre-matching
 DOMAIN,v2mi.gdt.qq.com,REJECT,extended-matching,pre-matching
+# 豆瓣开屏：2026-09-17 日志实证漏网的 GDT 素材 / QUIC 主机
 
 # ===== 后续增强：网易云音乐广告素材 =====
 DOMAIN,iadmusicmatvideo.music.126.net,REJECT,extended-matching,pre-matching
 DOMAIN,admusicpic.music.126.net,REJECT,extended-matching,pre-matching
 DOMAIN,iad.g.163.com,REJECT,extended-matching,pre-matching
+# 高置信度补强：fmz200 / AWAvenue / 217heidai 均收录的网易广告主机
+DOMAIN,ad.bn.netease.com,REJECT,extended-matching,pre-matching
 
 # ===== 后续增强：高德地图 =====
 DOMAIN,amap-aos-info-nogw.amap.com,REJECT,extended-matching,pre-matching
@@ -52,6 +62,8 @@ DOMAIN,adstrategy.biz.weibo.com,REJECT,extended-matching,pre-matching
 DOMAIN,sdkaction.biz.weibo.com,REJECT,extended-matching,pre-matching
 DOMAIN,sdkmonitor.biz.weibo.com,REJECT,extended-matching,pre-matching
 DOMAIN,sdkclick.biz.weibo.com,REJECT,extended-matching,pre-matching
+# 高置信度补强：AWAvenue / 217heidai 均收录的微博广告素材主机
+DOMAIN,adimg.uve.weibo.com,REJECT,extended-matching,pre-matching
 
 # ===== 日志实证：途强智能开屏广告 =====
 # com.tuqiang.smart / slot_id=11499
