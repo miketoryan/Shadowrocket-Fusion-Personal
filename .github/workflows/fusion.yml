@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Assemble when all chunks exist
+      - name: Assemble when all verified chunks exist
         shell: bash
         run: |
           set -euo pipefail
@@ -31,6 +31,16 @@ jobs:
             echo "Waiting for 7 chunks; found ${#parts[@]}."
             exit 0
           fi
+          cat > /tmp/chunks.sha256 <<'EOF'
+          23f982a32a488fb9a87fd2b279417864c0f1816d7a09267cdeb7cf07902e5b55  module_parts/chunk00.b64
+          cea63a88ccc62495c0881709fa42380a024d61057432c6c8a3abd0ae9b5c9800  module_parts/chunk01.b64
+          8850ad32b4935e3367853a43236225b92b32bcb35f5a6c94c77f627a33ee2fab  module_parts/chunk02.b64
+          20c9c0b7a59f7964ba3a2c5c32fdfc2ea2a978d53f8e977a77073a70098d274a  module_parts/chunk03.b64
+          7c7be9740bf47f94bee3fd773c7263d6414b20a4ffd6a0b7aca5068e14f4a560  module_parts/chunk04.b64
+          fd0bfde7d45f9248c49ec23dcda0f77ae61624371e32713443101fd43028f59f  module_parts/chunk05.b64
+          75f16c707b137671ce01ba28c8891a5ff3e3552c03a57b4ad33dcd2625d2b77c  module_parts/chunk06.b64
+          EOF
+          sha256sum -c /tmp/chunks.sha256
           cat "${parts[@]}" | tr -d '\n\r ' | base64 --decode > Module.sgmodule
           test "$(head -n 1 Module.sgmodule)" = '#!name=广告屏蔽'
           grep -q '^\[Rule\]$' Module.sgmodule
@@ -45,6 +55,7 @@ jobs:
           if [ "${#parts[@]}" -ne 7 ]; then
             exit 0
           fi
+          sha256sum -c /tmp/chunks.sha256
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add Module.sgmodule
