@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'module_parts/**'
+      - 'module_parts/gz*.b64'
 
 permissions:
   contents: write
@@ -21,27 +21,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Assemble when all verified chunks exist
+      - name: Assemble verified module
         shell: bash
         run: |
           set -euo pipefail
-          shopt -s nullglob
-          parts=(module_parts/chunk*.b64)
-          if [ "${#parts[@]}" -ne 7 ]; then
-            echo "Waiting for 7 chunks; found ${#parts[@]}."
-            exit 0
-          fi
-          cat > /tmp/chunks.sha256 <<'EOF'
-          23f982a32a488fb9a87fd2b279417864c0f1816d7a09267cdeb7cf07902e5b55  module_parts/chunk00.b64
-          cea63a88ccc62495c0881709fa42380a024d61057432c6c8a3abd0ae9b5c9800  module_parts/chunk01.b64
-          8850ad32b4935e3367853a43236225b92b32bcb35f5a6c94c77f627a33ee2fab  module_parts/chunk02.b64
-          20c9c0b7a59f7964ba3a2c5c32fdfc2ea2a978d53f8e977a77073a70098d274a  module_parts/chunk03.b64
-          7c7be9740bf47f94bee3fd773c7263d6414b20a4ffd6a0b7aca5068e14f4a560  module_parts/chunk04.b64
-          fd0bfde7d45f9248c49ec23dcda0f77ae61624371e32713443101fd43028f59f  module_parts/chunk05.b64
-          75f16c707b137671ce01ba28c8891a5ff3e3552c03a57b4ad33dcd2625d2b77c  module_parts/chunk06.b64
-          EOF
-          sha256sum -c /tmp/chunks.sha256
-          cat "${parts[@]}" | tr -d '\n\r ' | base64 --decode > Module.sgmodule
+          test -f module_parts/gz00.b64
+          test -f module_parts/gz01.b64
+          echo '4b382b6ec3511a43db878cde34a1902b3f50a852feb6bb080dcb2a956f0d3e65  module_parts/gz00.b64' | sha256sum -c -
+          echo '73463c858020297290c01baee68bb85898f47811765e456ae78f6d926aa790d8  module_parts/gz01.b64' | sha256sum -c -
+          cat module_parts/gz00.b64 module_parts/gz01.b64 | tr -d '\n\r ' | base64 --decode > /tmp/module.sgmodule.gz
+          gzip -dc /tmp/module.sgmodule.gz > Module.sgmodule
+          echo '9e29330959fc3beae7638be0b48a7f6397026422b01f3bb46f999515e5e5a31a  Module.sgmodule' | sha256sum -c -
           test "$(head -n 1 Module.sgmodule)" = '#!name=广告屏蔽'
           grep -q '^\[Rule\]$' Module.sgmodule
           grep -q '^\[MITM\]$' Module.sgmodule
@@ -50,12 +40,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          shopt -s nullglob
-          parts=(module_parts/chunk*.b64)
-          if [ "${#parts[@]}" -ne 7 ]; then
-            exit 0
-          fi
-          sha256sum -c /tmp/chunks.sha256
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add Module.sgmodule
