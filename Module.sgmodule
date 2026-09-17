@@ -1,7 +1,12 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-09-17 10:29
+#!desc=仓库更新时间：2026-09-17 10:43
 
 [Rule]
+
+# ===== 住这儿：正常业务直连（稳定性保护） =====
+DOMAIN,api.5th.zone,DIRECT
+DOMAIN,media.5th.zone,DIRECT
+DOMAIN,i.4009515151.com,DIRECT
 
 # ===== 腾讯手机管家：本轮日志补漏 =====
 DOMAIN,rpt.gdt.qq.com,REJECT,extended-matching,pre-matching
@@ -889,10 +894,12 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 [URL Rewrite]
 
 # ===== 腾讯手机管家 + 住这儿 开屏广告 =====
+# ===== 住这儿：广告接口 =====
+^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items(?:\?.*)?$ - reject-dict
+
 ^https?:\/\/mmgr\.gtimg\.com\/gjsmall\/qqpim\/public\/ios\/splash\/.+?\/\d{4}_\d{4} - reject-200
 ^https?:\/\/z\.onewo\.com\/passer\/api\/ads\/v1\/8\/list - reject-200
 # 住这儿当前版本：日志实证广告列表接口
-^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/1\/items(?:\?.*)?$ - reject-dict
 
 
 # ===== 后续增强：网易云音乐广告下发 =====
@@ -996,11 +1003,10 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 douban =type=http-response, pattern=^https?:\/\/api\.douban\.com\/.*, script-path=https://raw.githubusercontent.com/app2smile/rules/master/js/douban.js, requires-body=true, max-size=0
 
 # ===== B站 =====
-bilibili =type=http-response, pattern=^https?:\/\/(app\.bilibili\.com|api\.bilibili\.com)\/.*, script-path=https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili.js, requires-body=true, max-size=0
 
 # ===== 淘宝 =====
 taobao =type=http-response, pattern=^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.taobao\.(cloudvideo\.video\.query|wireless\.home\.splash\.awesome\.get), script-path=https://xiangwanguan.github.io/Shadowrocket/Rewrite/JavaScript/taobao.js, requires-body=true, max-size=0
 taobao =type=http-response, pattern=^https?:\/\/poplayer\.template\.alibaba\.com\/\w+\.json, script-path=https://xiangwanguan.github.io/Shadowrocket/Rewrite/JavaScript/taobao.js, requires-body=true, max-size=0
 
 [MITM]
-hostname = %APPEND% -youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtubei.googleapis.com,-youtube.googleapis.com,-*.googlevideo.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,bootpreload.uve.weibo.com,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m5.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,media.5th.zone,i.4009515151.com,data.ab.qq.com,hd2.3g.qq.com
+hostname = %APPEND% -youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtubei.googleapis.com,-youtube.googleapis.com,-*.googlevideo.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,bootpreload.uve.weibo.com,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m5.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone
