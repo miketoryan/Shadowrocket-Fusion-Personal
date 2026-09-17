@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-09-17 23:17
+#!desc=仓库更新时间：2026-09-17 23:42
 
 [Rule]
 
@@ -8,7 +8,7 @@ DOMAIN,api.5th.zone,DIRECT
 DOMAIN,media.5th.zone,DIRECT
 DOMAIN,i.4009515151.com,DIRECT
 
-# ===== 2026-09-17 精准开屏补丁：12306 / B站 / 百度地图 / 美图秀秀 / 微店 =====
+# ===== 2026-09-17 精准开屏补丁：12306 / B站 / 百度地图 / 美图秀秀 / 微店 / 微博 / QQ音乐 / 下厨房 =====
 DOMAIN,ad.12306.cn,REJECT,extended-matching,pre-matching
 DOMAIN,afd.baidu.com,REJECT,extended-matching,pre-matching
 DOMAIN,afdconf.baidu.com,REJECT,extended-matching,pre-matching
@@ -20,6 +20,21 @@ DOMAIN,meitubeauty.meitudata.com,REJECT,extended-matching,pre-matching
 DOMAIN,xiuxiu.mobile.meitudata.com,REJECT,extended-matching,pre-matching
 DOMAIN,adservice.sigmob.cn,REJECT,extended-matching,pre-matching
 DOMAIN,tm.sigmob.cn,REJECT,extended-matching,pre-matching
+DOMAIN,bootpreload.uve.weibo.com,REJECT,extended-matching,pre-matching
+DOMAIN,adstats.tencentmusic.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.tencentmusic.com,REJECT,extended-matching,pre-matching
+DOMAIN,adcdn.tencentmusic.com,REJECT,extended-matching,pre-matching
+DOMAIN,adcdn6.tencentmusic.com,REJECT,extended-matching,pre-matching
+DOMAIN,adexpo.tencentmusic.com,REJECT,extended-matching,pre-matching
+DOMAIN,adclick.tencentmusic.com,REJECT,extended-matching,pre-matching
+DOMAIN,tmead.y.qq.com,REJECT,extended-matching,pre-matching
+DOMAIN,tmeadbak.y.qq.com,REJECT,extended-matching,pre-matching
+DOMAIN,tmeadcomm.y.qq.com,REJECT,extended-matching,pre-matching
+DOMAIN,p4-ad.adukwai.com,REJECT,extended-matching,pre-matching
+DOMAIN,p66-ad.adkwai.com,REJECT,extended-matching,pre-matching
+DOMAIN,ssp.1rtb.com,REJECT,extended-matching,pre-matching
+DOMAIN,ztoken.uyunad.com,REJECT,extended-matching,pre-matching
+
 
 # ===== 腾讯手机管家：本轮日志补漏 =====
 DOMAIN,rpt.gdt.qq.com,REJECT,extended-matching,pre-matching
@@ -925,7 +940,10 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 ^https?:\/\/newclient\.map\.baidu\.com\/client\/phpui2\/\?qt=ads(?:&.*)?$ - reject-dict
 ^https?:\/\/mea\.meitudata\.com\/kaiping(?:\?.*)?$ - reject
 ^https?:\/\/thor\.weidian\.com\/ares\/home\.splash(?:\?.*)?$ - reject-200
+^https?:\/\/api\.xiachufang\.com\/v\d\/ad/ - reject
 ^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(brand\/list|event\/list2)(?:\?.*)?$ - reject-dict
+
+
 
 
 # ===== 腾讯手机管家 + 住这儿 开屏广告 =====
@@ -957,7 +975,6 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 # ===== 微博 / 微博国际版 =====
 ^https?:\/\/weibointl\.api\.weibo\.cn\/portal\.php\?.*a=get_coopen_ads(?:&|$).* - reject
 ^https?:\/\/api\.weibo\.cn\/2\/ad\/weibointl(?:\?|$).* - reject
-^https?:\/\/bootpreload\.uve\.weibo\.com\/v1\/ad\/preload$ - reject
 ^https?:\/\/api\.weibo\.cn\/2\/ad\/ - reject-dict
 ^https?:\/\/tqt\.weibo\.cn\/.*advert - reject
 ^https?:\/\/tqt\.weibo\.cn\/overall\/redirect\.php\?r=(tqt_sdkad|tqtad) - reject
@@ -1033,6 +1050,8 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 # ===== B站开屏 list/show：app2smile 固定版本，仅清理广告响应 =====
 bili-splash =type=http-response, pattern=^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(list|show)(?:\?.*)?$, script-path=https://raw.githubusercontent.com/app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js, requires-body=true, max-size=0
 
+
+
 # ===== 住这儿：广告 API 返回空列表 =====
 zhuzher_ads_empty =type=http-response, pattern=^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/zhuzher_ads_empty.js, requires-body=true, max-size=0
 
@@ -1049,4 +1068,4 @@ taobao =type=http-response, pattern=^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/m
 taobao =type=http-response, pattern=^https?:\/\/poplayer\.template\.alibaba\.com\/\w+\.json, script-path=https://xiangwanguan.github.io/Shadowrocket/Rewrite/JavaScript/taobao.js, requires-body=true, max-size=0
 
 [MITM]
-hostname = %APPEND% -youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtubei.googleapis.com,-youtube.googleapis.com,-*.googlevideo.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,bootpreload.uve.weibo.com,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m1.amap.com,m2.amap.com,m3.amap.com,m4.amap.com,m5.amap.com,m6.amap.com,m7.amap.com,m8.amap.com,m9.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,newclient.map.baidu.com,mea.meitudata.com,thor.weidian.com
+hostname = %APPEND% -youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtubei.googleapis.com,-youtube.googleapis.com,-*.googlevideo.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,bootpreload.uve.weibo.com,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m1.amap.com,m2.amap.com,m3.amap.com,m4.amap.com,m5.amap.com,m6.amap.com,m7.amap.com,m8.amap.com,m9.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,newclient.map.baidu.com,mea.meitudata.com,thor.weidian.com,api.xiachufang.com
