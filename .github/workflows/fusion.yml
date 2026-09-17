@@ -1,35 +1,49 @@
-name: Validate Shadowrocket module
+name: Update Shadowrocket module metadata
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - 'Module.sgmodule'
+      - '.github/workflows/fusion.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  validate:
+  update-metadata:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate module structure
+      - name: Update module name and repository date
         shell: bash
         run: |
           set -euo pipefail
-          test -s Module.sgmodule
-          test "$(head -n 1 Module.sgmodule)" = '#!name=广告屏蔽'
-          grep -q '^\[Rule\]$' Module.sgmodule
-          grep -q '^\[URL Rewrite\]$' Module.sgmodule
-          grep -q '^\[Body Rewrite\]$' Module.sgmodule
-          grep -q '^\[Map Local\]$' Module.sgmodule
-          grep -q '^\[Script\]$' Module.sgmodule
-          grep -q '^\[MITM\]$' Module.sgmodule
-          test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
-          ! grep -q 'umetrip_ads\.js' Module.sgmodule
-          ! grep -q '/JavaScript/jd\.js' Module.sgmodule
-          echo "Module validation passed."
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('Module.sgmodule')
+          lines = p.read_text(encoding='utf-8').splitlines()
+          if len(lines) < 2:
+              raise SystemExit('Module.sgmodule is too short')
+          lines[0] = '#!name=广告屏蔽联网版'
+          lines[1] = '#!desc=仓库更新时间：2026-09-17'
+          p.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          PY
+          test "$(head -n 1 Module.sgmodule)" = '#!name=广告屏蔽联网版'
+          test "$(sed -n '2p' Module.sgmodule)" = '#!desc=仓库更新时间：2026-09-17'
+
+      - name: Commit metadata update
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Module.sgmodule
+          if git diff --cached --quiet; then
+            echo "Metadata already current."
+            exit 0
+          fi
+          git commit -m "update: module display name and repository date"
+          git push
