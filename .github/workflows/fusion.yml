@@ -32,16 +32,16 @@ jobs:
           module = Path('Module.sgmodule')
           lines = module.read_text('utf-8').splitlines()
 
-          # 1) 住这儿正式空列表脚本保持不变。
-          #    本轮日志已确认脚本实际执行；若首屏仍出现，更符合“先展示旧缓存、再联网更新”的行为。
+          # 1) 住这儿正式空列表脚本保持不变；当前已确认开屏广告消失。
 
-          # 2) 腾讯手机管家：content.rconfig.qq.com 只命中 GetLogConfigService，排除为广告源。
-          #    下一轮只观察 luban.m.qq.com 的具体 HTTPS 路径，不阻断。
+          # 2) 腾讯手机管家：luban.m.qq.com 本轮仅命中 VIP/权益接口，排除为开屏广告源。
+          #    下一轮只观察 tmfmazu 主/备域名的具体 HTTPS 路径，不阻断。
           remove_mitm = {
               'content.rconfig.qq.com',
               'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn',
+              'luban.m.qq.com',
           }
-          add_mitm = ['api.5th.zone', 'luban.m.qq.com']
+          add_mitm = ['api.5th.zone', 'tmfmazu.m.qq.com', 'tmfmazu4.m.qq.com']
           for i, line in enumerate(lines):
               if line.startswith('hostname = '):
                   hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
@@ -92,7 +92,9 @@ jobs:
           grep -q '^DOMAIN,i\.4009515151\.com,DIRECT$' Module.sgmodule
           grep -Fq 'zhuzher_ads_empty.js' Module.sgmodule
           grep '^hostname = ' Module.sgmodule | grep -q 'api.5th.zone'
-          grep '^hostname = ' Module.sgmodule | grep -q 'luban.m.qq.com'
+          grep '^hostname = ' Module.sgmodule | grep -q 'tmfmazu.m.qq.com'
+          grep '^hostname = ' Module.sgmodule | grep -q 'tmfmazu4.m.qq.com'
+          ! grep '^hostname = ' Module.sgmodule | grep -q 'luban.m.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'content.rconfig.qq.com'
           ! grep '^hostname = ' Module.sgmodule | grep -q 'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn'
           ! grep -q 'app2smile/rules/master/js/bilibili\.js' Module.sgmodule
@@ -111,5 +113,5 @@ jobs:
             echo "No refined module change needed."
             exit 0
           fi
-          git commit -m "diag: inspect Tencent luban path"
+          git commit -m "diag: inspect Tencent tmfmazu paths"
           git push
