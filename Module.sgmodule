@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-09-17 15:40
+#!desc=仓库更新时间：2026-09-17 15:41
 
 [Rule]
 
@@ -39,7 +39,6 @@ DOMAIN,adslvseed.qq.com,REJECT,extended-matching,pre-matching
 DOMAIN,pgdt.ugdtimg.com,REJECT,extended-matching,pre-matching
 DOMAIN,adsmind.ugdtimg.com,REJECT,extended-matching,pre-matching
 DOMAIN,v2mi.gdt.qq.com,REJECT,extended-matching,pre-matching
-# 豆瓣开屏：2026-09-17 日志实证漏网的 GDT 素材 / QUIC 主机
 
 # ===== 后续增强：网易云音乐广告素材 =====
 DOMAIN,iadmusicmatvideo.music.126.net,REJECT,extended-matching,pre-matching
