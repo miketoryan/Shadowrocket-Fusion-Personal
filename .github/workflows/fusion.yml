@@ -233,11 +233,10 @@ jobs:
           ! grep -Fq '^https?:\/\/bootpreload\.uve\.weibo\.com\/v1\/ad\/preload$ - reject' Module.sgmodule
 
           test -s scripts/xianyu_splash.js
-          grep -Fq 'xianyu_splash.js' Module.sgmodule
-          grep -Fq 'idlecommerce\\.splash\\.(?:async\\.)?ads' Module.sgmodule
-          grep -Fq 'idleadv\\.scene\\.restore' Module.sgmodule
-          grep -Fq 'idleadv\\.app\\.launch\\.report' Module.sgmodule
-          ! grep -Fq '^https?:\\/\\/acs\\.m\\.goofish\\.com\\/gw\\/mtop\\.taobao\\.idlecommerce\\.splash\\.ads\\/ - reject-dict' Module.sgmodule
+          grep -Fq 'xianyu-splash =type=http-response' Module.sgmodule
+          grep -Fq 'xianyu-scene-restore =type=http-response' Module.sgmodule
+          grep -Fq 'xianyu-launch-report =type=http-response' Module.sgmodule
+          ! grep -Fq 'mtop\.taobao\.idlecommerce\.splash\.ads\/ - reject-dict' Module.sgmodule
 
           grep -Fq 'app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js' Module.sgmodule
           ! grep -Fq '^https?:\/\/app\.bilibili\.com\/x\/v\d+\/splash\/.* - reject-dict' Module.sgmodule
