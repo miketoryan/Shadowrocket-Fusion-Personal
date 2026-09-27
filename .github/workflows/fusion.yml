@@ -131,6 +131,18 @@ jobs:
           lines[url_idx:url_idx] = ['', url_comment, baidu_map_rewrite, meitu_rewrite,
                                     weidian_rewrite, xiachufang_rewrite, bili_aux_rewrite, '']
 
+          xianyu_old_rewrite = '^https?:\\/\\/acs\\.m\\.goofish\\.com\\/gw\\/mtop\\.taobao\\.idlecommerce\\.splash\\.ads\\/ - reject-dict'
+          xianyu_script_comment = '# ===== 闲鱼：开屏 / 广告场景恢复（2026-09-27 日志实证） ====='
+          xianyu_scripts = [
+              ('xianyu-splash =type=http-response, pattern=^https?:\\/\\/(?:g-)?acs\\.m\\.goofish\\.com\\/gw\\/mtop\\.taobao\\.idlecommerce\\.splash\\.(?:async\\.)?ads\\/(?:1\\.0|2\\.0)\\/?(?:\\?.*)?$, '
+               'script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0'),
+              ('xianyu-scene-restore =type=http-response, pattern=^https?:\\/\\/(?:g-)?acs\\.m\\.goofish\\.com\\/gw\\/mtop\\.idle\\.idleadv\\.scene\\.restore\\/1\\.0\\/?(?:\\?.*)?$, '
+               'script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0'),
+              ('xianyu-launch-report =type=http-response, pattern=^https?:\\/\\/(?:g-)?acs\\.m\\.goofish\\.com\\/gw\\/mtop\\.idle\\.idleadv\\.app\\.launch\\.report\\/1\\.0\\/?(?:\\?.*)?$, '
+               'script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0'),
+          ]
+          remove_all([xianyu_old_rewrite, xianyu_script_comment, *xianyu_scripts])
+
           bili_script_comment = '# ===== B站开屏 list/show：app2smile 固定版本，仅清理广告响应 ====='
           bili_script = ('bili-splash =type=http-response, pattern=^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/(list|show)(?:\\?.*)?$, '
                          'script-path=https://raw.githubusercontent.com/app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js, '
@@ -140,7 +152,7 @@ jobs:
               script_idx = lines.index('[Script]') + 1
           except ValueError:
               raise SystemExit('[Script] missing')
-          lines[script_idx:script_idx] = ['', bili_script_comment, bili_script, '']
+          lines[script_idx:script_idx] = ['', xianyu_script_comment, *xianyu_scripts, '', bili_script_comment, bili_script, '']
 
           required_mitm = [
               'newclient.map.baidu.com',
@@ -219,6 +231,13 @@ jobs:
           grep -Fq '^https?:\/\/thor\.weidian\.com\/ares\/home\.splash(?:\?.*)?$ - reject-200' Module.sgmodule
           grep -Fq '^https?:\/\/api\.xiachufang\.com\/v\d\/ad/ - reject' Module.sgmodule
           ! grep -Fq '^https?:\/\/bootpreload\.uve\.weibo\.com\/v1\/ad\/preload$ - reject' Module.sgmodule
+
+          test -s scripts/xianyu_splash.js
+          grep -Fq 'xianyu_splash.js' Module.sgmodule
+          grep -Fq 'idlecommerce\\.splash\\.(?:async\\.)?ads' Module.sgmodule
+          grep -Fq 'idleadv\\.scene\\.restore' Module.sgmodule
+          grep -Fq 'idleadv\\.app\\.launch\\.report' Module.sgmodule
+          ! grep -Fq '^https?:\\/\\/acs\\.m\\.goofish\\.com\\/gw\\/mtop\\.taobao\\.idlecommerce\\.splash\\.ads\\/ - reject-dict' Module.sgmodule
 
           grep -Fq 'app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js' Module.sgmodule
           ! grep -Fq '^https?:\/\/app\.bilibili\.com\/x\/v\d+\/splash\/.* - reject-dict' Module.sgmodule

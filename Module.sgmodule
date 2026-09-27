@@ -1009,7 +1009,6 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 ^https?:\/\/acs\.m\.taobao\.com\/gw\/mtop\.alibaba\.advertisementservice\.getadv - reject-dict
 
 # ===== 闲鱼：只保留开屏/搜索广告入口 =====
-^https?:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlecommerce\.splash\.ads\/ - reject-dict
 ^https?:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\.shade\/ - reject-dict
 
 [Body Rewrite]
@@ -1049,6 +1048,12 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 ^https?:\/\/i1\.hdslb\.com\/bfs\/archive\/.* data-type=text data="" status-code=200
 
 [Script]
+
+# ===== 闲鱼：开屏 / 广告场景恢复（2026-09-27 日志实证） =====
+xianyu-splash =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlecommerce\.splash\.(?:async\.)?ads\/(?:1\.0|2\.0)\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0
+xianyu-scene-restore =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.idle\.idleadv\.scene\.restore\/1\.0\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0
+xianyu-launch-report =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.idle\.idleadv\.app\.launch\.report\/1\.0\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0
+
 
 # ===== B站开屏 list/show：app2smile 固定版本，仅清理广告响应 =====
 bili-splash =type=http-response, pattern=^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(list|show)(?:\?.*)?$, script-path=https://raw.githubusercontent.com/app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js, requires-body=true, max-size=0
