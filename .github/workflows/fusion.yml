@@ -238,7 +238,9 @@ jobs:
             test "$(grep -Fc "DOMAIN,$d,REJECT,extended-matching,pre-matching" Module.sgmodule)" -eq 1
           done
 
-          grep -q '^DOMAIN-SUFFIX,qchannel03\.cn,REJECT,extended-matching,pre-matching
+          grep -q '^DOMAIN-SUFFIX,qchannel03\.cn,REJECT,extended-matching,pre-matching$' Module.sgmodule
+          grep -Fq '^https?:\/\/m\d\.amap\.com\/ws\/valueadded\/alimama\/splash_screen\/?(?:\?|$) - reject-dict' Module.sgmodule
+          grep -Fq '^https?:\/\/newclient\.map\.baidu\.com\/client\/phpui2\/\?qt=ads(?:&.*)?$ - reject-dict' Module.sgmodule
           grep -Fq '^https?:\/\/mea\.meitudata\.com\/kaiping(?:\?.*)?$ - reject' Module.sgmodule
           grep -Fq '^https?:\/\/thor\.weidian\.com\/ares\/home\.splash(?:\?.*)?$ - reject-200' Module.sgmodule
           grep -Fq '^https?:\/\/api\.xiachufang\.com\/v\d\/ad/ - reject' Module.sgmodule
