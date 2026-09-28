@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-09-28 11:22
+#!desc=仓库更新时间：2026-09-28 11:23
 
 [Rule]
 
@@ -34,6 +34,7 @@ DOMAIN,p4-ad.adukwai.com,REJECT,extended-matching,pre-matching
 DOMAIN,p66-ad.adkwai.com,REJECT,extended-matching,pre-matching
 DOMAIN,ssp.1rtb.com,REJECT,extended-matching,pre-matching
 DOMAIN,ztoken.uyunad.com,REJECT,extended-matching,pre-matching
+
 
 
 
@@ -957,6 +958,8 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 
 
 
+
+
 # ===== 腾讯手机管家 + 住这儿 开屏广告 =====
 # ===== 住这儿：广告接口 =====
 
@@ -1064,6 +1067,9 @@ xianyu-launch-report =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goo
 
 # ===== B站开屏 list/show：app2smile 固定版本，仅清理广告响应 =====
 bili-splash =type=http-response, pattern=^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(list|show)(?:\?.*)?$, script-path=https://raw.githubusercontent.com/app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js, requires-body=true, max-size=0
+
+
+
 
 
 
