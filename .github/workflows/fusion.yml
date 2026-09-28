@@ -107,18 +107,6 @@ jobs:
           for i, line in enumerate(lines):
               if line.startswith('^https?:\\/\\/m5\\.amap\\.com\\/ws\\/'):
                   lines[i] = line.replace('m5\\.amap\\.com', 'm\\d\\.amap\\.com', 1)
-          amap_qchannel_comment = '# 高德启动补漏：2026-09-28 日志实证 + 217heidai 收录的 qchannel03 广告域'
-          amap_qchannel_rule = 'DOMAIN-SUFFIX,qchannel03.cn,REJECT,extended-matching,pre-matching'
-          remove_all([amap_qchannel_comment, amap_qchannel_rule])
-          insert_after('DOMAIN,free-aos-cdn-image.amap.com,REJECT,extended-matching,pre-matching',
-                       [amap_qchannel_comment, amap_qchannel_rule])
-
-          amap_splash_old = '^https?:\\/\\/m\\d\\.amap\\.com\\/ws\\/valueadded\\/alimama\\/splash_screen(?:\\?|$) - reject-dict'
-          amap_splash_new = '^https?:\\/\\/m\\d\\.amap\\.com\\/ws\\/valueadded\\/alimama\\/splash_screen\\/?(?:\\?|$) - reject-dict'
-          remove_all([amap_splash_old, amap_splash_new])
-          insert_after('^https?:\\/\\/m\\d\\.amap\\.com\\/ws\\/shield\\/dsp\\/app\\/startup\\/init(?:\\?|$) - reject-dict',
-                       [amap_splash_new])
-
 
           url_comment = '# ===== 精准开屏接口：成熟库规则 + 本机日志交叉验证 ====='
           baidu_map_rewrite = '^https?:\\/\\/newclient\\.map\\.baidu\\.com\\/client\\/phpui2\\/\\?qt=ads(?:&.*)?$ - reject-dict'
@@ -238,51 +226,6 @@ jobs:
             test "$(grep -Fc "DOMAIN,$d,REJECT,extended-matching,pre-matching" Module.sgmodule)" -eq 1
           done
 
-          grep -q '^DOMAIN-SUFFIX,qchannel03\.cn,REJECT,extended-matching,pre-matching$' Module.sgmodule
-          grep -Fq '^https?:\/\/m\d\.amap\.com\/ws\/valueadded\/alimama\/splash_screen\/?(?:\?|$) - reject-dict' Module.sgmodule
-          grep -Fq '^https?:\/\/newclient\.map\.baidu\.com\/client\/phpui2\/\?qt=ads(?:&.*)?$ - reject-dict' Module.sgmodule
-          grep -Fq '^https?:\/\/mea\.meitudata\.com\/kaiping(?:\?.*)?$ - reject' Module.sgmodule
-          grep -Fq '^https?:\/\/thor\.weidian\.com\/ares\/home\.splash(?:\?.*)?$ - reject-200' Module.sgmodule
-          grep -Fq '^https?:\/\/api\.xiachufang\.com\/v\d\/ad/ - reject' Module.sgmodule
-          ! grep -Fq '^https?:\/\/bootpreload\.uve\.weibo\.com\/v1\/ad\/preload$ - reject' Module.sgmodule
-
-          test -s scripts/xianyu_splash.js
-          grep -Fq 'xianyu-splash =type=http-response' Module.sgmodule
-          grep -Fq 'xianyu-scene-restore =type=http-response' Module.sgmodule
-          grep -Fq 'xianyu-launch-report =type=http-response' Module.sgmodule
-          ! grep -Fq 'mtop\.taobao\.idlecommerce\.splash\.ads\/ - reject-dict' Module.sgmodule
-
-          grep -Fq 'app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js' Module.sgmodule
-          ! grep -Fq '^https?:\/\/app\.bilibili\.com\/x\/v\d+\/splash\/.* - reject-dict' Module.sgmodule
-
-          for h in app.bilibili.com newclient.map.baidu.com mea.meitudata.com thor.weidian.com api.xiachufang.com; do
-            grep '^hostname = ' Module.sgmodule | grep -q "$h"
-          done
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'y.gtimg.cn'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'music.y.qq.com'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'bootpreload.uve.weibo.com'
-
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'hd2.3g.qq.com'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'data.ab.qq.com'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'tmfmazu.m.qq.com'
-          ! grep -q '/JavaScript/jd\.js' Module.sgmodule
-          echo "Refined module validation passed."
-
-      - name: Commit refined module
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Module.sgmodule README.md
-          if git diff --cached --quiet; then
-            echo "No refined module change needed."
-            exit 0
-          fi
-          git commit -m "chore: remove obsolete Weibo MITM host"
-          git push
- Module.sgmodule
-          grep -Fq '^https?:\/\/m\d\.amap\.com\/ws\/valueadded\/alimama\/splash_screen\/?(?:\?|$) - reject-dict' Module.sgmodule
           grep -Fq '^https?:\/\/newclient\.map\.baidu\.com\/client\/phpui2\/\?qt=ads(?:&.*)?$ - reject-dict' Module.sgmodule
           grep -Fq '^https?:\/\/mea\.meitudata\.com\/kaiping(?:\?.*)?$ - reject' Module.sgmodule
           grep -Fq '^https?:\/\/thor\.weidian\.com\/ares\/home\.splash(?:\?.*)?$ - reject-200' Module.sgmodule
