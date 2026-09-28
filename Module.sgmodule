@@ -80,6 +80,8 @@ DOMAIN,ad.bn.netease.com,REJECT,extended-matching,pre-matching
 # ===== 后续增强：高德地图 =====
 DOMAIN,amap-aos-info-nogw.amap.com,REJECT,extended-matching,pre-matching
 DOMAIN,free-aos-cdn-image.amap.com,REJECT,extended-matching,pre-matching
+# 高德启动补漏：2026-09-28 日志实证 + 217heidai 收录的 qchannel03 广告域
+DOMAIN-SUFFIX,qchannel03.cn,REJECT,extended-matching,pre-matching
 
 # ===== 后续增强：微信公众号广告媒体 =====
 DOMAIN,wxa.wxs.qq.com,REJECT,extended-matching,pre-matching
@@ -969,7 +971,7 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 # ===== 后续增强：高德地图开屏 / 推广 =====
 ^https?:\/\/m\d\.amap\.com\/ws\/feature\/preheat\/bootevent(?:\?|$) - reject-dict
 ^https?:\/\/m\d\.amap\.com\/ws\/shield\/dsp\/app\/startup\/init(?:\?|$) - reject-dict
-^https?:\/\/m\d\.amap\.com\/ws\/valueadded\/alimama\/splash_screen(?:\?|$) - reject-dict
+^https?:\/\/m\d\.amap\.com\/ws\/valueadded\/alimama\/splash_screen\/?(?:\?|$) - reject-dict
 ^https?:\/\/oss\.amap\.com\/ws\/banner\/lists\/\? - reject-dict
 ^https?:\/\/m\d\.amap\.com\/ws\/shield\/search_poi\/tips_adv\? - reject-dict
 
