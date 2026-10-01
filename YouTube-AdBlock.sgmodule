@@ -1,8 +1,7 @@
 #!name=YouTube 去广告
-#!desc=Shadowrocket 专用｜YouTube 视频贴片/中插及页面广告过滤｜更新时间：2026-10-02 07:47
+#!desc=仓库更新时间：2026-10-02 07:46
 #!author=Custom
-#!version=1.2.1
-#!date=2026-10-02 07:47
+#!version=1.2.2
 
 [Rule]
 AND,((DOMAIN-SUFFIX,googlevideo.com),(PROTOCOL,UDP)),REJECT
