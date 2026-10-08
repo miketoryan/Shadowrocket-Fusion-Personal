@@ -36,12 +36,6 @@ DOMAIN,ssp.1rtb.com,REJECT,extended-matching,pre-matching
 DOMAIN,ztoken.uyunad.com,REJECT,extended-matching,pre-matching
 
 
-
-
-
-
-
-
 # ===== 腾讯手机管家：本轮日志补漏 =====
 DOMAIN,rpt.gdt.qq.com,REJECT,extended-matching,pre-matching
 
@@ -52,6 +46,8 @@ DOMAIN,bdlog.tanx.com,REJECT,extended-matching,pre-matching
 DOMAIN,ipm.atm.youku.com,REJECT,extended-matching,pre-matching
 AND,((DOMAIN,acs.m.goofish.com),(PROTOCOL,UDP)),REJECT
 AND,((DOMAIN,g-acs.m.goofish.com),(PROTOCOL,UDP)),REJECT
+# 闲鱼 HTTPDNS：按 fmz200 的窄匹配方式拦截，防止 acs/g-acs 解析为裸 IP 绕过 MITM
+AND,((URL-REGEX,"^http:\/\/.+\/amdc\/mobileDispatch"),(USER-AGENT,"%E9%97%B2%E9%B1%BC*")),REJECT
 
 # ===== 腾讯手机助手 / 手机管家补充 =====
 DOMAIN,snowflake.qq.com,REJECT,extended-matching,pre-matching
@@ -135,6 +131,8 @@ DOMAIN,sdk.e.qq.com,REJECT,extended-matching,pre-matching
 DOMAIN,sdkquic.e.qq.com,REJECT,extended-matching,pre-matching
 DOMAIN,mobads.baidu.com,REJECT,extended-matching,pre-matching
 DOMAIN,mobads-logs.baidu.com,REJECT,extended-matching,pre-matching
+# 百度广告 SDK 预配置：2026-10-08 日志实证 + AWAvenue / 217heidai / blackmatrix7 交叉确认
+DOMAIN,mobads-pre-config.cdn.bcebos.com,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,ubixioe.com,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,adn-plus.com.cn,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,ad-scope.com.cn,REJECT,extended-matching,pre-matching
@@ -307,6 +305,8 @@ DOMAIN,ads.jd.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.taobao.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.tmall.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.pinduoduo.com,REJECT,extended-matching,pre-matching
+# 拼多多：2026-10-08 日志实证的推广素材 CDN，仅精确主机
+DOMAIN,promotion-1.pddpic.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.meituan.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.dianping.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.ele.me,REJECT,extended-matching,pre-matching
@@ -952,20 +952,6 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 ^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(brand\/list|event\/list2)(?:\?.*)?$ - reject-dict
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ===== 腾讯手机管家 + 住这儿 开屏广告 =====
 # ===== 住这儿：广告接口 =====
 
@@ -1075,31 +1061,11 @@ xianyu-launch-report =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goo
 bili-splash =type=http-response, pattern=^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(list|show)(?:\?.*)?$, script-path=https://raw.githubusercontent.com/app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js, requires-body=true, max-size=0
 
 
-
-
-
 # 闲鱼 HTTPDNS：移除 acs/g-acs 专属解析，防止直连 IP 绕过 MITM/响应规则
-xianyu-httpdns =type=http-response, pattern=^http:\/\/(?:amdc\.m\.taobao\.com|(?:\d{1,3}\.){3}\d{1,3})(?::\d+)?\/amdc\/mobileDispatch\?(?:[^&#]*&)*appkey=12431167(?:&[^#]*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=1048576
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # ===== 住这儿：广告 API 返回空列表 =====
 zhuzher_ads_empty =type=http-response, pattern=^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/zhuzher_ads_empty.js, requires-body=true, max-size=0
-
-
 
 
 # ===== 豆瓣 =====
@@ -1107,9 +1073,9 @@ douban =type=http-response, pattern=^https?:\/\/api\.douban\.com\/.*, script-pat
 
 # ===== B站 =====
 
-# ===== 淘宝 =====
-taobao =type=http-response, pattern=^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.taobao\.(cloudvideo\.video\.query|wireless\.home\.splash\.awesome\.get), script-path=https://xiangwanguan.github.io/Shadowrocket/Rewrite/JavaScript/taobao.js, requires-body=true, max-size=0
-taobao =type=http-response, pattern=^https?:\/\/poplayer\.template\.alibaba\.com\/\w+\.json, script-path=https://xiangwanguan.github.io/Shadowrocket/Rewrite/JavaScript/taobao.js, requires-body=true, max-size=0
+# ===== 淘宝：固定 fmz200 已审核版本，修复原远程脚本 404 =====
+taobao =type=http-response, pattern=^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.taobao\.(cloudvideo\.video\.query|wireless\.home\.splash\.awesome\.get), script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97/Scripts/myBlockAds.js, requires-body=true, max-size=0
+taobao =type=http-response, pattern=^https?:\/\/poplayer\.template\.alibaba\.com\/\w+\.json, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97/Scripts/myBlockAds.js, requires-body=true, max-size=0
 
 [MITM]
 hostname = %APPEND% -youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtube.googleapis.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m1.amap.com,m2.amap.com,m3.amap.com,m4.amap.com,m5.amap.com,m6.amap.com,m7.amap.com,m8.amap.com,m9.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,newclient.map.baidu.com,mea.meitudata.com,thor.weidian.com,api.xiachufang.com
