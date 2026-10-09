@@ -90,7 +90,7 @@ https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/M
 ## 手动导入的混合分流配置
 
 - **文件：** `profiles/Smart-Hybrid-AI-Remote-DNS-Test-Fixed.conf`
-- **用途：** AI / Google 域名强制代理并远程解析 DNS；中国 IP 直连；未命中规则的流量由代理兜底。
+- **用途：** AI / Google 域名强制代理并远程解析 DNS；中国 IP 和 Apple TV（`tv.apple.com`）直连；未命中规则的流量由代理兜底。
 - **下载：** https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/profiles/Smart-Hybrid-AI-Remote-DNS-Test-Fixed.conf
 - **安全说明：** 公开版本不包含 MITM CA 证书、私钥或口令。需要 MITM 时，请在设备上使用自己的私有证书；不要将证书密钥提交到仓库。
 - 这是独立的手动导入配置；正式广告订阅文件仍为 `Module.sgmodule`。
