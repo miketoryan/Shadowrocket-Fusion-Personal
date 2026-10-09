@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-10-09 12:55
+#!desc=仓库更新时间：2026-10-09 13:44
 
 [Rule]
 
@@ -110,14 +110,6 @@ DOMAIN-SUFFIX,madboxi.com,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,datads.cn,REJECT,extended-matching,pre-matching
 # 本次开屏广告伴随调用
 DOMAIN,api.yellow-river.cn,REJECT,extended-matching,pre-matching
-
-# ===== 合并补充：YouTube 路由保护 =====
-DOMAIN,youtubei.googleapis.com,📹 油管视频
-DOMAIN,youtube.googleapis.com,📹 油管视频
-DOMAIN-SUFFIX,youtube.com,📹 油管视频
-DOMAIN-SUFFIX,googlevideo.com,📹 油管视频
-DOMAIN-SUFFIX,ytimg.com,📹 油管视频
-DOMAIN-SUFFIX,youtu.be,📹 油管视频
 
 # ===== 合并补充：夸克 / 穿山甲广告 =====
 DOMAIN-KEYWORD,pangolin-sdk-toutiao,REJECT,extended-matching,pre-matching
@@ -264,8 +256,6 @@ DOMAIN,adspecs.yahoo.com,REJECT,extended-matching,pre-matching
 DOMAIN,gemini.yahoo.com,REJECT,extended-matching,pre-matching
 DOMAIN,global.adserver.yahoo.com,REJECT,extended-matching,pre-matching
 DOMAIN,partners.tremorhub.com,REJECT,extended-matching,pre-matching
-DOMAIN,ads.youtube.com,REJECT,extended-matching,pre-matching
-DOMAIN,ad.youtube.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.nicovideo.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.ookla.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.sportradar.com,REJECT,extended-matching,pre-matching
