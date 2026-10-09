@@ -92,7 +92,7 @@ https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/M
 ## 手动导入的混合分流配置
 
 - **文件：** `profiles/Smart-Hybrid-AI-Remote-DNS-Test-Fixed.conf`
-- **用途：** AI / Google 域名强制代理并远程解析 DNS；中国 IP 和 Apple TV（`tv.apple.com`、`tv.applemusic.com`）直连；未命中规则的流量由代理兜底。
+- **用途：** AI / Google 域名强制代理并远程解析 DNS；中国 IP 和 Apple TV 业务域名族（`tv.apple.com`、`videos.apple.com`、`itunes.apple.com`、`tv.applemusic.com`、`appletv.com`）直连；未命中规则的流量由代理兜底。
 - **下载：** https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/profiles/Smart-Hybrid-AI-Remote-DNS-Test-Fixed.conf
 - **安全说明：** 公开版本不包含 MITM CA 证书、私钥或口令。需要 MITM 时，请在设备上使用自己的私有证书；不要将证书密钥提交到仓库。
 - 这是独立的手动导入配置；正式广告订阅文件仍为 `Module.sgmodule`。
@@ -111,3 +111,11 @@ https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/M
 2. `apple-pay-gateway.apple.com`、`cn-apple-pay-gateway.apple.com` 仍为直连；设备私有配置保留支付网关的不解密排除项。公开配置不附带私有证书。
 3. 脚本名称唯一，YouTube 去广告及旧“油管视频”策略引用没有重新引入。
 4. 本次仓库静态核对只涵盖这份主配置、广告模块与读取时的在线列表。手机上其他启用模块、缓存和真实播放/支付请求需以设备记录为准；静态核对不能保证播放速度。
+
+## Apple TV 日志补齐（2026-10-09 18:39，北京时间）
+
+- 本机 18:33 日志中，`amp-api.videos.apple.com` 曾命中通用 `apple.com` 代理规则。本次增加 `DOMAIN-SUFFIX,videos.apple.com,DIRECT`，覆盖该视频接口域名族。
+- 增加 `DOMAIN-SUFFIX,appletv.com,DIRECT`；将原由在线列表提供的 `itunes.apple.com` 直连明确写入主配置，保留 `tv.apple.com` 和 `tv.applemusic.com` 直连。五条规则均在在线通用规则之前。
+- 参考 blackmatrix7 的 AppleTV 专项列表、v2fly 的 apple-tvplus 列表、LM-Firefly 的 AppleMedia 列表，并用本机日志补齐；这些上游专项表本身不保证列出 App 的所有依赖。
+- DNS、Apple Pay、手动节点选择和广告模块保持原设置。已核对本仓库广告模块不匹配上述域名；其他设备端模块需以手机实际匹配结果为准。
+- 导入并选中新版主配置，在“配置”路由模式下重新打开 Apple TV，测试播放、切换影片和拖动进度，再核对日志。覆盖已知请求不等于保证直连速度，未知或新增域名仍可能需要补充。
