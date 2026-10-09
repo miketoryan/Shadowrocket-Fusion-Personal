@@ -3,7 +3,7 @@
 这是一个用于 **Shadowrocket（小火箭）** 的个人广告屏蔽模块仓库，目标是在尽量保持联网稳定、减少误杀和降低 MITM 范围的前提下，屏蔽常用 App 的开屏广告、信息流广告、推广接口及常见第三方广告 SDK。
 
 - **模块名称：** 广告屏蔽联网版
-- **最近更新时间：** 2026-10-09 18:29
+- **最近更新时间：** 2026-10-09 19:02
 - **正式订阅文件：** `Module.sgmodule`
 - **维护方式：** 先更新 GitHub 仓库规则，再由手机端通过订阅链接更新
 
@@ -39,7 +39,28 @@
 
 > 规则覆盖以当前 `Module.sgmodule` 为准。部分 App 只做域名级广告拦截，部分 App 会使用 URL Rewrite / Body Rewrite / Script / MITM 做定向处理。
 
-## 这次重点补强
+## 当前规则复核（2026-10-09 19:00，北京时间）
+
+- **Apple TV：** 六条本地规则覆盖 `tv.apple.com`、`videos.apple.com`、`itunes.apple.com`、`tv.applemusic.com`、`appletv.com`、`mzstatic.com`，先于在线通用表执行。新增明确的 `mzstatic.com` 直连用于保留日志里已直连的资源请求；它与 `itunes.apple.com` 是 Apple 共用域名，其他使用这些域名的服务也会直连。
+- **Apple Pay：** 在两个原有支付网关规则之外，补充网关变体、`smp-device.apple.com` 和 `*-smp-device.apple.com`。Apple 官方绑卡日志示例使用 `pr-pod2-smp-device.apple.com`；GitHub 也有 `sh-pod1-smp-device.apple.com` 漏匹配的用户反馈。网关变体的官方文档主要描述商户服务，不代表每个接口都由手机直接调用。
+- **不解密保护：** 主配置和广告模块均声明上述 TV、静态资源及支付接口的不解密排除项。公开主配置只含排除项，不启用 MITM、不附带证书。手机端其他模块仍需核对。
+- **降低误伤：** 删除将 `i0/i1.hdslb.com/bfs/archive/` 整个目录返回空内容的两条 Map Local 规则，保留 B 站精确开屏规则和脚本。该路径也承载普通封面；旧规则是否实际影响 HTTPS 取决于手机最终解密名单。另删除 7 条完全重复的域名规则。
+- **更新检查：** 既有 GitHub Actions 在精炼后检查 16 个 TV/资源主机样本、7 个支付主机样本、模块规则冲突（含预匹配拦截）、脚本重名、旧 YouTube 策略、私有证书泄露及不解密排除项。新增复合规则需人工复核。这是离线检查，不是节点测速，也没有新增定时任务。
+- **继续保留：** 手动选择节点、YouTube Premium 不去广告、当前 DNS 方案、既有 Apple/高德定位处理。Apple News 使用全局代理后，手动切回“配置”模式。
+
+本检查不是完整 Shadowrocket 解释器，不包含其他手机模块、所有 URL/正文改写、实时在线规则或真实支付/播放验证。不要为追求“全覆盖”追加整个 `apple.com`、Apple 全 IP 段或共享 CDN 的泛化直连。服务新增请求需用实际日志确认。
+
+依据：
+
+- [Apple 官方 In-App Provisioning：§8.2 设备请求示例](https://applepaydemo.apple.com/in-app-provisioning)
+- [Apple 官方商户支付网关变体](https://developer.apple.com/documentation/ApplePayMerchantTokenManagementAPI/receiving-and-handling-merchant-token-notifications)
+- [Apple 网络要求、共享内容域名与 HTTPS 检查说明](https://support.apple.com/en-us/101555)
+- [Loyalsoldier 支付设备域名缺漏反馈 #393](https://github.com/Loyalsoldier/clash-rules/issues/393)（个案反馈，不据此认定本机支付已故障）
+- [blackmatrix7 AppleTV 专项规则](https://github.com/blackmatrix7/ios_rule_script/blob/master/rule/Shadowrocket/AppleTV/AppleTV.list)、[v2fly apple-tvplus](https://github.com/v2fly/domain-list-community/blob/master/data/apple-tvplus)
+- [Bilibili API 研究中的普通视频封面响应示例](https://github.com/liyic/bilibili-institute/blob/master/api.md)
+- [LOWERTOP Shadowrocket 手册：模块优先级、通配符与预匹配](https://github.com/LOWERTOP/Shadowrocket)
+
+## 前期广告补强记录
 
 - **12306：** 拦截专用广告域名 `ad.12306.cn`。
 - **B站：** `list/show` 开屏响应采用 app2smile 脚本的固定 commit，避免直接追随可变的 `master`；`brand/list`、`event/list2` 保留精确接口拦截。
@@ -72,7 +93,7 @@ https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/M
 
 ```text
 广告屏蔽联网版
-仓库更新时间：2026-10-09 18:29
+仓库更新时间：2026-10-09 19:02
 ```
 
 其中第二行来自 `Module.sgmodule` 的 `#!desc`，每次正式修改仓库规则时同步更新日期。

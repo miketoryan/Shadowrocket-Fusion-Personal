@@ -8,6 +8,8 @@ on:
       - 'Module.sgmodule'
       - '.github/workflows/fusion.yml'
       - 'scripts/**'
+      - 'profiles/**'
+      - 'tools/validate_personal_rules.py'
 
 permissions:
   contents: write
@@ -192,7 +194,7 @@ jobs:
           ts = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M')
           lines[0] = '#!name=广告屏蔽联网版'
           lines[1] = f'#!desc=仓库更新时间：{ts}'
-          module.write_text('\n'.join(lines) + '\n', 'utf-8')
+          module.write_text(re.sub(r'\n{3,}', '\n\n', '\n'.join(lines)) + '\n', 'utf-8')
 
           readme = Path('README.md')
           if readme.exists():
@@ -254,6 +256,9 @@ jobs:
           ! grep -q '/JavaScript/jd\.js' Module.sgmodule
           echo "Refined module validation passed."
 
+      - name: Protect personal routing requirements
+        run: python3 tools/validate_personal_rules.py
+
       - name: Commit refined module
         shell: bash
         run: |
@@ -265,5 +270,5 @@ jobs:
             echo "No refined module change needed."
             exit 0
           fi
-          git commit -m "chore: remove obsolete Weibo MITM host"
+          git commit -m "chore: refresh validated ad module"
           git push

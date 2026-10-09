@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-10-09 18:29
+#!desc=仓库更新时间：2026-10-09 19:02
 
 [Rule]
 
@@ -34,11 +34,6 @@ DOMAIN,p4-ad.adukwai.com,REJECT,extended-matching,pre-matching
 DOMAIN,p66-ad.adkwai.com,REJECT,extended-matching,pre-matching
 DOMAIN,ssp.1rtb.com,REJECT,extended-matching,pre-matching
 DOMAIN,ztoken.uyunad.com,REJECT,extended-matching,pre-matching
-
-
-
-
-
 
 # ===== 腾讯手机管家：本轮日志补漏 =====
 DOMAIN,rpt.gdt.qq.com,REJECT,extended-matching,pre-matching
@@ -813,7 +808,6 @@ DOMAIN,ads.terbergforklift.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.konecraneslifttrucksforklift.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.sennebogenforklift.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.fantuzziforklift.com,REJECT,extended-matching,pre-matching
-DOMAIN,ads.sanyforklift.cn,REJECT,extended-matching,pre-matching
 DOMAIN,ads.lovolforklift.cn,REJECT,extended-matching,pre-matching
 DOMAIN,ads.xcmgforklift.com.cn,REJECT,extended-matching,pre-matching
 DOMAIN,ads.shantuiforklift.com.cn,REJECT,extended-matching,pre-matching
@@ -904,22 +898,16 @@ DOMAIN,ads.crownforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.hysterforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.raymondforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.unicarriersforklift.jp,REJECT,extended-matching,pre-matching
-DOMAIN,ads.clarkforklift.jp,REJECT,extended-matching,pre-matching
-DOMAIN,ads.komatsuforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.doosanforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.hyundaiforklift.jp,REJECT,extended-matching,pre-matching
-DOMAIN,ads.epforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.hangchaforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.heliforklift.jp,REJECT,extended-matching,pre-matching
-DOMAIN,ads.noblelift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.unforklift.jp,REJECT,extended-matching,pre-matching
-DOMAIN,ads.bydforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.xilinforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.sinoliftforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.mimaforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.vmaxforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.kliftforklift.jp,REJECT,extended-matching,pre-matching
-DOMAIN,ads.zoomlionforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.goodsenseforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.gseriesforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.lindeforklift.jp,REJECT,extended-matching,pre-matching
@@ -945,15 +933,6 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 ^https?:\/\/api\.xiachufang\.com\/v\d\/ad/ - reject
 ^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(brand\/list|event\/list2)(?:\?.*)?$ - reject-dict
 
-
-
-
-
-
-
-
-
-
 # ===== 腾讯手机管家 + 住这儿 开屏广告 =====
 # ===== 住这儿：广告接口 =====
 
@@ -961,12 +940,10 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 ^https?:\/\/z\.onewo\.com\/passer\/api\/ads\/v1\/8\/list - reject-200
 # 住这儿当前版本：日志实证广告列表接口
 
-
 # ===== 后续增强：网易云音乐广告下发 =====
 ^https?:\/\/interface3\.music\.163\.com\/eapi\/ad\/prefetch\/select(?:\?.*)?$ - reject-dict
 ^https?:\/\/interface3\.music\.163\.com\/eapi\/ad\/loading\/current(?:\?.*)?$ - reject-dict
 ^https?:\/\/interface3\.music\.163\.com\/eapi\/ad\/iyunIds(?:\?.*)?$ - reject-dict
-
 
 # ===== 后续增强：高德地图开屏 / 推广 =====
 ^https?:\/\/m\d\.amap\.com\/ws\/feature\/preheat\/bootevent(?:\?|$) - reject-dict
@@ -1046,12 +1023,6 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 ^https?:\/\/home\.umetrip\.com\/gateway\/api\/umetrip\/native response-body-replace-regex "\"advertise\":\[.*?\]" "\"advertise\":[]"
 ^https?:\/\/home\.umetrip\.com\/gateway\/api\/umetrip\/native response-body-replace-regex "\"ads\":\[.*?\]" "\"ads\":[]"
 
-[Map Local]
-
-# ===== B站广告资源 =====
-^https?:\/\/i0\.hdslb\.com\/bfs\/archive\/.* data-type=text data="" status-code=200
-^https?:\/\/i1\.hdslb\.com\/bfs\/archive\/.* data-type=text data="" status-code=200
-
 [Script]
 
 # ===== 闲鱼：开屏 / 广告场景恢复（2026-09-27 日志实证） =====
@@ -1062,25 +1033,10 @@ xianyu-launch-report =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goo
 # ===== B站开屏 list/show：app2smile 固定版本，仅清理广告响应 =====
 bili-splash =type=http-response, pattern=^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(list|show)(?:\?.*)?$, script-path=https://raw.githubusercontent.com/app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js, requires-body=true, max-size=0
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # 闲鱼 HTTPDNS：移除 acs/g-acs 专属解析，防止直连 IP 绕过 MITM/响应规则
-
 
 # ===== 住这儿：广告 API 返回空列表 =====
 zhuzher_ads_empty =type=http-response, pattern=^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/zhuzher_ads_empty.js, requires-body=true, max-size=0
-
 
 # ===== 豆瓣 =====
 
@@ -1091,4 +1047,4 @@ taobao-guide =type=http-response, pattern=^https?:\/\/guide-acs\.m\.taobao\.com\
 taobao-poplayer =type=http-response, pattern=^https?:\/\/poplayer\.template\.alibaba\.com\/\w+\.json, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97/Scripts/myBlockAds.js, requires-body=true, max-size=0
 
 [MITM]
-hostname = %APPEND% -youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtube.googleapis.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m1.amap.com,m2.amap.com,m3.amap.com,m4.amap.com,m5.amap.com,m6.amap.com,m7.amap.com,m8.amap.com,m9.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,newclient.map.baidu.com,mea.meitudata.com,thor.weidian.com,api.xiachufang.com
+hostname = %APPEND% -apple-pay-gateway*.apple.com,-cn-apple-pay-gateway*.apple.com,-smp-device.apple.com,-*-smp-device.apple.com,-tv.apple.com,-*.tv.apple.com,-videos.apple.com,-*.videos.apple.com,-itunes.apple.com,-*.itunes.apple.com,-tv.applemusic.com,-appletv.com,-*.appletv.com,-mzstatic.com,-*.mzstatic.com,-youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtube.googleapis.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m1.amap.com,m2.amap.com,m3.amap.com,m4.amap.com,m5.amap.com,m6.amap.com,m7.amap.com,m8.amap.com,m9.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,newclient.map.baidu.com,mea.meitudata.com,thor.weidian.com,api.xiachufang.com
