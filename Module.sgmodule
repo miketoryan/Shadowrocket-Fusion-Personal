@@ -1,7 +1,13 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-10-09 19:03
+#!desc=仓库更新时间：2026-10-09 21:30｜联通开屏精准修复
 
 [Rule]
+
+# ===== 中国联通开屏广告：2026-10-09 日志定点补丁 =====
+DOMAIN,smartad.10010.com,REJECT,extended-matching,pre-matching
+DOMAIN,m1.ad.10010.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,ad.10010.com,REJECT,extended-matching,pre-matching
+
 
 # ===== 住这儿：正常业务直连（稳定性保护） =====
 DOMAIN,api.5th.zone,DIRECT
