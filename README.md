@@ -3,7 +3,7 @@
 这是一个用于 **Shadowrocket（小火箭）** 的个人广告屏蔽模块仓库，目标是在尽量保持联网稳定、减少误杀和降低 MITM 范围的前提下，屏蔽常用 App 的开屏广告、信息流广告、推广接口及常见第三方广告 SDK。
 
 - **模块名称：** 广告屏蔽联网版
-- **最近更新时间：** 2026-10-09 13:45
+- **最近更新时间：** 2026-10-09 18:28
 - **正式订阅文件：** `Module.sgmodule`
 - **维护方式：** 先更新 GitHub 仓库规则，再由手机端通过订阅链接更新
 
@@ -72,7 +72,7 @@ https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/M
 
 ```text
 广告屏蔽联网版
-仓库更新时间：2026-10-09 13:45
+仓库更新时间：2026-10-09 18:28
 ```
 
 其中第二行来自 `Module.sgmodule` 的 `#!desc`，每次正式修改仓库规则时同步更新日期。
@@ -92,7 +92,22 @@ https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/M
 ## 手动导入的混合分流配置
 
 - **文件：** `profiles/Smart-Hybrid-AI-Remote-DNS-Test-Fixed.conf`
-- **用途：** AI / Google 域名强制代理并远程解析 DNS；中国 IP 和 Apple TV（`tv.apple.com`）直连；未命中规则的流量由代理兜底。
+- **用途：** AI / Google 域名强制代理并远程解析 DNS；中国 IP 和 Apple TV（`tv.apple.com`、`tv.applemusic.com`）直连；未命中规则的流量由代理兜底。
 - **下载：** https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/profiles/Smart-Hybrid-AI-Remote-DNS-Test-Fixed.conf
 - **安全说明：** 公开版本不包含 MITM CA 证书、私钥或口令。需要 MITM 时，请在设备上使用自己的私有证书；不要将证书密钥提交到仓库。
 - 这是独立的手动导入配置；正式广告订阅文件仍为 `Module.sgmodule`。
+
+## 本次精简与固定核对项
+
+- 淘宝两条脚本分别命名为 `taobao-guide`、`taobao-poplayer`；脚本地址、匹配范围与处理逻辑不变。
+- 主配置补充 `DOMAIN,tv.applemusic.com,DIRECT`，不扩大整个 Apple 域名的处理范围。
+- DNS 地址保留 Cloudflare 主用、Google 备用，将转发参数简化为 `#proxy`，跟随手动选择的默认节点。
+- 明确 `dns-direct-fallback-proxy = false`，直连解析失败时不自动改走代理；代价是这类失败不会借代理恢复。
+- 不添加自动测速或自动切换节点。使用 Apple News 后，手动切回“配置”模式再检查直连。
+
+每次更新需核对主配置、启用模块及当时在线规则集的组合：
+
+1. Apple TV 专项域名（`tv.apple.com`、`tv.applemusic.com`、`hls-amt.itunes.apple.com`、`hls.itunes.apple.com`、`np-edge.itunes.apple.com`、`play-edge.itunes.apple.com`、`uts-api.itunes.apple.com`）没有被模块改成代理或拦截。
+2. `apple-pay-gateway.apple.com`、`cn-apple-pay-gateway.apple.com` 仍为直连；设备私有配置保留支付网关的不解密排除项。公开配置不附带私有证书。
+3. 脚本名称唯一，YouTube 去广告及旧“油管视频”策略引用没有重新引入。
+4. 本次仓库静态核对只涵盖这份主配置、广告模块与读取时的在线列表。手机上其他启用模块、缓存和真实播放/支付请求需以设备记录为准；静态核对不能保证播放速度。
