@@ -1075,7 +1075,6 @@ zhuzher_ads_empty =type=http-response, pattern=^https?:\/\/api\.5th\.zone\/ads\/
 
 
 # ===== 豆瓣 =====
-douban =type=http-response, pattern=^https?:\/\/api\.douban\.com\/.*, script-path=https://raw.githubusercontent.com/app2smile/rules/master/js/douban.js, requires-body=true, max-size=0
 
 # ===== B站 =====
 
