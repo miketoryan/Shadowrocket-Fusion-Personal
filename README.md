@@ -110,6 +110,15 @@ https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/M
 - 出现联网异常时优先回滚最新新增的 MITM / Script / Rewrite，而不是继续叠加规则。
 
 
+## AI 配置联网调整（2026-10-11 17:26，北京时间）
+
+- 更新原路径 `profiles/Smart-Hybrid-AI-Remote-DNS-Test-Fixed.conf`，下载地址不变。
+- 取消主用、备用 DoH 强制经过同一代理节点，恢复系统 DNS 回退；保留节点系统 DNS 和直连解析失败不切代理设置。
+- 仅保留原有 9 条 AI / Google 定向 `force-remote-dns` 规则；通用代理列表取消该参数，并恢复通用直连列表在代理列表之前。
+- 参照“最优”版取消 `block-quic = all-proxy`；保留 Apple TV / Apple Pay 专项直连、公开版 MITM 排除项及手动选节点。
+- 此次不修改广告模块；公开配置仍不附带证书、私钥或口令。
+- 已核对配置差异，手机实际联网仍待验证。日志证实代理连接与经代理的 DNS 同时超时，但未唯一确定初始超时原因。
+
 ## 手动导入的混合分流配置
 
 - **文件：** `profiles/Smart-Hybrid-AI-Remote-DNS-Test-Fixed.conf`
@@ -122,7 +131,7 @@ https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/M
 
 - 淘宝两条脚本分别命名为 `taobao-guide`、`taobao-poplayer`；脚本地址、匹配范围与处理逻辑不变。
 - 主配置补充 `DOMAIN,tv.applemusic.com,DIRECT`，不扩大整个 Apple 域名的处理范围。
-- DNS 地址保留 Cloudflare 主用、Google 备用，将转发参数简化为 `#proxy`，跟随手动选择的默认节点。
+- 2026-10-11：参照联网恢复的“最优”配置，取消 Cloudflare / Google DoH 强制经过代理，恢复 `dns-fallback-system = true`；节点域名继续使用系统 DNS。允许部分查询使用系统 DNS，不承诺全部查询远端解析。
 - 明确 `dns-direct-fallback-proxy = false`，直连解析失败时不自动改走代理；代价是这类失败不会借代理恢复。
 - 不添加自动测速或自动切换节点。使用 Apple News 后，手动切回“配置”模式再检查直连。
 
