@@ -110,7 +110,16 @@ https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/M
 - 出现联网异常时优先回滚最新新增的 MITM / Script / Rewrite，而不是继续叠加规则。
 
 
-## AI 配置联网调整（2026-10-11 17:26，北京时间）
+## AI 配置基线调整（2026-10-11 18:48，北京时间）
+
+- 本节为当前方案，替代下方 17:26 的第一轮测试设置；GitHub 原文件路径及下载链接不变。
+- `[General]` 完整采用用户实测可联网的“最优”版，移除额外的 `proxy-dns-server`、`dns-direct-fallback-proxy` 设置；不新增 DNS 服务或 QUIC 拦截。
+- 原有 9 条 AI / Google 规则改为普通 `PROXY`，不再附带 `force-remote-dns`。
+- 通用规则来源、内容及顺序继续与最优版一致；保留 Apple TV / Apple Pay 专项直连及公开版 MITM 排除项。
+- 设备导入版保留用户私有 MITM 设置；公开仓库不附带证书、私钥或口令。广告模块与手动选节点方式不变。
+- 已核对基础设置和规则差异；此轮以恢复可用性为目的，待手机实际验证，未断言任何单一参数为故障根因。
+
+## 历史：AI 配置联网调整（2026-10-11 17:26，北京时间）
 
 - 更新原路径 `profiles/Smart-Hybrid-AI-Remote-DNS-Test-Fixed.conf`，下载地址不变。
 - 取消主用、备用 DoH 强制经过同一代理节点，恢复系统 DNS 回退；保留节点系统 DNS 和直连解析失败不切代理设置。
@@ -122,7 +131,7 @@ https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/M
 ## 手动导入的混合分流配置
 
 - **文件：** `profiles/Smart-Hybrid-AI-Remote-DNS-Test-Fixed.conf`
-- **用途：** AI / Google 域名强制代理并远程解析 DNS；中国 IP 和 Apple TV 业务域名族（`tv.apple.com`、`videos.apple.com`、`itunes.apple.com`、`tv.applemusic.com`、`appletv.com`）直连；未命中规则的流量由代理兜底。
+- **用途：** AI / Google 域名明确使用普通代理，不附加远端解析参数；中国 IP 和 Apple TV 业务域名族（`tv.apple.com`、`videos.apple.com`、`itunes.apple.com`、`tv.applemusic.com`、`appletv.com`）直连；未命中规则的流量由代理兜底。
 - **下载：** https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/profiles/Smart-Hybrid-AI-Remote-DNS-Test-Fixed.conf
 - **安全说明：** 公开版本不包含 MITM CA 证书、私钥或口令。需要 MITM 时，请在设备上使用自己的私有证书；不要将证书密钥提交到仓库。
 - 这是独立的手动导入配置；正式广告订阅文件仍为 `Module.sgmodule`。
@@ -131,8 +140,8 @@ https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/M
 
 - 淘宝两条脚本分别命名为 `taobao-guide`、`taobao-poplayer`；脚本地址、匹配范围与处理逻辑不变。
 - 主配置补充 `DOMAIN,tv.applemusic.com,DIRECT`，不扩大整个 Apple 域名的处理范围。
-- 2026-10-11：参照联网恢复的“最优”配置，取消 Cloudflare / Google DoH 强制经过代理，恢复 `dns-fallback-system = true`；节点域名继续使用系统 DNS。允许部分查询使用系统 DNS，不承诺全部查询远端解析。
-- 明确 `dns-direct-fallback-proxy = false`，直连解析失败时不自动改走代理；代价是这类失败不会借代理恢复。
+- 2026-10-11 18:48：基础设置完整采用“最优”配置，保留 `dns-fallback-system = true` 和 `dns-direct-system = true`，不额外指定节点 DNS；允许部分查询使用系统 DNS。
+- 本轮移除 `dns-direct-fallback-proxy` 显式设置，与最优版一致；不将移除等同于已证明此项为故障根因。
 - 不添加自动测速或自动切换节点。使用 Apple News 后，手动切回“配置”模式再检查直连。
 
 每次更新需核对主配置、启用模块及当时在线规则集的组合：
