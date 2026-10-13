@@ -2,12 +2,6 @@ name: Safe daily ad-domain sync
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/safe-sync.yml'
-      - 'tools/safe_ad_sync.py'
-      - 'sources.json'
   schedule:
     - cron: '30 0 * * *'
 
@@ -39,7 +33,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Module.sgmodule README.md
+          git add Module.sgmodule README.md CHANGELOG.md
           if git diff --cached --quiet; then
             echo "No safe rule change to publish"
             exit 0
