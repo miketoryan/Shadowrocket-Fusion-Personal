@@ -1,7 +1,21 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-10-12 11:36
+#!desc=仓库更新时间：2026-10-13 23:10
 
 [Rule]
+
+# ===== 京东广告专用主机：2026-10-13，多库交叉验证；不拦 DNS / 登录 / 支付 / 正常商品 CDN =====
+DOMAIN,dsp-x.jd.com,REJECT,extended-matching,pre-matching
+DOMAIN,bdsp-x.jd.com,REJECT,extended-matching,pre-matching
+DOMAIN,addata.jd.com,REJECT,extended-matching,pre-matching
+DOMAIN,jzt.jd.com,REJECT,extended-matching,pre-matching
+DOMAIN,img-x.jd.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.3.cn,REJECT,extended-matching,pre-matching
+DOMAIN,perf.m.jd.com,REJECT,extended-matching,pre-matching
+DOMAIN,mars.jd.com,REJECT,extended-matching,pre-matching
+DOMAIN,mllog.jd.com,REJECT,extended-matching,pre-matching
+DOMAIN,xlog.jd.com,REJECT,extended-matching,pre-matching
+DOMAIN,waapdg.jd.com,REJECT,extended-matching,pre-matching
+DOMAIN,second-floor-pro.pf.jd.com,REJECT,extended-matching,pre-matching
 
 # ===== 中国联通开屏广告：2026-10-09 日志定点补丁 =====
 DOMAIN,smartad.10010.com,REJECT,extended-matching,pre-matching
@@ -931,6 +945,17 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 
 [URL Rewrite]
 
+# ===== 2026-10-13 定向广告与开屏缓存补强（京东 / 联通 / 闲鱼） =====
+# 京东广告素材路径：仅命中广告专用目录，正常商品图片不拦截。
+^https?:\/\/m\.360buyimg\.com\/jddjadvertise\/ - reject-200
+# 中国联通：仅广告投放入口；账户列表、全局配置、登录及缴费接口保留。
+^https?:\/\/m\.client\.10010\.com\/mobileService\/(?:activity|customer)\/(?:get_client_adv|get_startadv)(?:\?|\/|$) - reject-dict
+^https?:\/\/m\.client\.10010\.com\/uniAdmsInterface\/(?:getHomePageAd|getWelcomeAd)(?:\?|\/|$) - reject-dict
+# 闲鱼：专用广告素材 / 活动弹层，不拦商品推荐、发布或支付。
+^https?:\/\/h5\.m\.goofish\.com\/app\/idleFish-F2e\/idlefish-pop(?:\/|\?|$) - reject-200
+^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.live\.home\.ads\.material\.get\/ - reject-dict
+
+
 # ===== 精准开屏接口：成熟库规则 + 本机日志交叉验证 =====
 ^https?:\/\/newclient\.map\.baidu\.com\/client\/phpui2\/\?qt=ads(?:&.*)?$ - reject-dict
 ^https?:\/\/mea\.meitudata\.com\/kaiping(?:\?.*)?$ - reject
@@ -1030,13 +1055,19 @@ DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 
 [Script]
 
+# ===== 京东缓存开屏/首页悬浮广告（仅清理已知广告字段） =====
+jd-cache-splash =type=http-response, pattern=^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=(?:start|welcomeHome|personinfoBusiness|myOrderInfo)(?:&|$), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/jd_ads_only.js, requires-body=true, max-size=0
+
+# ===== 闲鱼首页/同城信息流（仅删除 bizType=AD） =====
+xianyu-feed-ads =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/(?:mtop\.taobao\.idlehome\.home\.nextfresh|mtop\.taobao\.idle\.local\.home|mtop\.taobao\.idle\.home\.whale\.modulet)\/, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_feed_ads.js, requires-body=true, max-size=0
+
 # ===== 闲鱼：开屏 / 广告场景恢复（2026-09-27 日志实证） =====
 xianyu-splash =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlecommerce\.splash\.(?:async\.)?ads\/(?:1\.0|2\.0)\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0
 xianyu-scene-restore =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.idle\.idleadv\.scene\.restore\/1\.0\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0
 xianyu-launch-report =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.idle\.idleadv\.app\.launch\.report\/1\.0\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0
 
-# ===== B站开屏 list/show：app2smile 固定版本，仅清理广告响应 =====
-bili-splash =type=http-response, pattern=^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(list|show)(?:\?.*)?$, script-path=https://raw.githubusercontent.com/app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js, requires-body=true, max-size=0
+# ===== B站开屏 list/show：清理下发广告、抑制再次缓存 =====
+bili-splash =type=http-response, pattern=^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(list|show)(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/bilibili_splash_cache.js, requires-body=true, max-size=0
 
 # 闲鱼 HTTPDNS：移除 acs/g-acs 专属解析，防止直连 IP 绕过 MITM/响应规则
 
@@ -1052,4 +1083,4 @@ taobao-guide =type=http-response, pattern=^https?:\/\/guide-acs\.m\.taobao\.com\
 taobao-poplayer =type=http-response, pattern=^https?:\/\/poplayer\.template\.alibaba\.com\/\w+\.json, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97/Scripts/myBlockAds.js, requires-body=true, max-size=0
 
 [MITM]
-hostname = %APPEND% -apple-pay-gateway*.apple.com,-cn-apple-pay-gateway*.apple.com,-smp-device.apple.com,-*-smp-device.apple.com,-tv.apple.com,-*.tv.apple.com,-videos.apple.com,-*.videos.apple.com,-itunes.apple.com,-*.itunes.apple.com,-tv.applemusic.com,-appletv.com,-*.appletv.com,-mzstatic.com,-*.mzstatic.com,-youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtube.googleapis.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m1.amap.com,m2.amap.com,m3.amap.com,m4.amap.com,m5.amap.com,m6.amap.com,m7.amap.com,m8.amap.com,m9.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,newclient.map.baidu.com,mea.meitudata.com,thor.weidian.com,api.xiachufang.com
+hostname = %APPEND% -apple-pay-gateway*.apple.com,-cn-apple-pay-gateway*.apple.com,-smp-device.apple.com,-*-smp-device.apple.com,-tv.apple.com,-*.tv.apple.com,-videos.apple.com,-*.videos.apple.com,-itunes.apple.com,-*.itunes.apple.com,-tv.applemusic.com,-appletv.com,-*.appletv.com,-mzstatic.com,-*.mzstatic.com,-youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtube.googleapis.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m1.amap.com,m2.amap.com,m3.amap.com,m4.amap.com,m5.amap.com,m6.amap.com,m7.amap.com,m8.amap.com,m9.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,newclient.map.baidu.com,mea.meitudata.com,thor.weidian.com,api.xiachufang.com,api.m.jd.com,m.client.10010.com,h5.m.goofish.com
