@@ -2,6 +2,12 @@ name: Safe daily ad-domain sync
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/safe-sync.yml'
+      - 'tools/safe_ad_sync.py'
+      - 'sources.json'
   schedule:
     - cron: '30 0 * * *'
 
@@ -25,6 +31,7 @@ jobs:
           set -euo pipefail
           python3 tools/validate_personal_rules.py
           for s in scripts/*.js; do node --check "$s"; done
+          node tools/test_adblock_scripts.js
           test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
           ! grep -Eq '^\s*ca-(p12|passphrase)\s*=\s*\S' Module.sgmodule
       - name: Commit only when approved ad domains change
