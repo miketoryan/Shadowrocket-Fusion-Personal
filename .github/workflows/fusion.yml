@@ -10,6 +10,7 @@ on:
       - 'scripts/**'
       - 'profiles/**'
       - 'tools/validate_personal_rules.py'
+      - 'tools/test_adblock_scripts.js'
 
 permissions:
   contents: read
@@ -31,6 +32,8 @@ jobs:
         run: |
           set -euo pipefail
           for script in scripts/*.js; do node --check "$script"; done
+      - name: Check ad-response fixture regressions
+        run: node tools/test_adblock_scripts.js
       - name: Show module metadata
         run: |
           head -n 2 Module.sgmodule
