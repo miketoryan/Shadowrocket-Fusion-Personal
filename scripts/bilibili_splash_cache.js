@@ -8,8 +8,9 @@
     const obj = JSON.parse(raw);
     if (!obj || !obj.data || typeof obj.data !== "object") return $done({});
     let changed = false;
-    if (Array.isArray(obj.data.show) && obj.data.show.length) {
-      obj.data.show = [];
+    // Keep prior app2smile behavior: remove any "show" payload shape.
+    if (Object.prototype.hasOwnProperty.call(obj.data, "show")) {
+      delete obj.data.show;
       changed = true;
     }
     if (Array.isArray(obj.data.list)) {
