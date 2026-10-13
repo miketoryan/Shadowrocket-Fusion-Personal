@@ -7,6 +7,19 @@
 - **正式订阅文件：** `Module.sgmodule`
 - **维护方式：** 先更新 GitHub 仓库规则，再由手机端通过订阅链接更新
 
+## 2026-10-13：京东 / 联通 / 闲鱼 / 本地缓存开屏专项增强
+
+- **京东：** 补充 12 个多库出现的广告/监控专用主机（使用精确 DOMAIN，而非通用京东域名后缀），增加 `api.m.jd.com/client.action?functionId=start` 等指定响应的本地过滤脚本。对开屏已下发的 `images`、`showTimesDaily` 等字段做清理；不拦截京东 DNS、支付、登录及商品图片的整个 CDN。
+- **中国联通：** 补充 `m.client.10010.com` 的 `get_client_adv`、`get_startadv`、`getHomePageAd`、`getWelcomeAd` 专用广告接口，不拦 `accountListData`、`getclientconfig.htm`、登录与缴费接口。
+- **闲鱼：** 补充广告弹层和广告素材接口，通过 `scripts/xianyu_feed_ads.js` 仅过滤 `bizType=AD` 的信息流项目；保留商品、搜索、订单与交易流程。
+- **B站开屏缓存：** 保留原开屏广告清理目的，换为本地审核脚本 `scripts/bilibili_splash_cache.js`，删除开屏广告下发字段，并抑制响应中已有的重复预加载参数。**这可以阻止部分新广告继续缓存，但无法直接清除已写入 App 沙盒的旧广告文件**。
+- **工作流：** `fusion.yml` 现只执行验证而不自动重写整份模块；`safe-sync.yml` 每天北京时间约 08:30 检查已批准的 fmz200 上游，**每次最多新增 10 条通过限制过滤的精确 DOMAIN 广告规则**，不自动合并脚本、MITM 或宽泛规则。GitHub Actions 的计划任务实际触发可能延迟；上游异常或校验失败不会发布更改。
+- **回归测试：** `tools/test_adblock_scripts.js` 检验三项脚本只修改广告数据，且不误处理京东购物入口、闲鱼商品数据、B站其他请求。GitHub CI 的 PASS 是静态校验，不代替设备实际验证。
+
+### 缓存广告注意事项
+
+更新小火箭模块后，应完全退出并重新打开对应 App。若 App 已将广告素材持久存储在自己的本地目录中，Shadowrocket 无法隔空删除这些文件；此时可优先尝试 App 自带的“清除缓存”，**不要盲目清除应用数据、卸载导致账户或本地内容丢失**。若开屏仍然出现，需要针对该 App 的新缓存下发接口修正响应，而不是屏蔽整个图片 CDN。
+
 ## 规则涉及的软件
 
 当前模块重点包含以下 App / 场景的定向广告规则：
