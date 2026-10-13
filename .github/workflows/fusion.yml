@@ -1,4 +1,4 @@
-name: Refine Shadowrocket ad rules
+name: Validate Shadowrocket ad module
 
 on:
   workflow_dispatch:
@@ -12,263 +12,26 @@ on:
       - 'tools/validate_personal_rules.py'
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: shadowrocket-module-validation
+  cancel-in-progress: true
 
 jobs:
-  refine-and-validate:
-    if: github.actor != 'github-actions[bot]'
+  verify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Apply approved precise ad rules
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          from datetime import datetime, timezone, timedelta
-          import re
-
-          module = Path('Module.sgmodule')
-          lines = module.read_text('utf-8').splitlines()
-
-          def remove_all(items):
-              targets = set(items)
-              global lines
-              lines = [line for line in lines if line not in targets]
-
-          def insert_after(anchor, payload):
-              try:
-                  idx = lines.index(anchor) + 1
-              except ValueError:
-                  raise SystemExit(f'anchor not found: {anchor}')
-              lines[idx:idx] = payload
-
-          tencent_core_rules = [
-              'DOMAIN,adsmind.gdtimg.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,adsmind.apdcdn.tc.qq.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,adsmind.tc.qq.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,pgdt.gtimg.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,adslvfile.qq.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,adslvseed.qq.com,REJECT,extended-matching,pre-matching',
-          ]
-          douban_rules = [
-              'DOMAIN,pgdt.ugdtimg.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,adsmind.ugdtimg.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,v2mi.gdt.qq.com,REJECT,extended-matching,pre-matching',
-          ]
-          netease_core_rule = 'DOMAIN,ad.bn.netease.com,REJECT,extended-matching,pre-matching'
-          weibo_core_rule = 'DOMAIN,adimg.uve.weibo.com,REJECT,extended-matching,pre-matching'
-          tencent_comment = '# 高置信度补强：AWAvenue / Cats-Team / 217heidai 多源交叉确认的腾讯广告素材链路'
-          douban_comment = '# 豆瓣开屏：2026-09-17 日志实证漏网的 GDT 素材 / QUIC 主机'
-          netease_comment = '# 高置信度补强：fmz200 / AWAvenue / 217heidai 均收录的网易广告主机'
-          weibo_comment = '# 高置信度补强：AWAvenue / 217heidai 均收录的微博广告素材主机'
-
-          remove_all(tencent_core_rules + douban_rules + [netease_core_rule, weibo_core_rule,
-                     tencent_comment, douban_comment, netease_comment, weibo_comment])
-          insert_after('DOMAIN,p.l.qq.com,REJECT,extended-matching,pre-matching', [
-              tencent_comment, *tencent_core_rules, douban_comment, *douban_rules,
-          ])
-          insert_after('DOMAIN,iad.g.163.com,REJECT,extended-matching,pre-matching', [netease_comment, netease_core_rule])
-          insert_after('DOMAIN,sdkclick.biz.weibo.com,REJECT,extended-matching,pre-matching', [weibo_comment, weibo_core_rule])
-
-          old_precise_comment = '# ===== 2026-09-17 精准开屏补丁：12306 / B站 / 百度地图 / 美图秀秀 / 微店 ====='
-          precise_comment = '# ===== 2026-09-17 精准开屏补丁：12306 / B站 / 百度地图 / 美图秀秀 / 微店 / 微博 / QQ音乐 / 下厨房 ====='
-          precise_rules = [
-              'DOMAIN,ad.12306.cn,REJECT,extended-matching,pre-matching',
-              'DOMAIN,afd.baidu.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,afdconf.baidu.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,sdk.1rtb.net,REJECT,extended-matching,pre-matching',
-              'DOMAIN,cdn.1rtb.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,adui.tg.meitu.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,rabbit.tg.meitu.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,meitubeauty.meitudata.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,xiuxiu.mobile.meitudata.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,adservice.sigmob.cn,REJECT,extended-matching,pre-matching',
-              'DOMAIN,tm.sigmob.cn,REJECT,extended-matching,pre-matching',
-              'DOMAIN,bootpreload.uve.weibo.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,adstats.tencentmusic.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,ad.tencentmusic.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,adcdn.tencentmusic.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,adcdn6.tencentmusic.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,adexpo.tencentmusic.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,adclick.tencentmusic.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,tmead.y.qq.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,tmeadbak.y.qq.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,tmeadcomm.y.qq.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,p4-ad.adukwai.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,p66-ad.adkwai.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,ssp.1rtb.com,REJECT,extended-matching,pre-matching',
-              'DOMAIN,ztoken.uyunad.com,REJECT,extended-matching,pre-matching',
-          ]
-          remove_all([old_precise_comment, precise_comment, *precise_rules])
-          insert_after('DOMAIN,i.4009515151.com,DIRECT', ['', precise_comment, *precise_rules])
-
-          for i, line in enumerate(lines):
-              if line.startswith('^https?:\\/\\/m5\\.amap\\.com\\/ws\\/'):
-                  lines[i] = line.replace('m5\\.amap\\.com', 'm\\d\\.amap\\.com', 1)
-
-          url_comment = '# ===== 精准开屏接口：成熟库规则 + 本机日志交叉验证 ====='
-          baidu_map_rewrite = '^https?:\\/\\/newclient\\.map\\.baidu\\.com\\/client\\/phpui2\\/\\?qt=ads(?:&.*)?$ - reject-dict'
-          meitu_rewrite = '^https?:\\/\\/mea\\.meitudata\\.com\\/kaiping(?:\\?.*)?$ - reject'
-          weidian_rewrite = '^https?:\\/\\/thor\\.weidian\\.com\\/ares\\/home\\.splash(?:\\?.*)?$ - reject-200'
-          xiachufang_rewrite = '^https?:\\/\\/api\\.xiachufang\\.com\\/v\\d\\/ad/ - reject'
-          obsolete_weibo_rewrite = '^https?:\\/\\/bootpreload\\.uve\\.weibo\\.com\\/v1\\/ad\\/preload$ - reject'
-          bili_old = [
-              '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v\\d+\\/splash\\/.* - reject-dict',
-              '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/show(?:\\?.*)?$ - reject-dict',
-              '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/list(?:\\?.*)?$ - reject-dict',
-              '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/brand\\/list(?:\\?.*)?$ - reject-dict',
-              '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/event\\/list2(?:\\?.*)?$ - reject-dict',
-          ]
-          bili_aux_rewrite = '^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/(brand\\/list|event\\/list2)(?:\\?.*)?$ - reject-dict'
-          remove_all([url_comment, baidu_map_rewrite, meitu_rewrite, weidian_rewrite,
-                      xiachufang_rewrite, obsolete_weibo_rewrite, bili_aux_rewrite, *bili_old])
-          try:
-              url_idx = lines.index('[URL Rewrite]') + 1
-          except ValueError:
-              raise SystemExit('[URL Rewrite] missing')
-          lines[url_idx:url_idx] = ['', url_comment, baidu_map_rewrite, meitu_rewrite,
-                                    weidian_rewrite, xiachufang_rewrite, bili_aux_rewrite, '']
-
-          xianyu_old_rewrite = '^https?:\\/\\/acs\\.m\\.goofish\\.com\\/gw\\/mtop\\.taobao\\.idlecommerce\\.splash\\.ads\\/ - reject-dict'
-          xianyu_script_comment = '# ===== 闲鱼：开屏 / 广告场景恢复（2026-09-27 日志实证） ====='
-          xianyu_scripts = [
-              ('xianyu-splash =type=http-response, pattern=^https?:\\/\\/(?:g-)?acs\\.m\\.goofish\\.com\\/gw\\/mtop\\.taobao\\.idlecommerce\\.splash\\.(?:async\\.)?ads\\/(?:1\\.0|2\\.0)\\/?(?:\\?.*)?$, '
-               'script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0'),
-              ('xianyu-scene-restore =type=http-response, pattern=^https?:\\/\\/(?:g-)?acs\\.m\\.goofish\\.com\\/gw\\/mtop\\.idle\\.idleadv\\.scene\\.restore\\/1\\.0\\/?(?:\\?.*)?$, '
-               'script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0'),
-              ('xianyu-launch-report =type=http-response, pattern=^https?:\\/\\/(?:g-)?acs\\.m\\.goofish\\.com\\/gw\\/mtop\\.idle\\.idleadv\\.app\\.launch\\.report\\/1\\.0\\/?(?:\\?.*)?$, '
-               'script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0'),
-          ]
-          remove_all([xianyu_old_rewrite, xianyu_script_comment, *xianyu_scripts])
-
-          bili_script_comment = '# ===== B站开屏 list/show：app2smile 固定版本，仅清理广告响应 ====='
-          bili_script = ('bili-splash =type=http-response, pattern=^https?:\\/\\/app\\.bilibili\\.com\\/x\\/v2\\/splash\\/(list|show)(?:\\?.*)?$, '
-                         'script-path=https://raw.githubusercontent.com/app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js, '
-                         'requires-body=true, max-size=0')
-          remove_all([bili_script_comment, bili_script])
-          try:
-              script_idx = lines.index('[Script]') + 1
-          except ValueError:
-              raise SystemExit('[Script] missing')
-          lines[script_idx:script_idx] = ['', xianyu_script_comment, *xianyu_scripts, '', bili_script_comment, bili_script, '']
-
-          required_mitm = [
-              'newclient.map.baidu.com',
-              'mea.meitudata.com',
-              'thor.weidian.com',
-              'api.xiachufang.com',
-          ]
-          remove_mitm = {
-              'content.rconfig.qq.com',
-              'ta-cn-south-00001-1329476759.cos.accelerate.tencentcos.cn',
-              'luban.m.qq.com', 'tmfmazu.m.qq.com', 'tmfmazu4.m.qq.com',
-              'hd2.3g.qq.com', 'data.ab.qq.com',
-              'y.gtimg.cn', 'music.y.qq.com',
-              'bootpreload.uve.weibo.com',
-          }
-          amap_hosts = [f'm{n}.amap.com' for n in range(1, 10)]
-          for i, line in enumerate(lines):
-              if not line.startswith('hostname = '):
-                  continue
-              hosts = [x.strip() for x in line.split('=', 1)[1].split(',') if x.strip()]
-              hosts = [h for h in hosts if h not in remove_mitm and h not in amap_hosts]
-              for host in ['api.5th.zone', *required_mitm]:
-                  if host not in hosts:
-                      hosts.append(host)
-              try:
-                  amap_pos = hosts.index('oss.amap.com')
-              except ValueError:
-                  amap_pos = len(hosts)
-              hosts[amap_pos:amap_pos] = amap_hosts
-              seen = set()
-              hosts = [h for h in hosts if not (h in seen or seen.add(h))]
-              lines[i] = 'hostname = ' + ','.join(hosts)
-              break
-          else:
-              raise SystemExit('MITM hostname line not found')
-
-          ts = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M')
-          lines[0] = '#!name=广告屏蔽联网版'
-          lines[1] = f'#!desc=仓库更新时间：{ts}'
-          module.write_text(re.sub(r'\n{3,}', '\n\n', '\n'.join(lines)) + '\n', 'utf-8')
-
-          readme = Path('README.md')
-          if readme.exists():
-              text = readme.read_text('utf-8')
-              text = re.sub(r'- \*\*最近更新时间：\*\* .*', f'- **最近更新时间：** {ts}', text)
-              text = re.sub(r'仓库更新时间：\d{4}-\d{2}-\d{2}(?: \d{2}:\d{2})?', f'仓库更新时间：{ts}', text)
-              readme.write_text(text, 'utf-8')
-          print(f'Module refined and stamped: {ts} Asia/Shanghai')
-          PY
-
-      - name: Validate refined module
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -s Module.sgmodule
-          test "$(head -n 1 Module.sgmodule)" = '#!name=广告屏蔽联网版'
-          grep -Eq '^#!desc=仓库更新时间：[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$' Module.sgmodule
-          grep -q '^\[Rule\]$' Module.sgmodule
-          grep -q '^\[URL Rewrite\]$' Module.sgmodule
-          grep -q '^\[Script\]$' Module.sgmodule
-          grep -q '^\[MITM\]$' Module.sgmodule
-          test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
-
-          grep -q '^DOMAIN,api\.5th\.zone,DIRECT$' Module.sgmodule
-          grep -Fq 'zhuzher_ads_empty.js' Module.sgmodule
-          grep -q '^DOMAIN,adsmind\.gdtimg\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
-          grep -q '^DOMAIN,ad\.bn\.netease\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
-          grep -q '^DOMAIN,adimg\.uve\.weibo\.com,REJECT,extended-matching,pre-matching$' Module.sgmodule
-
-          for d in ad.12306.cn afd.baidu.com afdconf.baidu.com sdk.1rtb.net cdn.1rtb.com adui.tg.meitu.com rabbit.tg.meitu.com meitubeauty.meitudata.com xiuxiu.mobile.meitudata.com adservice.sigmob.cn tm.sigmob.cn bootpreload.uve.weibo.com adstats.tencentmusic.com ad.tencentmusic.com adcdn.tencentmusic.com adcdn6.tencentmusic.com adexpo.tencentmusic.com adclick.tencentmusic.com tmead.y.qq.com tmeadbak.y.qq.com tmeadcomm.y.qq.com p4-ad.adukwai.com p66-ad.adkwai.com ssp.1rtb.com ztoken.uyunad.com; do
-            test "$(grep -Fc "DOMAIN,$d,REJECT,extended-matching,pre-matching" Module.sgmodule)" -eq 1
-          done
-
-          grep -Fq '^https?:\/\/newclient\.map\.baidu\.com\/client\/phpui2\/\?qt=ads(?:&.*)?$ - reject-dict' Module.sgmodule
-          grep -Fq '^https?:\/\/mea\.meitudata\.com\/kaiping(?:\?.*)?$ - reject' Module.sgmodule
-          grep -Fq '^https?:\/\/thor\.weidian\.com\/ares\/home\.splash(?:\?.*)?$ - reject-200' Module.sgmodule
-          grep -Fq '^https?:\/\/api\.xiachufang\.com\/v\d\/ad/ - reject' Module.sgmodule
-          ! grep -Fq '^https?:\/\/bootpreload\.uve\.weibo\.com\/v1\/ad\/preload$ - reject' Module.sgmodule
-
-          test -s scripts/xianyu_splash.js
-          grep -Fq 'xianyu-splash =type=http-response' Module.sgmodule
-          grep -Fq 'xianyu-scene-restore =type=http-response' Module.sgmodule
-          grep -Fq 'xianyu-launch-report =type=http-response' Module.sgmodule
-          ! grep -Fq 'mtop\.taobao\.idlecommerce\.splash\.ads\/ - reject-dict' Module.sgmodule
-
-          grep -Fq 'app2smile/rules/5380447220ea3df4abee8b77dd118de9165631fa/js/bilibili-json.js' Module.sgmodule
-          ! grep -Fq '^https?:\/\/app\.bilibili\.com\/x\/v\d+\/splash\/.* - reject-dict' Module.sgmodule
-
-          for h in app.bilibili.com newclient.map.baidu.com mea.meitudata.com thor.weidian.com api.xiachufang.com; do
-            grep '^hostname = ' Module.sgmodule | grep -q "$h"
-          done
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'y.gtimg.cn'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'music.y.qq.com'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'bootpreload.uve.weibo.com'
-
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'hd2.3g.qq.com'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'data.ab.qq.com'
-          ! grep '^hostname = ' Module.sgmodule | grep -q 'tmfmazu.m.qq.com'
-          ! grep -q '/JavaScript/jd\.js' Module.sgmodule
-          echo "Refined module validation passed."
-
-      - name: Protect personal routing requirements
+      - name: Check personal routing safety and ad module structure
         run: python3 tools/validate_personal_rules.py
-
-      - name: Commit refined module
+      - name: Check JavaScript syntax
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Module.sgmodule README.md
-          if git diff --cached --quiet; then
-            echo "No refined module change needed."
-            exit 0
-          fi
-          git commit -m "chore: refresh validated ad module"
-          git push
+          for script in scripts/*.js; do node --check "$script"; done
+      - name: Show module metadata
+        run: |
+          head -n 2 Module.sgmodule
+          echo "Rules: $(grep -Ec '^(DOMAIN|DOMAIN-SUFFIX|DOMAIN-KEYWORD|AND),' Module.sgmodule || true)"
