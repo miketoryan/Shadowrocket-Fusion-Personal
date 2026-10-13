@@ -16,6 +16,8 @@ from fusion import extract_source, safe_ad_domain, verify_source_url
 ROOT = Path(__file__).resolve().parents[1]
 MODULE = ROOT / "Module.sgmodule"
 README = ROOT / "README.md"
+HISTORY = ROOT / "CHANGELOG.md"
+HISTORY_MARKER = "<!-- EFFECTIVE_UPDATES_START -->"
 CONFIG = ROOT / "sources.json"
 BEGIN = "# BEGIN DAILY SAFE AD DOMAINS"
 END = "# END DAILY SAFE AD DOMAINS"
@@ -80,11 +82,33 @@ def main():
         updated = original.replace("[URL Rewrite]", insert + "[URL Rewrite]", 1)
     stamp = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M")
     updated = re.sub(r"(?m)^#!desc=仓库更新时间：.*$", f"#!desc=仓库更新时间：{stamp}", updated, count=1)
-    MODULE.write_text(updated, encoding="utf-8")
+    # The dated history and README are written only when accepted rules really change.
+    # Successful daily checks without a diff leave all published timestamps unchanged.
+    history = HISTORY.read_text(encoding="utf-8")
+    if history.count(HISTORY_MARKER) != 1:
+        raise ValueError("Substantive-update history marker missing or duplicated")
+    details = "\n".join(f"- `{h}`" for h in added)
+    entry = (
+        f"## {stamp}（北京时间）｜自动新增 {len(added)} 条广告域名\n\n"
+        "**类型：** 可信上游精确广告域名安全同步（fmz200）。"
+        f"**新增：{len(added)} 条；删除：0 条。**\n\n"
+        "新增域名：\n" + details + "\n\n"
+        "本次只更新精确域名规则；未导入第三方脚本、MITM 或宽泛拦截。"
+        "静态检查不代表 App 端已验证。\n"
+    )
+    history = history.replace(HISTORY_MARKER, HISTORY_MARKER + "\n\n" + entry, 1)
     readme = README.read_text("utf-8")
     readme = re.sub(r"(?m)^- \*\*最近更新时间：\*\* .*$", f"- **最近更新时间：** {stamp}", readme, count=1)
+    readme = re.sub(
+        r"(?m)^- \*\*最近实质更新：\*\* .*$",
+        f"- **最近实质更新：** {stamp}（自动新增 {len(added)} 条精确广告域名）",
+        readme,
+        count=1,
+    )
     readme = re.sub(r"仓库更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}", f"仓库更新时间：{stamp}", readme)
+    MODULE.write_text(updated, encoding="utf-8")
     README.write_text(readme, encoding="utf-8")
+    HISTORY.write_text(history, encoding="utf-8")
     print(f"Accepted {len(added)} newly verified exact ad domains. Source safe hosts: {source['safe']}")
 
 
