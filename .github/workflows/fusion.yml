@@ -11,6 +11,8 @@ on:
       - 'profiles/**'
       - 'tools/validate_personal_rules.py'
       - 'tools/test_adblock_scripts.js'
+      - 'tools/safe_ad_sync.py'
+      - 'CHANGELOG.md'
 
 permissions:
   contents: read
@@ -27,6 +29,23 @@ jobs:
         uses: actions/checkout@v4
       - name: Check personal routing safety and ad module structure
         run: python3 tools/validate_personal_rules.py
+      - name: Validate substantive update tracking
+        run: |
+          python3 -m py_compile tools/safe_ad_sync.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          module = Path("Module.sgmodule").read_text("utf-8")
+          readme = Path("README.md").read_text("utf-8")
+          history = Path("CHANGELOG.md").read_text("utf-8")
+          stamp = re.search(r"(?m)^#!desc=仓库更新时间：(\d{4}-\d{2}-\d{2} \d{2}:\d{2})$", module)
+          assert stamp is not None, "Formal module effective-update time missing"
+          assert history.count("<!-- EFFECTIVE_UPDATES_START -->") == 1
+          assert history.count("<!-- EFFECTIVE_UPDATES_END -->") == 1
+          assert f"## {stamp.group(1)}" in history, "Latest module date missing in history"
+          assert f"**最近实质更新：** {stamp.group(1)}" in readme
+          print("Substantive update date and detailed history consistent.")
+          PY
       - name: Check JavaScript syntax
         shell: bash
         run: |
