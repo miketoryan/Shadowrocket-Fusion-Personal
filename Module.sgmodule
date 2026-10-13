@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-10-13 23:10
+#!desc=仓库更新时间：2026-10-13 23:14
 
 [Rule]
 
@@ -942,6 +942,20 @@ DOMAIN,ads.terbergforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.konecraneslifttrucksforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.sennebogenforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
+
+# BEGIN DAILY SAFE AD DOMAINS
+# Source: fmz200 exact-domain allowlisted subset
+DOMAIN,ad-cdn.qingting.fm,REJECT,extended-matching,pre-matching
+DOMAIN,ad-r.soulapp.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ad-reward.soulapp.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ad-stat.ksosoft.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.21cn.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.360in.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.chelaile.net.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ad.hpplay.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ad.k.21cn.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.mcloud.139.com,REJECT,extended-matching,pre-matching
+# END DAILY SAFE AD DOMAINS
 
 [URL Rewrite]
 
