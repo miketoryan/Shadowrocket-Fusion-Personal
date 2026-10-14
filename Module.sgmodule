@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-10-13 23:14
+#!desc=仓库更新时间：2026-10-14 13:05
 
 [Rule]
 
@@ -955,6 +955,16 @@ DOMAIN,ad.chelaile.net.cn,REJECT,extended-matching,pre-matching
 DOMAIN,ad.hpplay.cn,REJECT,extended-matching,pre-matching
 DOMAIN,ad.k.21cn.com,REJECT,extended-matching,pre-matching
 DOMAIN,ad.mcloud.139.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.mobile.youku.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.qingting.fm,REJECT,extended-matching,pre-matching
+DOMAIN,ad.seeyouyima.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.yixin.im,REJECT,extended-matching,pre-matching
+DOMAIN,ad.zijieapi.com,REJECT,extended-matching,pre-matching
+DOMAIN,adcdn.hpplay.cn,REJECT,extended-matching,pre-matching
+DOMAIN,adfile.wifi8.com,REJECT,extended-matching,pre-matching
+DOMAIN,adlaunch.moji.com,REJECT,extended-matching,pre-matching
+DOMAIN,adlaunch.qingting.fm,REJECT,extended-matching,pre-matching
+DOMAIN,adlog.vivo.com.cn,REJECT,extended-matching,pre-matching
 # END DAILY SAFE AD DOMAINS
 
 [URL Rewrite]

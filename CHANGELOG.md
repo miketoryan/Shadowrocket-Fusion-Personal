@@ -6,6 +6,25 @@
 
 <!-- EFFECTIVE_UPDATES_START -->
 
+## 2026-10-14 13:05（北京时间）｜自动新增 10 条广告域名
+
+**类型：** 可信上游精确广告域名安全同步（fmz200）。**新增：10 条；删除：0 条。**
+
+新增域名：
+- `ad.mobile.youku.com`
+- `ad.qingting.fm`
+- `ad.seeyouyima.com`
+- `ad.yixin.im`
+- `ad.zijieapi.com`
+- `adcdn.hpplay.cn`
+- `adfile.wifi8.com`
+- `adlaunch.moji.com`
+- `adlaunch.qingting.fm`
+- `adlog.vivo.com.cn`
+
+本次只更新精确域名规则；未导入第三方脚本、MITM 或宽泛拦截。静态检查不代表 App 端已验证。
+
+
 ## 2026-10-13 23:14（北京时间）｜自动新增 10 条广告域名
 
 **类型：** 安全受控上游同步（fmz200）。**新增：10 条；删除：0 条。**
