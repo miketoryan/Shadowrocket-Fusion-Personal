@@ -28,6 +28,15 @@
           changed = true;
         }
       }
+      // R-Store 京东脚本公开维护的首页下拉层和推广导航字段。
+      if (Array.isArray(data.webViewFloorList) && data.webViewFloorList.length) {
+        data.webViewFloorList = [];
+        changed = true;
+      }
+      if (Object.prototype.hasOwnProperty.call(data, "promotionTabs")) {
+        delete data.promotionTabs;
+        changed = true;
+      }
     } else if (fn === "personinfoBusiness") {
       for (const floors of [data.floors, data.others && data.others.floors]) {
         if (!Array.isArray(floors)) continue;
@@ -50,6 +59,7 @@
         }
       }
     }
+    console.log("jd_ads_only fn=" + fn + " filtered=" + (changed ? "yes" : "no"));
     return $done(changed ? {body: JSON.stringify(data)} : {});
   } catch (_) {
     return $done({});
