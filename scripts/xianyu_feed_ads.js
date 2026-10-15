@@ -7,7 +7,8 @@
     const allowed = [
       "mtop.taobao.idlehome.home.nextfresh",
       "mtop.taobao.idle.local.home",
-      "mtop.taobao.idle.home.whale.modulet"
+      "mtop.taobao.idle.home.whale.modulet",
+      "mtop.taobao.idlemtopsearch.search"
     ];
     if (!allowed.some(endpoint => url.includes("/gw/" + endpoint + "/"))) return $done({});
     const body = JSON.parse(raw);
@@ -27,6 +28,25 @@
     }
     filterSections(body.data);
     filterSections(body.data.container);
+
+    // 闲鱼搜索广告与普通商品混排：只删除有明确广告标记的卡片。
+    if (url.includes("/gw/mtop.taobao.idlemtopsearch.search/") &&
+        Array.isArray(body.data.resultList)) {
+      const adLabels = /^(?:ad|ads|advert|advertisement|promotion|sponsored)$/i;
+      const filtered = body.data.resultList.filter(item => {
+        if (!item || typeof item !== "object") return true;
+        const data = item.data && typeof item.data === "object" ? item.data : {};
+        const args = data.item && data.item.main &&
+          data.item.main.clickParam && data.item.main.clickParam.args;
+        const markers = [item.bizType, data.bizType, args && args.item_type];
+        return !markers.some(v => typeof v === "string" && adLabels.test(v.trim()));
+      });
+      if (filtered.length !== body.data.resultList.length) {
+        body.data.resultList = filtered;
+        changed = true;
+      }
+    }
+
     return $done(changed ? {body: JSON.stringify(body)} : {});
   } catch (_) {
     return $done({});
