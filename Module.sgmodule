@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-10-15 09:00
+#!desc=仓库更新时间：2026-10-15 12:54
 
 [Rule]
 
@@ -965,6 +965,16 @@ DOMAIN,adfile.wifi8.com,REJECT,extended-matching,pre-matching
 DOMAIN,adlaunch.moji.com,REJECT,extended-matching,pre-matching
 DOMAIN,adlaunch.qingting.fm,REJECT,extended-matching,pre-matching
 DOMAIN,adlog.vivo.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,admarket.21cn.com,REJECT,extended-matching,pre-matching
+DOMAIN,admarketing.yahoo.net,REJECT,extended-matching,pre-matching
+DOMAIN,admonitor.thepaper.cn,REJECT,extended-matching,pre-matching
+DOMAIN,adnew.wifi8.com,REJECT,extended-matching,pre-matching
+DOMAIN,adpai.thepaper.cn,REJECT,extended-matching,pre-matching
+DOMAIN,adproxy.autohome.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,adreport.adtianmai.com,REJECT,extended-matching,pre-matching
+DOMAIN,adreq.vivo.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,ads-img-al.xhscdn.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads-img-qc.xhscdn.com,REJECT,extended-matching,pre-matching
 # END DAILY SAFE AD DOMAINS
 
 [URL Rewrite]

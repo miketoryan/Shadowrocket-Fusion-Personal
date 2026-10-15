@@ -6,6 +6,25 @@
 
 <!-- EFFECTIVE_UPDATES_START -->
 
+## 2026-10-15 12:54（北京时间）｜自动新增 10 条广告域名
+
+**类型：** 可信上游精确广告域名安全同步（fmz200）。**新增：10 条；删除：0 条。**
+
+新增域名：
+- `admarket.21cn.com`
+- `admarketing.yahoo.net`
+- `admonitor.thepaper.cn`
+- `adnew.wifi8.com`
+- `adpai.thepaper.cn`
+- `adproxy.autohome.com.cn`
+- `adreport.adtianmai.com`
+- `adreq.vivo.com.cn`
+- `ads-img-al.xhscdn.com`
+- `ads-img-qc.xhscdn.com`
+
+本次只更新精确域名规则；未导入第三方脚本、MITM 或宽泛拦截。静态检查不代表 App 端已验证。
+
+
 ## 2026-10-14 13:05（北京时间）｜自动新增 10 条广告域名
 
 **类型：** 可信上游精确广告域名安全同步（fmz200）。**新增：10 条；删除：0 条。**
