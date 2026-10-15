@@ -1058,6 +1058,9 @@ DOMAIN,ads-img-qc.xhscdn.com,REJECT,extended-matching,pre-matching
 ^https?:\/\/acs\.m\.taobao\.com\/gw\/mtop\.alibaba\.advertisementservice\.getadv - reject-dict
 
 # ===== 闲鱼：只保留开屏/搜索广告入口 =====
+# 闲鱼独立启动欢迎页：上游 R-Store 的已收录专属接口，不影响淘宝常规业务
+^https?:\/\/acs\.m\.taobao\.com\/gw\/mtop\.taobao\.idle\.home\.welcome\/(?:[0-9.]+)\/?(?:\?.*)?$ - reject-dict
+
 ^https?:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\.shade\/ - reject-dict
 
 [Body Rewrite]
