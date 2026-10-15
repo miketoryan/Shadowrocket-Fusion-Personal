@@ -975,6 +975,9 @@ DOMAIN,adlog.vivo.com.cn,REJECT,extended-matching,pre-matching
 # 中国联通：仅广告投放入口；账户列表、全局配置、登录及缴费接口保留。
 ^https?:\/\/m\.client\.10010\.com\/mobileService\/(?:activity|customer)\/(?:get_client_adv|get_startadv)(?:\?|\/|$) - reject-dict
 ^https?:\/\/m\.client\.10010\.com\/uniAdmsInterface\/(?:getHomePageAd|getWelcomeAd)(?:\?|\/|$) - reject-dict
+# 2026-10-15 实机日志定点补漏：联通首页顶部广告与活动弹窗（仅精确命中这两个接口）
+^https?:\/\/m\.client\.10010\.com\/getDataFromService\?(?=[^\r\n]*[?&]methodType=topAdGet(?:&|$))[^\r\n]* - reject-dict
+^https?:\/\/m\.client\.10010\.com\/mobileService\/activity\/homePopUpActivityNew\.htm(?:\?|$) - reject-dict
 # 闲鱼：专用广告素材 / 活动弹层，不拦商品推荐、发布或支付。
 ^https?:\/\/h5\.m\.goofish\.com\/app\/idleFish-F2e\/idlefish-pop(?:\/|\?|$) - reject-200
 ^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.live\.home\.ads\.material\.get\/ - reject-dict
