@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-10-16 12:45
+#!desc=仓库更新时间：2026-10-17 12:42
 
 [Rule]
 
@@ -985,6 +985,16 @@ DOMAIN,ads.aplusapi.pptv.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.auctions.yahoo.com,REJECT,extended-matching,pre-matching
 DOMAIN,ads.cup.com.cn,REJECT,extended-matching,pre-matching
 DOMAIN,ads.finance.yahoo.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.mojicdn.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.service.kugou.com,REJECT,extended-matching,pre-matching
+DOMAIN,ads.yahoo.de,REJECT,extended-matching,pre-matching
+DOMAIN,adsapi.snapchat.com,REJECT,extended-matching,pre-matching
+DOMAIN,adsdk.vivo.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,adse.wsa.ximalaya.com,REJECT,extended-matching,pre-matching
+DOMAIN,adsehera.ximalaya.com,REJECT,extended-matching,pre-matching
+DOMAIN,adserviceretry.kugou.com,REJECT,extended-matching,pre-matching
+DOMAIN,adsstatic.vivo.com.cn,REJECT,extended-matching,pre-matching
+DOMAIN,adv-ads.variflight.com,REJECT,extended-matching,pre-matching
 # END DAILY SAFE AD DOMAINS
 
 [URL Rewrite]
