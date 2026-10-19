@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-10-18 12:48
+#!desc=仓库更新时间：2026-10-19 12:57
 
 [Rule]
 
@@ -1005,6 +1005,14 @@ DOMAIN,adxlog.vivo.com.cn,REJECT,extended-matching,pre-matching
 DOMAIN,app-ad.variflight.com,REJECT,extended-matching,pre-matching
 DOMAIN,cdn-new-ad.wtzw.com,REJECT,extended-matching,pre-matching
 DOMAIN,img.auction-ads.wpscdn.cn,REJECT,extended-matching,pre-matching
+DOMAIN,iqiyim.adtrack.enlightent.cn,REJECT,extended-matching,pre-matching
+DOMAIN,mobad.ijinshan.com,REJECT,extended-matching,pre-matching
+DOMAIN,optimus-ads.amap.com,REJECT,extended-matching,pre-matching
+DOMAIN,optimus-ads.amap.com.w.alikunlun.com,REJECT,extended-matching,pre-matching
+DOMAIN,sdkconfig.ad.xiaomi.com,REJECT,extended-matching,pre-matching
+DOMAIN,soul-ad.soulapp.cn,REJECT,extended-matching,pre-matching
+DOMAIN,t-ads.xiaohongshu.com,REJECT,extended-matching,pre-matching
+DOMAIN,yk-ssp.ad.youku.com,REJECT,extended-matching,pre-matching
 # END DAILY SAFE AD DOMAINS
 
 [URL Rewrite]

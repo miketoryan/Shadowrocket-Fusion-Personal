@@ -6,6 +6,23 @@
 
 <!-- EFFECTIVE_UPDATES_START -->
 
+## 2026-10-19 12:57（北京时间）｜自动新增 8 条广告域名
+
+**类型：** 可信上游精确广告域名安全同步（fmz200）。**新增：8 条；删除：0 条。**
+
+新增域名：
+- `iqiyim.adtrack.enlightent.cn`
+- `mobad.ijinshan.com`
+- `optimus-ads.amap.com`
+- `optimus-ads.amap.com.w.alikunlun.com`
+- `sdkconfig.ad.xiaomi.com`
+- `soul-ad.soulapp.cn`
+- `t-ads.xiaohongshu.com`
+- `yk-ssp.ad.youku.com`
+
+本次只更新精确域名规则；未导入第三方脚本、MITM 或宽泛拦截。静态检查不代表 App 端已验证。
+
+
 ## 2026-10-18 12:48（北京时间）｜自动新增 10 条广告域名
 
 **类型：** 可信上游精确广告域名安全同步（fmz200）。**新增：10 条；删除：0 条。**
