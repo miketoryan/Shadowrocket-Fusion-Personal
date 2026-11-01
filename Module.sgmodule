@@ -100,6 +100,8 @@ DOMAIN,amap-aos-info-nogw.amap.com,REJECT,extended-matching,pre-matching
 DOMAIN,free-aos-cdn-image.amap.com,REJECT,extended-matching,pre-matching
 # 高德启动补漏：2026-09-28 日志实证 + 217heidai 收录的 qchannel03 广告域
 DOMAIN-SUFFIX,qchannel03.cn,REJECT,extended-matching,pre-matching
+# 2026-11-01 高德启动时实测仍直连；公开广告过滤列表交叉收录
+DOMAIN,www.qchannel01.cn,REJECT,extended-matching,pre-matching
 
 # ===== 后续增强：微信公众号广告媒体 =====
 DOMAIN,wxa.wxs.qq.com,REJECT,extended-matching,pre-matching
@@ -1132,6 +1134,9 @@ DOMAIN,yk-ssp.ad.youku.com,REJECT,extended-matching,pre-matching
 ^https?:\/\/home\.umetrip\.com\/gateway\/api\/umetrip\/native response-body-replace-regex "\"ads\":\[.*?\]" "\"ads\":[]"
 
 [Script]
+
+# 2026-11-01 高德启动图层接口：只移除明确的开屏控制字段
+amap-splash-config =type=http-response, pattern=^https?:\/\/m\d+\.amap\.com\/ws\/shield\/frogserver\/aocs\/updatable\/1(?:\?|$), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/amap_splash_config.js, requires-body=true, max-size=0
 
 # ===== 京东缓存开屏/首页悬浮广告（仅清理已知广告字段） =====
 jd-cache-splash =type=http-response, pattern=^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=(?:start|welcomeHome|personinfoBusiness|myOrderInfo)(?:&|$), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/jd_ads_only.js, requires-body=true, max-size=0
