@@ -1,11 +1,9 @@
-// 高德：仅清理启动图层配置中的已知开屏字段。
-// 2026-11-01 日志：m5.amap.com/ws/shield/frogserver/aocs/updatable/1。
-// 参考 R-Store 的 amap.js 相关 SplashScreenControl 处理方式。
-// 不影响导航、路线、POI、收藏、天气或账号功能。
+// 高德启动图层：清除已知开屏控制字段（不修改地图和导航数据）。
+// 证据：2026-11-01 日志 m5.amap.com/ws/shield/frogserver/aocs/updatable/1。
 (function () {
   try {
     const url = String(($request && $request.url) || "");
-    if (!/^https?:\\/\\/m\\d+\\.amap\\.com\\/ws\\/shield\\/frogserver\\/aocs\\/updatable\\/1(?:\\?|$)/.test(url)) {
+    if (!/^https?:\/\/m\d+\.amap\.com\/ws\/shield\/frogserver\/aocs\/updatable\/1(?:\?|$)/.test(url)) {
       return $done({});
     }
     const raw = $response && $response.body;
@@ -19,12 +17,12 @@
       console.log("amap_splash_config invalid_shape");
       return $done({});
     }
+    // 仅处理上游现有去广告脚本确认的三个启动图层字段。
     const keys = ["SplashScreenControl", "splashscreen", "splashview_config"];
     let changed = 0;
     for (const key of keys) {
       if (!Object.prototype.hasOwnProperty.call(obj.data, key)) continue;
-      const original = obj.data[key];
-      if (original === null) continue;
+      if (obj.data[key] === null) continue;
       obj.data[key] = { status: 1, version: "", value: "" };
       changed++;
     }
