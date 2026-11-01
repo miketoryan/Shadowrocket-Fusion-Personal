@@ -45,11 +45,41 @@
         obj.api !== api || !Array.isArray(obj.ret) ||
         !obj.ret.some(x => typeof x === "string" && x.indexOf("SUCCESS::") === 0) ||
         !obj.data || typeof obj.data !== "object" || Array.isArray(obj.data)) {
+      console.log("xianyu_splash validation_skip api=" + api);
       return $done({});
     }
 
-    obj.data.adMap = {};
-    if (Object.prototype.hasOwnProperty.call(obj.data, "dspList")) obj.data.dspList = [];
+    // 2026-11-01 日志确认旧版/新版开屏接口均命中脚本；
+    // 新版 splash.ads/2.0 可使用 cacheAd 引用本地广告，不能只清 adMap。
+    const adFields = new Set(["adMap", "ads", "adList", "splashAds", "splashList", "dspList", "cacheAd", "cacheAdInfo", "cacheAdInfos"]);
+    let cleared = 0;
+    function cleanSplash(node, depth) {
+      if (!node || typeof node !== "object" || depth > 6) return;
+      for (const key of Object.keys(node)) {
+        if (adFields.has(key)) {
+          // 保留字段容器的原始类型；避免更改非广告配置的协议结构。
+          const value = node[key];
+          if (key === "cacheAdInfo") {
+            delete node[key];
+          } else if (Array.isArray(value)) {
+            node[key] = [];
+          } else if (value && typeof value === "object") {
+            node[key] = {};
+          } else {
+            node[key] = "";
+          }
+          cleared++;
+        } else if (node[key] && typeof node[key] === "object") {
+          cleanSplash(node[key], depth + 1);
+        }
+      }
+    }
+    cleanSplash(obj.data, 0);
+    // 兼容旧版响应中的固定 adMap 字段；不改 ret、api 或普通商品数据。
+    if (!Object.prototype.hasOwnProperty.call(obj.data, "adMap")) {
+      obj.data.adMap = {};
+    }
+    console.log("xianyu_splash api=" + api + " ad_fields_cleared=" + cleared);
     return $done({ body: JSON.stringify(obj) });
   } catch (_) {
     return $done({});
