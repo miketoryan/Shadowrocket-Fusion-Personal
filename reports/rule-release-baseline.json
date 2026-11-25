@@ -1,0 +1,14 @@
+{
+  "fingerprint": "87e9bf4649af5c196f6df1c48062b270023f6cf9f364655aa9792e349a29fae1",
+  "commit": "47c2d4f4445110df5bc3736f75039564993ec5bf",
+  "module_timestamp": "2026-11-25 22:25",
+  "scripts": {
+    "scripts/amap_splash_config.js": "d70c59904f87b4ad36d9d572700e7ea6347b5b0dc3b4e35aed5708a8dd13966a",
+    "scripts/jd_ads_only.js": "e471d46487767400994eb92fda1370d4fc484eeeef9754aa57ff1cb90bc61fa9",
+    "scripts/xianyu_feed_ads.js": "7f4bd0698864ec649f416f51e5490aa96993ea5c0a93ef4df9de40c04eca7baf",
+    "scripts/xianyu_splash.js": "bf11b3fc017f3c840f6fe131836916108ca2dd978997a5e5266b5a3c53358d74",
+    "scripts/bilibili_splash_cache.js": "f35ffc64a70315318f9e47b35b641e80d2fd959845d904346fad302821283395",
+    "scripts/zhuzher_ads_empty.js": "1ffd09662a2881f49ec73ae28b71321613fdffacf31ea98ed19f64f8a59fee4a"
+  },
+  "note": "Silent initial baseline. Release only when active rules or a referenced main-branch local script changes; metadata and reports do not notify."
+}

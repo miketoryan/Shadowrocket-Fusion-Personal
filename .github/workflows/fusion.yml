@@ -13,12 +13,15 @@ on:
       - 'tools/test_adblock_scripts.js'
       - 'tools/safe_ad_sync.py'
       - 'tools/test_safe_ad_sync.py'
+      - 'tools/notify_rule_release.py'
+      - 'tools/test_notify_rule_release.py'
+      - 'reports/rule-release-baseline.json'
       - 'sources.json'
       - '.github/workflows/safe-sync.yml'
       - 'CHANGELOG.md'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: shadowrocket-module-validation
@@ -33,7 +36,7 @@ jobs:
       - name: Check personal routing safety and ad module structure
         run: python3 tools/validate_personal_rules.py
       - name: Check upstream detection and publication regressions
-        run: python3 -m unittest discover -s tools -p test_safe_ad_sync.py -v
+        run: python3 -m unittest discover -s tools -p 'test_*.py' -v
       - name: Validate substantive update tracking
         run: |
           python3 -m py_compile tools/safe_ad_sync.py
@@ -58,6 +61,11 @@ jobs:
           for script in scripts/*.js; do node --check "$script"; done
       - name: Check ad-response fixture regressions
         run: node tools/test_adblock_scripts.js
+      - name: Notify GitHub Release subscribers only for substantive rule changes
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/notify_rule_release.py
       - name: Show module metadata
         run: |
           head -n 2 Module.sgmodule

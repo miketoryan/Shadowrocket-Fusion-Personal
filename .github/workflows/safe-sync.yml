@@ -10,6 +10,9 @@ on:
       - '.github/workflows/safe-sync.yml'
       - 'tools/safe_ad_sync.py'
       - 'tools/test_safe_ad_sync.py'
+      - 'tools/notify_rule_release.py'
+      - 'tools/test_notify_rule_release.py'
+      - 'reports/rule-release-baseline.json'
       - 'sources.json'
 
 permissions:
@@ -34,7 +37,7 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
-          python3 -m unittest discover -s tools -p test_safe_ad_sync.py
+          python3 -m unittest discover -s tools -p 'test_*.py'
           python3 tools/validate_personal_rules.py
           for s in scripts/*.js; do node --check "$s"; done
           node tools/test_adblock_scripts.js
@@ -46,6 +49,7 @@ jobs:
           git restore -- Module.sgmodule README.md CHANGELOG.md
           python3 tools/safe_ad_sync.py --record-failure "Publication validation failed; generated module and timestamps were restored." || true
       - name: Publish check status and validated rule changes
+        id: publish
         if: always()
         run: |
           set -euo pipefail
@@ -61,6 +65,11 @@ jobs:
           fi
           git commit -m "chore(adblock): record upstream check and publish reviewed changes"
           git push
+      - name: Notify GitHub Release subscribers only after validated publication
+        if: steps.publish.outcome == 'success' && steps.validate.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/notify_rule_release.py
       - name: Mark check failure after saving diagnostic reports
         if: always() && (steps.sync.outcome != 'success' || steps.validate.outcome != 'success')
         run: exit 1

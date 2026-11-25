@@ -18,6 +18,19 @@
 - **自动更新范围：** 完整检测已配置上游文件；一次同步全部通过检查的精确广告域名、显式批准的后缀或广告接口。脚本、解密范围、未批准接口和上游删除项持续列入待审核清单。
 - **最近检查与失败原因：** [自动同步状态](reports/status.md)；[待审核清单](reports/interface-updates.md)；[完整 JSON 明细](reports/upstream-review.json)。检查失败也会保存诊断报告，不再把被过滤的变化称作“没有更新”。
 
+## GitHub 直接发送实质更新邮件
+
+正式模块中的有效规则、脚本引用或正在使用的仓库内脚本内容变化，并通过发布检查后，工作流会自动发布一条正式 GitHub Release。GitHub 将 Release 通知发送到账号已验证并选作通知收件地址的邮箱，无需 SMTP 授权码，也无需 ChatGPT 定时检查。
+
+你需要确认一次账号设置：
+
+1. 仓库右上角 **Watch → Custom → Releases → Apply**，可只订阅 Releases。
+2. [GitHub 通知设置](https://github.com/settings/notifications)中，为 Watching 通知勾选 **Email**，确认通知邮箱正确。
+
+只有有实质更新的版本才发布 Release；单纯检查报告、待审核列表、时间标签、README 或同步程序修改不发这类通知。初始基线静默，不为开启通知而发送旧版本邮件。同一内容重复检查不会重复发布；真实回滚也会通知。
+
+邮件提供更新提示、版本差异、更新记录和原订阅地址。收到后手动刷新手机上的原远程模块即可。[查看 Release](https://github.com/miketoryan/Shadowrocket-Fusion-Personal/releases)。GitHub 账号的邮件开关及实际投递由 GitHub 管理，仓库工作流不能代替账号设置。
+
 ## 自动更新如何工作（2026-11-25 修正）
 
 1. **检测：** 比较 fmz200 完整模块、B站 JSON/proto、航旅纵横、当前淘宝脚本及 QQ 新闻、贴吧、微博参考模块共 8 个已配置上游文件的内容哈希。模块内的域名、后缀、接口、脚本声明、响应改写和解密列表均进入快照；不执行上游脚本。
