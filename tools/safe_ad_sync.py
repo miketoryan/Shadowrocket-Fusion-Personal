@@ -259,6 +259,25 @@ def write_reports(root, report, state):
         "完整条目、来源、原因、增删和脚本哈希均见 [upstream-review.json](upstream-review.json)。"
         "下方每类最多预览 30 项，JSON 不截断。\n\n"
     )
+    groups = {"豆瓣": r"douban|frodo|erebor", "B站": r"bilibili|biliapi|bilivideo|hdslb", "京东": r"jd\.com|360buy|jdcloud", "闲鱼": r"goofish|idlecommerce|idlehome", "高德": r"amap|gaode", "网易云": r"music\.163|music\.126|netease", "中国联通": r"10010"}
+    added = {(c["source"], key(item)) for c in report.get("changes", []) if not c.get("baseline") for item in c.get("added", [])}
+    detail += "## 常用 App 优先查看\n\n按域名和接口关键词推测归属；共享域名及上游整行主机列表可能误归类，须人工核对。\n\n"
+    for name, pattern in groups.items():
+        items = [x for x in report["pending"] if len(x["line"]) < 1000 and re.search(pattern, x["line"], re.I)]
+        fresh = [x for x in items if (x["source"], key(x)) in added]
+        detail += f"### {name}｜本次新增 {len(fresh)} 项，历史待审 {len(items)-len(fresh)} 项\n\n"
+        for item in (fresh + [x for x in items if x not in fresh])[:20]:
+            tag = "本次新增" if (item["source"], key(item)) in added else "历史待审"
+            detail += f"- **{tag}** {item['source']}：{BT}{item['line'].replace(BT, chr(39))}{BT}\n"
+        detail += "\n"
+    detail += "## 本次上游新增与删除\n\n"
+    for change in report.get("changes", []):
+        if change.get("baseline"): continue
+        for action in ("added", "removed"):
+            items = change.get(action, [])
+            if not items: continue
+            detail += f"- {change['source']} {action}：{len(items)} 项；完整明细见 JSON。\n"
+    detail += "\n## 按规则类型查看\n\n"
     for category, count in sorted(counts.items()):
         detail += f"## {category}（{count} 项待审核）\n\n"
         for item in [x for x in report["pending"] if x["category"] == category][:30]:

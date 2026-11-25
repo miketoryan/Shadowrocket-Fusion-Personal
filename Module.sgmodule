@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-11-26 07:12
+#!desc=仓库更新时间：2026-11-26 07:19
 
 [Rule]
 
@@ -1122,13 +1122,8 @@ DOMAIN-SUFFIX,erebor.douban.com,REJECT,extended-matching,pre-matching
 
 # ===== 豆瓣 =====
 # feed 中常见广告数组
-^https?:\/\/api\.douban\.com\/.* response-body-replace-regex "\"ad_info\":\{.*?\}," ""
-^https?:\/\/api\.douban\.com\/.* response-body-replace-regex "\"ads\":\[.*?\]" "\"ads\":[]"
-^https?:\/\/api\.douban\.com\/.* response-body-replace-regex "\"splash_ad\":\{.*?\}" "\"splash_ad\":{}"
 
 # ===== 小宇宙 =====
-^https?:\/\/api\.xiaoyuzhoufm\.com\/.* response-body-replace-regex "\"adInfo\":\{.*?\}," ""
-^https?:\/\/api\.xiaoyuzhoufm\.com\/.* response-body-replace-regex "\"ads\":\[.*?\]" "\"ads\":[]"
 
 # ===== 微信公众号 =====
 ^https?:\/\/mp\.weixin\.qq\.com\/s\?.* response-body-replace-regex "<div[^>]+class=\"[^\"]*(?:ad|advert)[^\"]*\"[^>]*>[\s\S]*?<\/div>" ""
@@ -1136,43 +1131,40 @@ DOMAIN-SUFFIX,erebor.douban.com,REJECT,extended-matching,pre-matching
 ^https?:\/\/mp\.weixin\.qq\.com\/s\?.* response-body-replace-regex "<div[^>]+id=\"js_bottom_ad_area\"[\s\S]*?<\/div>" ""
 
 # ===== B站 =====
-^https?:\/\/app\.bilibili\.com\/x\/v2\/feed\/index response-body-replace-regex "\{[^\{\}]*\"card_type\":\"ad\"[^\{\}]*\},?" ""
-^https?:\/\/app\.bilibili\.com\/x\/v2\/feed\/index response-body-replace-regex "\{[^\{\}]*\"ad_info\"[^\{\}]*\},?" ""
-^https?:\/\/app\.bilibili\.com\/x\/v2\/feed\/index response-body-replace-regex "\{[^\{\}]*\"ad_cb\"[^\{\}]*\},?" ""
 
 # ===== 百度网盘 =====
 ^https?:\/\/pan\.baidu\.com\/.* response-body-replace-regex "\"advertise\":\{.*?\}," ""
 ^https?:\/\/pan\.baidu\.com\/.* response-body-replace-regex "\"ads\":\[.*?\]" "\"ads\":[]"
 
 # ===== 航旅纵横 =====
-^https?:\/\/home\.umetrip\.com\/gateway\/api\/umetrip\/native response-body-replace-regex "\"advertise\":\[.*?\]" "\"advertise\":[]"
-^https?:\/\/home\.umetrip\.com\/gateway\/api\/umetrip\/native response-body-replace-regex "\"ads\":\[.*?\]" "\"ads\":[]"
 
 [Script]
 
+json-ads-safe =type=http-response, pattern=^https?:\/\/(?:api\.douban\.com\/|api\.xiaoyuzhoufm\.com\/|home\.umetrip\.com\/gateway\/api\/umetrip\/native|app\.bilibili\.com\/x\/v2\/feed\/index(?:\?|$)), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/json_ads_safe.js?v=55036853c8e64089, requires-body=true, max-size=0
+
 # 2026-11-01 高德启动图层接口：只移除明确的开屏控制字段
-amap-splash-config =type=http-response, pattern=^https?:\/\/m\d+\.amap\.com\/ws\/shield\/frogserver\/aocs\/updatable\/1(?:\?|$), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/amap_splash_config.js, requires-body=true, max-size=0
+amap-splash-config =type=http-response, pattern=^https?:\/\/m\d+\.amap\.com\/ws\/shield\/frogserver\/aocs\/updatable\/1(?:\?|$), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/amap_splash_config.js?v=d70c59904f87b4ad, requires-body=true, max-size=0
 
 # ===== 京东缓存开屏/首页悬浮广告（仅清理已知广告字段） =====
-jd-cache-splash =type=http-response, pattern=^https?:\/\/api\.m\.jd\.com\/client\.action\?(?:[^&#]*&)*functionId=(?:start|welcomeHome|personinfoBusiness|myOrderInfo)(?:&|$), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/jd_ads_only.js, requires-body=true, max-size=0
+jd-cache-splash =type=http-response, pattern=^https?:\/\/api\.m\.jd\.com\/client\.action\?(?:[^&#]*&)*functionId=(?:start|welcomeHome|personinfoBusiness|myOrderInfo)(?:&|$), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/jd_ads_only.js?v=e471d46487767400, requires-body=true, max-size=0
 
 # ===== 闲鱼首页/同城信息流（仅删除 bizType=AD） =====
-xianyu-feed-ads =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/(?:mtop\.taobao\.idlehome\.home\.nextfresh|mtop\.taobao\.idle\.local\.home|mtop\.taobao\.idle\.home\.whale\.modulet)\/, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_feed_ads.js, requires-body=true, max-size=0
+xianyu-feed-ads =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/(?:mtop\.taobao\.idlehome\.home\.nextfresh|mtop\.taobao\.idle\.local\.home|mtop\.taobao\.idle\.home\.whale\.modulet)\/, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_feed_ads.js?v=7f4bd0698864ec64, requires-body=true, max-size=0
 # 闲鱼搜索结果：仅移除显式标记为广告的卡片，保留普通商品
-xianyu-search-ads =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\/, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_feed_ads.js, requires-body=true, max-size=0
+xianyu-search-ads =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\/, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_feed_ads.js?v=7f4bd0698864ec64, requires-body=true, max-size=0
 
 # ===== 闲鱼：开屏 / 广告场景恢复（2026-09-27 日志实证） =====
-xianyu-splash =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlecommerce\.splash\.(?:async\.)?ads\/(?:1\.0|2\.0)\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0
-xianyu-scene-restore =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.idle\.idleadv\.scene\.restore\/1\.0\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0
-xianyu-launch-report =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.idle\.idleadv\.app\.launch\.report\/1\.0\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0
+xianyu-splash =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlecommerce\.splash\.(?:async\.)?ads\/(?:1\.0|2\.0)\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js?v=bf11b3fc017f3c84, requires-body=true, max-size=0
+xianyu-scene-restore =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.idle\.idleadv\.scene\.restore\/1\.0\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js?v=bf11b3fc017f3c84, requires-body=true, max-size=0
+xianyu-launch-report =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.idle\.idleadv\.app\.launch\.report\/1\.0\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js?v=bf11b3fc017f3c84, requires-body=true, max-size=0
 
 # ===== B站四个开屏入口：返回空配置；版本参数用于刷新旧脚本缓存 =====
-bili-splash =type=http-response, pattern=^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(list|show|brand\/list|event\/list2)(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/bilibili_splash_cache.js?v=20261125, requires-body=true, max-size=0
+bili-splash =type=http-response, pattern=^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(list|show|brand\/list|event\/list2)(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/bilibili_splash_cache.js?v=f35ffc64a7031531, requires-body=true, max-size=0
 
 # 闲鱼 HTTPDNS：移除 acs/g-acs 专属解析，防止直连 IP 绕过 MITM/响应规则
 
 # ===== 住这儿：广告 API 返回空列表 =====
-zhuzher_ads_empty =type=http-response, pattern=^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/zhuzher_ads_empty.js, requires-body=true, max-size=0
+zhuzher_ads_empty =type=http-response, pattern=^https?:\/\/api\.5th\.zone\/ads\/v3\/type\/\d+\/items(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/zhuzher_ads_empty.js?v=1ffd09662a2881f4, requires-body=true, max-size=0
 
 # ===== 豆瓣 =====
 

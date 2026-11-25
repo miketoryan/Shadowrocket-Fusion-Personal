@@ -80,3 +80,20 @@ for (const raw of ["", "not-json", "null", "[]"]) {
 
 console.log("Ad response regression tests passed (JD/Goofish/Bilibili).");
 
+
+
+const safe = "scripts/json_ads_safe.js";
+const doub = {splash_ad: {image: {url: "ad"}, id: 1}, normal: {id: 7}};
+const dout = apply(safe, "https://api.douban.com/v2/feed", doub);
+assert.deepEqual(dout.splash_ad, {}); assert.equal(dout.normal.id, 7);
+const feed = {data:{items:[{id:1},{card_type:"ad",id:2}]}};
+assert.equal(apply(safe, "https://app.bilibili.com/x/v2/feed/index?x=1", feed).data.items.length,1);
+const amap = {data:{SplashScreenControl:{value:"ad"}, map:{value:42}}, code:0};
+const amapout = apply("scripts/amap_splash_config.js", "https://m5.amap.com/ws/shield/frogserver/aocs/updatable/1?x=1", amap);
+assert.equal(amapout.data.SplashScreenControl.value, ""); assert.equal(amapout.data.map.value,42);
+const xyurl = "https://acs.m.goofish.com/gw/mtop.taobao.idlecommerce.splash.ads/2.0/";
+const xy = {api:"mtop.taobao.idlecommerce.splash.ads",ret:["SUCCESS::调用成功"],data:{adMap:{a:1},cacheAd:[{id:9}],normal:{id:4}}};
+const xyout=apply("scripts/xianyu_splash.js",xyurl,xy);
+assert.deepEqual(xyout.data.adMap,{}); assert.equal(xyout.data.cacheAd.length,0); assert.equal(xyout.data.normal.id,4);
+assert.deepEqual(apply("scripts/xianyu_splash.js",xyurl,{...xy,ret:["FAIL"]}),{...xy,ret:["FAIL"]});
+assert.equal(apply(jd,"https://api.m.jd.com/client.action?client=apple&functionId=start",origJD).images.length,0);
