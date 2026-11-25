@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-11-25 22:25
+#!desc=仓库更新时间：2026-11-26 07:12
 
 [Rule]
 
@@ -97,6 +97,7 @@ DOMAIN,v2mi.gdt.qq.com,REJECT,extended-matching,pre-matching
 
 # ===== 后续增强：网易云音乐广告素材 =====
 DOMAIN,iadmusicmatvideo.music.126.net,REJECT,extended-matching,pre-matching
+DOMAIN,iadmusicmat.music.126.net,REJECT,extended-matching,pre-matching
 DOMAIN,admusicpic.music.126.net,REJECT,extended-matching,pre-matching
 DOMAIN,iad.g.163.com,REJECT,extended-matching,pre-matching
 # 高置信度补强：fmz200 / AWAvenue / 217heidai 均收录的网易广告主机
@@ -1104,7 +1105,7 @@ DOMAIN-SUFFIX,erebor.douban.com,REJECT,extended-matching,pre-matching
 # ===== 航旅纵横 =====
 ^https?:\/\/(discardrp|startup|home)\.umetrip\.com\/gateway\/api\/umetrip\/native - reject
 # ===== 京东：保留明确广告/启动素材接口 =====
-^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=queryMaterialAdverts(?:&|$) - reject-200
+^https?:\/\/api\.m\.jd\.com\/client\.action\?(?:[^&#]*&)*functionId=queryMaterialAdverts(?:&|$) - reject-200
 ^https?:\/\/m\.360buyimg\.com\/mobilecms\/s1125x2436_jfs\/ - reject-200
 ^https?:\/\/m\.360buyimg\.com\/babel\/jfs\/t1\/[0-9]{6}\/[0-9]{2}\/[0-9]{5}\/[0-9]{6}\/.*\.jpg - reject-200
 
@@ -1153,7 +1154,7 @@ DOMAIN-SUFFIX,erebor.douban.com,REJECT,extended-matching,pre-matching
 amap-splash-config =type=http-response, pattern=^https?:\/\/m\d+\.amap\.com\/ws\/shield\/frogserver\/aocs\/updatable\/1(?:\?|$), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/amap_splash_config.js, requires-body=true, max-size=0
 
 # ===== 京东缓存开屏/首页悬浮广告（仅清理已知广告字段） =====
-jd-cache-splash =type=http-response, pattern=^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=(?:start|welcomeHome|personinfoBusiness|myOrderInfo)(?:&|$), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/jd_ads_only.js, requires-body=true, max-size=0
+jd-cache-splash =type=http-response, pattern=^https?:\/\/api\.m\.jd\.com\/client\.action\?(?:[^&#]*&)*functionId=(?:start|welcomeHome|personinfoBusiness|myOrderInfo)(?:&|$), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/jd_ads_only.js, requires-body=true, max-size=0
 
 # ===== 闲鱼首页/同城信息流（仅删除 bizType=AD） =====
 xianyu-feed-ads =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/(?:mtop\.taobao\.idlehome\.home\.nextfresh|mtop\.taobao\.idle\.local\.home|mtop\.taobao\.idle\.home\.whale\.modulet)\/, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_feed_ads.js, requires-body=true, max-size=0
