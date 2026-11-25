@@ -1,16 +1,16 @@
 {
   "schema_version": 2,
-  "checked_at": "2026-11-25 22:25",
-  "status": "auto_updated",
+  "checked_at": "2026-11-25 22:28",
+  "status": "review_required",
   "sources": [
     {
       "id": "fmz200-exact-ad-domains",
       "url": "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Shadowrocket/module/blockAds.srmodule",
       "kind": "module",
       "sha256": "f2c0f73aa2c5fe2327d95baca17d5eef7ec284bb49e9d69a74dfba6e89083905",
-      "changed": true,
-      "baseline": true,
-      "added": 4436,
+      "changed": false,
+      "baseline": false,
+      "added": 0,
       "removed": 0
     },
     {
@@ -18,8 +18,8 @@
       "url": "https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-json.js",
       "kind": "script",
       "sha256": "748ad16a92532bde2c439a8b9975f465381d20e24328cf2a58ff3a2a27328d84",
-      "changed": true,
-      "baseline": true,
+      "changed": false,
+      "baseline": false,
       "added": 0,
       "removed": 0
     },
@@ -28,8 +28,8 @@
       "url": "https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-proto.js",
       "kind": "script",
       "sha256": "70fa7cf0e3390da24db93bcfbf0c81c2af17b16f99012b483783f046f62c476e",
-      "changed": true,
-      "baseline": true,
+      "changed": false,
+      "baseline": false,
       "added": 0,
       "removed": 0
     },
@@ -38,8 +38,8 @@
       "url": "https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/umetrip.js",
       "kind": "script",
       "sha256": "64db067778acd1818e8eb82ee73fe1f82ea300cf91c5479276b4d44e87a4cfa1",
-      "changed": true,
-      "baseline": true,
+      "changed": false,
+      "baseline": false,
       "added": 0,
       "removed": 0
     },
@@ -48,9 +48,9 @@
       "url": "https://raw.githubusercontent.com/app2smile/rules/master/module/qqnews.sgmodule",
       "kind": "module",
       "sha256": "dbc36baa324c803bbcfdf0a6590faf58e2d5c8d8c18d1fd460a174600751847b",
-      "changed": true,
-      "baseline": true,
-      "added": 2,
+      "changed": false,
+      "baseline": false,
+      "added": 0,
       "removed": 0
     },
     {
@@ -58,9 +58,9 @@
       "url": "https://raw.githubusercontent.com/app2smile/rules/master/module/tieba.sgmodule",
       "kind": "module",
       "sha256": "b20d792a1f4466e97103266942176d6db4579340ba201a4fa8db91da2adfda29",
-      "changed": true,
-      "baseline": true,
-      "added": 4,
+      "changed": false,
+      "baseline": false,
+      "added": 0,
       "removed": 0
     },
     {
@@ -68,9 +68,9 @@
       "url": "https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/WeiboAds.conf",
       "kind": "module",
       "sha256": "9cc47e68231ae05324f50eea108e0f1e5175fa2cfeeb6c8bae241db1556b038a",
-      "changed": true,
-      "baseline": true,
-      "added": 46,
+      "changed": false,
+      "baseline": false,
+      "added": 0,
       "removed": 0
     },
     {
@@ -78,26 +78,13 @@
       "url": "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/myBlockAds.js",
       "kind": "script",
       "sha256": "4cf62100424886068a5470daecec319e93ccd034c647d79a9daaa72bbbc341bb",
-      "changed": true,
-      "baseline": true,
+      "changed": false,
+      "baseline": false,
       "added": 0,
       "removed": 0
     }
   ],
-  "applied": [
-    {
-      "source": "fmz200-exact-ad-domains",
-      "category": "DOMAIN-SUFFIX",
-      "line": "DOMAIN-SUFFIX,ad.doubanio.com,REJECT",
-      "published": "DOMAIN-SUFFIX,ad.doubanio.com,REJECT,extended-matching,pre-matching"
-    },
-    {
-      "source": "fmz200-exact-ad-domains",
-      "category": "DOMAIN-SUFFIX",
-      "line": "DOMAIN-SUFFIX,erebor.douban.com,REJECT",
-      "published": "DOMAIN-SUFFIX,erebor.douban.com,REJECT,extended-matching,pre-matching"
-    }
-  ],
+  "applied": [],
   "pending": [
     {
       "source": "fmz200-exact-ad-domains",
@@ -25959,7 +25946,7 @@
       "line": "https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-json.js",
       "reason": "上游脚本内容尚未审核；不自动替换本地脚本",
       "sha256": "748ad16a92532bde2c439a8b9975f465381d20e24328cf2a58ff3a2a27328d84",
-      "previous_sha256": null
+      "previous_sha256": "748ad16a92532bde2c439a8b9975f465381d20e24328cf2a58ff3a2a27328d84"
     },
     {
       "source": "app2smile-bilibili-proto",
@@ -25967,7 +25954,7 @@
       "line": "https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-proto.js",
       "reason": "上游脚本内容尚未审核；不自动替换本地脚本",
       "sha256": "70fa7cf0e3390da24db93bcfbf0c81c2af17b16f99012b483783f046f62c476e",
-      "previous_sha256": null
+      "previous_sha256": "70fa7cf0e3390da24db93bcfbf0c81c2af17b16f99012b483783f046f62c476e"
     },
     {
       "source": "zirawell-umetrip-ads",
@@ -25975,7 +25962,7 @@
       "line": "https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/umetrip.js",
       "reason": "上游脚本内容尚未审核；不自动替换本地脚本",
       "sha256": "64db067778acd1818e8eb82ee73fe1f82ea300cf91c5479276b4d44e87a4cfa1",
-      "previous_sha256": null
+      "previous_sha256": "64db067778acd1818e8eb82ee73fe1f82ea300cf91c5479276b4d44e87a4cfa1"
     },
     {
       "source": "app2smile QQ News",
@@ -26295,7 +26282,7 @@
       "line": "https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/myBlockAds.js",
       "reason": "上游脚本内容尚未审核；不自动替换本地脚本",
       "sha256": "4cf62100424886068a5470daecec319e93ccd034c647d79a9daaa72bbbc341bb",
-      "previous_sha256": null
+      "previous_sha256": "4cf62100424886068a5470daecec319e93ccd034c647d79a9daaa72bbbc341bb"
     }
   ],
   "deferred": [],
@@ -26303,8 +26290,8 @@
   "changes": [
     {
       "source": "fmz200-exact-ad-domains",
-      "baseline": true,
-      "previous_sha256": null,
+      "baseline": false,
+      "previous_sha256": "f2c0f73aa2c5fe2327d95baca17d5eef7ec284bb49e9d69a74dfba6e89083905",
       "sha256": "f2c0f73aa2c5fe2327d95baca17d5eef7ec284bb49e9d69a74dfba6e89083905",
       "inventory_count": 4436,
       "added": [],
@@ -26312,8 +26299,8 @@
     },
     {
       "source": "app2smile-bilibili-json",
-      "baseline": true,
-      "previous_sha256": null,
+      "baseline": false,
+      "previous_sha256": "748ad16a92532bde2c439a8b9975f465381d20e24328cf2a58ff3a2a27328d84",
       "sha256": "748ad16a92532bde2c439a8b9975f465381d20e24328cf2a58ff3a2a27328d84",
       "inventory_count": 0,
       "added": [],
@@ -26321,8 +26308,8 @@
     },
     {
       "source": "app2smile-bilibili-proto",
-      "baseline": true,
-      "previous_sha256": null,
+      "baseline": false,
+      "previous_sha256": "70fa7cf0e3390da24db93bcfbf0c81c2af17b16f99012b483783f046f62c476e",
       "sha256": "70fa7cf0e3390da24db93bcfbf0c81c2af17b16f99012b483783f046f62c476e",
       "inventory_count": 0,
       "added": [],
@@ -26330,8 +26317,8 @@
     },
     {
       "source": "zirawell-umetrip-ads",
-      "baseline": true,
-      "previous_sha256": null,
+      "baseline": false,
+      "previous_sha256": "64db067778acd1818e8eb82ee73fe1f82ea300cf91c5479276b4d44e87a4cfa1",
       "sha256": "64db067778acd1818e8eb82ee73fe1f82ea300cf91c5479276b4d44e87a4cfa1",
       "inventory_count": 0,
       "added": [],
@@ -26339,8 +26326,8 @@
     },
     {
       "source": "app2smile QQ News",
-      "baseline": true,
-      "previous_sha256": null,
+      "baseline": false,
+      "previous_sha256": "dbc36baa324c803bbcfdf0a6590faf58e2d5c8d8c18d1fd460a174600751847b",
       "sha256": "dbc36baa324c803bbcfdf0a6590faf58e2d5c8d8c18d1fd460a174600751847b",
       "inventory_count": 2,
       "added": [],
@@ -26348,8 +26335,8 @@
     },
     {
       "source": "app2smile Tieba",
-      "baseline": true,
-      "previous_sha256": null,
+      "baseline": false,
+      "previous_sha256": "b20d792a1f4466e97103266942176d6db4579340ba201a4fa8db91da2adfda29",
       "sha256": "b20d792a1f4466e97103266942176d6db4579340ba201a4fa8db91da2adfda29",
       "inventory_count": 4,
       "added": [],
@@ -26357,8 +26344,8 @@
     },
     {
       "source": "ddgksf Weibo Ads",
-      "baseline": true,
-      "previous_sha256": null,
+      "baseline": false,
+      "previous_sha256": "9cc47e68231ae05324f50eea108e0f1e5175fa2cfeeb6c8bae241db1556b038a",
       "sha256": "9cc47e68231ae05324f50eea108e0f1e5175fa2cfeeb6c8bae241db1556b038a",
       "inventory_count": 46,
       "added": [],
@@ -26366,8 +26353,8 @@
     },
     {
       "source": "fmz200-taobao-script",
-      "baseline": true,
-      "previous_sha256": null,
+      "baseline": false,
+      "previous_sha256": "4cf62100424886068a5470daecec319e93ccd034c647d79a9daaa72bbbc341bb",
       "sha256": "4cf62100424886068a5470daecec319e93ccd034c647d79a9daaa72bbbc341bb",
       "inventory_count": 0,
       "added": [],
