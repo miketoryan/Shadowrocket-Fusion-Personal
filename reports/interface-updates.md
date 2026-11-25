@@ -1,8 +1,8 @@
 # 上游变化与持续待审核清单
 
-最近检查：2026-11-26 07:19（北京时间）；结果：**有变化待审核**。
+最近检查：2026-11-26 07:54（北京时间）；结果：**有变化待审核**。
 
-首次运行建立完整基线，清单包含尚未采用的历史存量，不代表当天新增；后续比较新增、删除及内容哈希。待审核项目会持续保留，不会因第二天没有新变化而消失。来源规则被删除时，不会擅自删除本地人工规则。
+首次运行建立完整基线，清单包含尚未采用的历史存量，不代表当天新增；首次纳入追踪时间不一定是上游最初发布日期。后续比较新增、删除及内容哈希。待审核项目会持续保留，不会因第二天没有新变化而消失。来源规则被删除时，不会擅自删除本地人工规则。
 
 完整条目、来源、原因、增删和脚本哈希均见 [upstream-review.json](upstream-review.json)。下方每类最多预览 30 项，JSON 不截断。
 
@@ -10,126 +10,126 @@
 
 按域名和接口关键词推测归属；共享域名及上游整行主机列表可能误归类，须人工核对。
 
-### 豆瓣｜本次新增 0 项，历史待审 3 项
+### 豆瓣｜本次新增 3 项，历史待审 0 项
 
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/api\.douban\.com\/b.*\/common_ads\?.* data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/api\.douban\.com\/v\d\/app_ads\/ data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/erebor\.douban\.com\/count\/\?ad= - reject`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/api\.douban\.com\/b.*\/common_ads\?.* data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/api\.douban\.com\/v\d\/app_ads\/ data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/erebor\.douban\.com\/count\/\?ad= - reject`
 
-### B站｜本次新增 0 项，历史待审 38 项
+### B站｜本次新增 38 项，历史待审 0 项
 
-- **历史待审** fmz200-exact-ad-domains：`AND,((DOMAIN-SUFFIX,chat.bilibili.com),(OR,((DOMAIN-KEYWORD,stun),(DOMAIN-KEYWORD,tracker)))),REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,api.biliapi.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,api.biliapi.net,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,app.biliapi.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,app.biliapi.net,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/ap[ip]\.bilibili\.com\/x\/(resource\/(top\/activity|patch\/tab(\/v2)?)|v2\/search\/square|vip\/ads\/materials)\? data-type=text data="{"code":-404,"message":"-404","ttl":1,"data":null}" header="Content-Type:text/plain"`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/api\.bilibili\.com\/pgc\/activity\/deliver\/material\/receive\? data-type=text data="{"code":0,"data":{"closeType":"close_win","container":[],"showTime":""},"message":"success"}" header="Content-Type:text/plain"`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/api\.live\.bilibili\.com\/xlive\/e-commerce-interface\/v1\/ecommerce-user\/get_shopping_info\? data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/grpc\.biliapi\.net\/bilibili\.app\.(view\.v1\.View\/TFInfo|viewunite\.v1\.View\/ViewEndPage)$ data-type=base64 data="AAAAAAA=" header="Content-Type:text/plain"`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/grpc\.biliapi\.net\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ data-type=base64 data="AAAAACEaHeaQnOe0ouinhumikeOAgeeVquWJp+aIlnVw5Li7KAE=" header="Content-Type:text/plain"`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/grpc\.biliapi\.net\/bilibili\.app\.interface\.v1\.Teenagers\/ModeStatus$ data-type=base64 data="AAAAABMKEQgCEgl0ZWVuYWdlcnMgAioA" header="Content-Type:text/plain"`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/i\d\.hdslb\.com\/bfs\/fawkes data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/i\d\.hdslb\.com\/bfs\/manga-static\/\w+\.(?>jpg|png)$ data-type=text data=" "`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/i\d\.hdslb\.com\/bfs\/manga-static\/\w+\.(?>jpg|png)@1200w_1500h_1e_1c data-type=text data=" "`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/manga\.bilibili\.com\/twirp\/comic\.v\d\.Comic\/(?>Recommend|MoreRecommend|Flash|ListFlash|GetBubbles|GetActivityTab|GetCommonBanner|GetComicConfigPicList|SearchBanner|AppInit) data-type=text data=" "`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/manga\.bilibili\.com\/twirp\/comic\.v\d\.Shop\/GetShopItems data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/manga\.bilibili\.com\/twirp\/novel\.v\d\.Novel\/MoreRecommend data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/manga\.bilibili\.com\/twirp\/user\.v\d\.Read\/ActInfo data-type=text data=" "`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/manga\.bilibili\.com\/twirp\/user\.v\d\.SeasonV\d\/GetSeasonInfo data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`bilibili.airborne = type=http-request, pattern=^https:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.community\.service\.dm\.v1\.DM\/DmSegMobile$, script-path=https://raw.githubusercontent.com/kokoryh/Sparkle/refs/heads/master/dist/bilibili.protobuf.request.js, requires-body=true, binary-body-mode=true, timeout=10, argument=[{{{logLevel}}}]`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`AND,((DOMAIN-SUFFIX,chat.bilibili.com),(OR,((DOMAIN-KEYWORD,stun),(DOMAIN-KEYWORD,tracker)))),REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,api.biliapi.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,api.biliapi.net,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,app.biliapi.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,app.biliapi.net,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/ap[ip]\.bilibili\.com\/x\/(resource\/(top\/activity|patch\/tab(\/v2)?)|v2\/search\/square|vip\/ads\/materials)\? data-type=text data="{"code":-404,"message":"-404","ttl":1,"data":null}" header="Content-Type:text/plain"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/api\.bilibili\.com\/pgc\/activity\/deliver\/material\/receive\? data-type=text data="{"code":0,"data":{"closeType":"close_win","container":[],"showTime":""},"message":"success"}" header="Content-Type:text/plain"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/api\.live\.bilibili\.com\/xlive\/e-commerce-interface\/v1\/ecommerce-user\/get_shopping_info\? data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/grpc\.biliapi\.net\/bilibili\.app\.(view\.v1\.View\/TFInfo|viewunite\.v1\.View\/ViewEndPage)$ data-type=base64 data="AAAAAAA=" header="Content-Type:text/plain"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/grpc\.biliapi\.net\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ data-type=base64 data="AAAAACEaHeaQnOe0ouinhumikeOAgeeVquWJp+aIlnVw5Li7KAE=" header="Content-Type:text/plain"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/grpc\.biliapi\.net\/bilibili\.app\.interface\.v1\.Teenagers\/ModeStatus$ data-type=base64 data="AAAAABMKEQgCEgl0ZWVuYWdlcnMgAioA" header="Content-Type:text/plain"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/i\d\.hdslb\.com\/bfs\/fawkes data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/i\d\.hdslb\.com\/bfs\/manga-static\/\w+\.(?>jpg|png)$ data-type=text data=" "`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/i\d\.hdslb\.com\/bfs\/manga-static\/\w+\.(?>jpg|png)@1200w_1500h_1e_1c data-type=text data=" "`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/manga\.bilibili\.com\/twirp\/comic\.v\d\.Comic\/(?>Recommend|MoreRecommend|Flash|ListFlash|GetBubbles|GetActivityTab|GetCommonBanner|GetComicConfigPicList|SearchBanner|AppInit) data-type=text data=" "`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/manga\.bilibili\.com\/twirp\/comic\.v\d\.Shop\/GetShopItems data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/manga\.bilibili\.com\/twirp\/novel\.v\d\.Novel\/MoreRecommend data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/manga\.bilibili\.com\/twirp\/user\.v\d\.Read\/ActInfo data-type=text data=" "`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/manga\.bilibili\.com\/twirp\/user\.v\d\.SeasonV\d\/GetSeasonInfo data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`bilibili.airborne = type=http-request, pattern=^https:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.community\.service\.dm\.v1\.DM\/DmSegMobile$, script-path=https://raw.githubusercontent.com/kokoryh/Sparkle/refs/heads/master/dist/bilibili.protobuf.request.js, requires-body=true, binary-body-mode=true, timeout=10, argument=[{{{logLevel}}}]`
 
-### 京东｜本次新增 0 项，历史待审 17 项
+### 京东｜本次新增 17 项，历史待审 0 项
 
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,dgstatic.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,dns.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,bdsp.x.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,c-nfa.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,cm.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,cps.360buy.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,du.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,img-x.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,jdqd.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,jzt.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,kepler.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,keplerapi.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,mapi.m.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,policy.jd.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/m.360buyimg\.com\/mobilecms\/s1125x2436_jfs\/ data-type=text data=" "`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/m\.360buyimg\.com\/babel\/jfs\/t1\/[0-9]{6}\/[0-9]{2}\/[0-9]{5}\/[0-9]{6}\/.*.jpg data-type=text data=" "`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/router-app-api\.jdcloud\.com\/v\d\/board\/routerAppSplash data-type=text data=" "`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,dgstatic.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,dns.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,bdsp.x.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,c-nfa.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,cm.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,cps.360buy.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,du.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,img-x.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,jdqd.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,jzt.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,kepler.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,keplerapi.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,mapi.m.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,policy.jd.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/m.360buyimg\.com\/mobilecms\/s1125x2436_jfs\/ data-type=text data=" "`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/m\.360buyimg\.com\/babel\/jfs\/t1\/[0-9]{6}\/[0-9]{2}\/[0-9]{5}\/[0-9]{6}\/.*.jpg data-type=text data=" "`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/router-app-api\.jdcloud\.com\/v\d\/board\/routerAppSplash data-type=text data=" "`
 
-### 闲鱼｜本次新增 0 项，历史待审 22 项
+### 闲鱼｜本次新增 22 项，历史待审 0 项
 
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.item\.buy\.feeds data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.item\.resell\.recommendorhotcate\/1\.0 data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlecommerce\.splash\.ads data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlehome\.idle\.coin\.nextfresh\/1\.0 data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.item\.search\.activate\/2\.0 data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\.discover\/1\.0 data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.circle\.myself\.banner\/1\.0 '.data.bannerList = []'`
-- **历史待审** fmz200-exact-ad-domains：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.circle\.visited\/1\.0 '.data.visitedCircleList = []'`
-- **历史待审** fmz200-exact-ad-domains：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.fun\.follow\.often\.visit '.data.sections = []'`
-- **历史待审** fmz200-exact-ad-domains：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.group\.myself\.banner\/ '.data.bannerList = []'`
-- **历史待审** fmz200-exact-ad-domains：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.item\.recommend\.list\/ '.data.cardList = []'`
-- **历史待审** fmz200-exact-ad-domains：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.playboy\.recommend\/2\.0 '.data.recommends = [] | .data.items = [] | .data.next = false'`
-- **历史待审** fmz200-exact-ad-domains：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.user\.strategy\.list\/ 'del(.data)'`
-- **历史待审** fmz200-exact-ad-domains：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\.shade\/ 'del(.data)'`
-- **历史待审** fmz200-exact-ad-domains：`个人主页 = type=http-response, pattern=^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.idle\.user\.page\.my\.adapter\/, script-path=https://raw.githubusercontent.com/ishowshu/qx/refs/heads/main/script/goofish.js, requires-body=true`
-- **历史待审** fmz200-exact-ad-domains：`同城页横幅广告 = type=http-response, pattern=^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.local\.flow\.plat\.section, script-path=https://raw.githubusercontent.com/ishowshu/qx/refs/heads/main/script/goofish.js, requires-body=true`
-- **历史待审** fmz200-exact-ad-domains：`商品信息流广告 = type=http-response, pattern=^https:\/\/(g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlehome\.home\.nextfresh\/, script-path=https://raw.githubusercontent.com/ishowshu/qx/refs/heads/main/script/goofish.js, requires-body=true`
-- **历史待审** fmz200-exact-ad-domains：`商品详情页周边推荐 = type=http-response, pattern=^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.local\.nearby\.itemdetail\.enter\/1\.0, script-path=https://raw.githubusercontent.com/ishowshu/qx/refs/heads/main/script/goofish.js, requires-body=true`
-- **历史待审** fmz200-exact-ad-domains：`定位地区页面的信息流广告 = type=http-response, pattern=^https:\/\/(g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.local\.home\/, script-path=https://raw.githubusercontent.com/ishowshu/qx/refs/heads/main/script/goofish.js, requires-body=true`
-- **历史待审** fmz200-exact-ad-domains：`搜索结果信息流广告 = type=http-response, pattern=^https:\/\/g-acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\/, script-path=https://raw.githubusercontent.com/ishowshu/qx/refs/heads/main/script/goofish.js, requires-body=true`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.item\.buy\.feeds data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.item\.resell\.recommendorhotcate\/1\.0 data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlecommerce\.splash\.ads data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlehome\.idle\.coin\.nextfresh\/1\.0 data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.item\.search\.activate\/2\.0 data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\.discover\/1\.0 data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.circle\.myself\.banner\/1\.0 '.data.bannerList = []'`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.circle\.visited\/1\.0 '.data.visitedCircleList = []'`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.fun\.follow\.often\.visit '.data.sections = []'`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.group\.myself\.banner\/ '.data.bannerList = []'`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.item\.recommend\.list\/ '.data.cardList = []'`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.playboy\.recommend\/2\.0 '.data.recommends = [] | .data.items = [] | .data.next = false'`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.user\.strategy\.list\/ 'del(.data)'`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`http-response-jq ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\.shade\/ 'del(.data)'`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`个人主页 = type=http-response, pattern=^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.idle\.user\.page\.my\.adapter\/, script-path=https://raw.githubusercontent.com/ishowshu/qx/refs/heads/main/script/goofish.js, requires-body=true`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`同城页横幅广告 = type=http-response, pattern=^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.local\.flow\.plat\.section, script-path=https://raw.githubusercontent.com/ishowshu/qx/refs/heads/main/script/goofish.js, requires-body=true`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`商品信息流广告 = type=http-response, pattern=^https:\/\/(g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlehome\.home\.nextfresh\/, script-path=https://raw.githubusercontent.com/ishowshu/qx/refs/heads/main/script/goofish.js, requires-body=true`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`商品详情页周边推荐 = type=http-response, pattern=^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.local\.nearby\.itemdetail\.enter\/1\.0, script-path=https://raw.githubusercontent.com/ishowshu/qx/refs/heads/main/script/goofish.js, requires-body=true`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`定位地区页面的信息流广告 = type=http-response, pattern=^https:\/\/(g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.local\.home\/, script-path=https://raw.githubusercontent.com/ishowshu/qx/refs/heads/main/script/goofish.js, requires-body=true`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`搜索结果信息流广告 = type=http-response, pattern=^https:\/\/g-acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\/, script-path=https://raw.githubusercontent.com/ishowshu/qx/refs/heads/main/script/goofish.js, requires-body=true`
 
-### 高德｜本次新增 0 项，历史待审 14 项
+### 高德｜本次新增 14 项，历史待审 0 项
 
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,aboard.apilocate.amap.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,apiinit.amap.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,icloud-amap.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,logs.amap.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-KEYWORD,apiinit.amap.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,adiu.amap.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,dualstack-logs.amap.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,logs.amap.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,optimus-ads.amap.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,page.amap.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/m5\.amap\.com\/ws\/shield\/dsp\/app\/startup\/init\? data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/optimus-ads\.amap\.com\/uploadimg\/[a-zA-Z0-9]+.gif data-type=text data=" "`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/amap-aos-info-nogw\.amap\.com\/ws\/aos\/alimama\/splash_screen_rt - reject`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/m5\.amap\.com\/ws\/valueadded\/ - reject`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,aboard.apilocate.amap.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,apiinit.amap.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,icloud-amap.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,logs.amap.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-KEYWORD,apiinit.amap.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,adiu.amap.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,dualstack-logs.amap.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,logs.amap.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,optimus-ads.amap.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,page.amap.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/m5\.amap\.com\/ws\/shield\/dsp\/app\/startup\/init\? data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/optimus-ads\.amap\.com\/uploadimg\/[a-zA-Z0-9]+.gif data-type=text data=" "`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/amap-aos-info-nogw\.amap\.com\/ws\/aos\/alimama\/splash_screen_rt - reject`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/m5\.amap\.com\/ws\/valueadded\/ - reject`
 
-### 网易云｜本次新增 0 项，历史待审 20 项
+### 网易云｜本次新增 20 项，历史待审 0 项
 
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,httpdns-sdk.n.netease.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,httpdns.music.163.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN,httpdns.n.netease.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,ad.bn.netease.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,admusicpic.music.126.net,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,iadmusicmat.music.126.net,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,iadmusicmatvideo.music.126.net,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,mr.da.netease.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,pr.da.netease.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,rd.da.netease.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`DOMAIN-SUFFIX,wr.da.netease.com,REJECT`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/god\.gameyw\.netease\.com\/v\d\/app\/static\/conf\/getByModuleNameList$ data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`NetEaseCloudMusic_foll = type=http-response, pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/user\/follow\/users\/mixed\/get, script-path=https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js, requires-body=true, binary-body-mode=true, timeout=20`
-- **历史待审** fmz200-exact-ad-domains：`NetEaseCloudMusic_fx = type=http-response, pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/link\/page\/discovery\/resource\/show, script-path=https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js, requires-body=true, binary-body-mode=true, timeout=20`
-- **历史待审** fmz200-exact-ad-domains：`NetEaseCloudMusic_home = type=http-response, pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/(homepage\/block\/page|link\/page\/rcmd\/(resource\/show|block\/resource\/multi\/refresh)), script-path=https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js, requires-body=true, binary-body-mode=true, timeout=20, argument=PRGG="{PRGG}"&PRRK="{PRRK}"&PRDRD="{PRDRD}"&PRSCVPT="{PRSCVPT}"&PRST="{PRST}"&PRRR="{PRRR}"&HMPR="{HMPR}"&PRMST="{PRMST}"&PRCN="{PRCN}"`
-- **历史待审** fmz200-exact-ad-domains：`NetEaseCloudMusic_mian = type=http-response, pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/(batch|v\d\/resource\/comment\/floor\/get), script-path=https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js, requires-body=true, binary-body-mode=true, timeout=20`
-- **历史待审** fmz200-exact-ad-domains：`NetEaseCloudMusic_mybarad = type=http-response, pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/link\/position\/show\/resource, script-path=https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js, requires-body=true, binary-body-mode=true, timeout=20`
-- **历史待审** fmz200-exact-ad-domains：`NetEaseCloudMusic_tab = type=http-response, pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/link\/home\/framework\/tab, script-path=https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js, requires-body=true, binary-body-mode=true, timeout=20, argument="[{{{MY}}},{{{DT}}},{{{FX}}}]"`
-- **历史待审** fmz200-exact-ad-domains：`^https:\/\/god\.gameyw\.netease\.com\/v\d\/ad - reject`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/iadmusicmat\.music.126.net\/.*?jpg$ - reject`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,httpdns-sdk.n.netease.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,httpdns.music.163.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN,httpdns.n.netease.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,ad.bn.netease.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,admusicpic.music.126.net,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,iadmusicmat.music.126.net,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,iadmusicmatvideo.music.126.net,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,mr.da.netease.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,pr.da.netease.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,rd.da.netease.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`DOMAIN-SUFFIX,wr.da.netease.com,REJECT`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/god\.gameyw\.netease\.com\/v\d\/app\/static\/conf\/getByModuleNameList$ data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`NetEaseCloudMusic_foll = type=http-response, pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/user\/follow\/users\/mixed\/get, script-path=https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js, requires-body=true, binary-body-mode=true, timeout=20`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`NetEaseCloudMusic_fx = type=http-response, pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/link\/page\/discovery\/resource\/show, script-path=https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js, requires-body=true, binary-body-mode=true, timeout=20`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`NetEaseCloudMusic_home = type=http-response, pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/(homepage\/block\/page|link\/page\/rcmd\/(resource\/show|block\/resource\/multi\/refresh)), script-path=https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js, requires-body=true, binary-body-mode=true, timeout=20, argument=PRGG="{PRGG}"&PRRK="{PRRK}"&PRDRD="{PRDRD}"&PRSCVPT="{PRSCVPT}"&PRST="{PRST}"&PRRR="{PRRR}"&HMPR="{HMPR}"&PRMST="{PRMST}"&PRCN="{PRCN}"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`NetEaseCloudMusic_mian = type=http-response, pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/(batch|v\d\/resource\/comment\/floor\/get), script-path=https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js, requires-body=true, binary-body-mode=true, timeout=20`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`NetEaseCloudMusic_mybarad = type=http-response, pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/link\/position\/show\/resource, script-path=https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js, requires-body=true, binary-body-mode=true, timeout=20`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`NetEaseCloudMusic_tab = type=http-response, pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/link\/home\/framework\/tab, script-path=https://raw.githubusercontent.com/Keywos/rule/main/script/wy/js/wyres.js, requires-body=true, binary-body-mode=true, timeout=20, argument="[{{{MY}}},{{{DT}}},{{{FX}}}]"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https:\/\/god\.gameyw\.netease\.com\/v\d\/ad - reject`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/iadmusicmat\.music.126.net\/.*?jpg$ - reject`
 
-### 中国联通｜本次新增 0 项，历史待审 6 项
+### 中国联通｜本次新增 6 项，历史待审 0 项
 
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/[^(apple|10010)]+\.(com|cn)\/(a|A)d(s|v)?(\/|\.js) data-type=tiny-gif`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/m1\.ad\.10010\.com\/noticeMag\/images\/imageUpload\/2\d{3} data-type=tiny-gif`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/m\.client\.10010\.com\/mobileService\/(activity|customer)\/(accountListData|get_client_adv|get_startadv) data-type=tiny-gif`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/m\.client\.10010\.com\/mobileService\/customer\/getclientconfig\.htm data-type=text data="{}" header="Content-Type:application/json"`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/m\.client\.10010\.com\/uniAdmsInterface\/(getHomePageAd|getWelcomeAd) data-type=tiny-gif`
-- **历史待审** fmz200-exact-ad-domains：`^https?:\/\/res\.mall\.10010\.cn\/mall\/common\/js\/fa\.js?referer= data-type=tiny-gif`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/[^(apple|10010)]+\.(com|cn)\/(a|A)d(s|v)?(\/|\.js) data-type=tiny-gif`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/m1\.ad\.10010\.com\/noticeMag\/images\/imageUpload\/2\d{3} data-type=tiny-gif`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/m\.client\.10010\.com\/mobileService\/(activity|customer)\/(accountListData|get_client_adv|get_startadv) data-type=tiny-gif`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/m\.client\.10010\.com\/mobileService\/customer\/getclientconfig\.htm data-type=text data="{}" header="Content-Type:application/json"`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/m\.client\.10010\.com\/uniAdmsInterface\/(getHomePageAd|getWelcomeAd) data-type=tiny-gif`
+- **新发现/变化** fmz200-exact-ad-domains（首次纳入追踪 2026-11-26 07:54，最近变化 2026-11-26 07:54）：`^https?:\/\/res\.mall\.10010\.cn\/mall\/common\/js\/fa\.js?referer= data-type=tiny-gif`
 
 ## 本次上游新增与删除
 
