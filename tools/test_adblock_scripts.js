@@ -1,4 +1,4 @@
-// Offline smoke tests for the three local response scripts.
+// Offline response regressions; these do not emulate the phone's local cache.
 const fs = require("node:fs");
 const vm = require("node:vm");
 const assert = require("node:assert/strict");
@@ -41,8 +41,42 @@ const outBili = apply(bili, "https://app.bilibili.com/x/v2/splash/list?x=1", ori
 assert.equal(Object.prototype.hasOwnProperty.call(outBili.data, "show"), false);
 assert.equal(outBili.data.list.length, 0);
 assert.equal(outBili.data.max_time, 0);
-assert.equal(outBili.data.pull_interval, 31536000);
+assert.equal(outBili.data.pull_interval, 0);
 assert.equal(outBili.status, 200);
 assert.ok(Object.prototype.hasOwnProperty.call(apply(bili, "https://app.bilibili.com/x/v2/feed/index", origBili).data, "show"));
 
+// Entire dedicated ad responses must be empty, even when the server changes shape.
+for (const endpoint of ["list", "show", "brand/list", "event/list2"]) {
+  for (const data of [
+    {list: {show: [{image: "ad"}], preload: [{video: "ad"}]}},
+    {new_payload: {campaign: {creative: "ad"}}, pull_interval: 31536000},
+    [{image: "ad"}], null
+  ]) {
+    const url = "https://app.bilibili.com/x/v2/splash/" + endpoint + "?build=91800100";
+    const result = apply(bili, url, {code: 0, data});
+    assert.equal(result.code, 0);
+    assert.equal(result.data.list.length, 0);
+    assert.equal(result.data.pull_interval, 0);
+    assert.equal(JSON.stringify(result).includes('"ad"'), false, endpoint + " leaked a creative");
+  }
+}
+// Match only the four dedicated splash URLs, not lookalike paths or unrelated hosts.
+for (const url of [
+  "https://app.bilibili.com/x/v2/feed/index",
+  "https://app.bilibili.com/x/v2/splash/listen",
+  "https://example.com/x/v2/splash/list"
+]) assert.deepEqual(apply(bili, url, origBili), origBili);
+
+for (const raw of ["", "not-json", "null", "[]"]) {
+  let output;
+  vm.runInNewContext(fs.readFileSync(bili, "utf8"), {
+    $request: {url: "https://app.bilibili.com/x/v2/splash/show"},
+    $response: {body: raw},
+    $done: value => { output = value; }
+  }, {timeout: 2000});
+  assert.equal(JSON.parse(output.body).code, 0);
+  assert.equal(JSON.parse(output.body).data.list.length, 0);
+}
+
 console.log("Ad response regression tests passed (JD/Goofish/Bilibili).");
+

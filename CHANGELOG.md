@@ -6,6 +6,20 @@
 
 <!-- EFFECTIVE_UPDATES_START -->
 
+## 2026-11-25 22:12（北京时间）｜豆瓣 / B站开屏修复及日志补漏
+
+**类型：** 人工审核 2026-11-25 PacketTunnel 日志后的专项更新。
+
+- 新增 4 个精确广告域名：`erebor.douban.com`、`ad.doubanio.com`、`bootrealtime.uve.weibo.com`、`iadmatapk.nosdn.127.net`。
+- 豆瓣：`app_ads` 改为成功的空 JSON 响应；新增 frodo 明确广告接口及图片服务器 `dale_ad` 广告素材专用路径，补齐 MITM。域名及素材路径参考 fmz200 上游，未拦整个图片域名。
+- B站：四个开屏接口统一走响应脚本，返回成功的空广告配置；处理缺失 data、数组和未知嵌套结构，取消旧的一年刷新间隔，并通过版本化 URL 更新脚本。
+- 网易云：新增 `eapi/xeapi` 广告目录定向拦截，覆盖日志中实际漏过的 loading/get、bidget、get、materialconfig 等请求；补齐 interface 系列及 IPv4 / IPv6 主机。
+- 微博：补上实时开屏广告服务器。
+- 保留 Apple TV / Pay、YouTube 和正常业务的现有保护。离线检查不代表手机端已验证，也无法删除 App 沙盒的历史广告文件。
+
+上游核对：[fmz200](https://github.com/fmz200/wool_scripts/blob/main/Shadowrocket/module/blockAds.srmodule)。日志原文与用户标识不上传仓库。
+
+
 ## 2026-10-19 12:57（北京时间）｜自动新增 8 条广告域名
 
 **类型：** 可信上游精确广告域名安全同步（fmz200）。**新增：8 条；删除：0 条。**
@@ -145,3 +159,4 @@
 [查看主要规则提交](https://github.com/miketoryan/Shadowrocket-Fusion-Personal/commit/e52f396ef7fe287160ca36069dfddd21a25fb9d3) · [B站脚本兼容修正](https://github.com/miketoryan/Shadowrocket-Fusion-Personal/commit/f53885dee87908ade456b78ca7216284600a830f)
 
 <!-- EFFECTIVE_UPDATES_END -->
+

@@ -1,7 +1,14 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-11-01 23:24
+#!desc=仓库更新时间：2026-11-25 22:12
 
 [Rule]
+
+# ===== 2026-11-25 日志补漏：豆瓣广告服务器 / 微博实时开屏 / 网易广告素材 =====
+# erebor/ad.doubanio 与 iadmatapk 同时收录于 fmz200；仅精确广告主机。
+DOMAIN,erebor.douban.com,REJECT,extended-matching,pre-matching
+DOMAIN,ad.doubanio.com,REJECT,extended-matching,pre-matching
+DOMAIN,bootrealtime.uve.weibo.com,REJECT,extended-matching,pre-matching
+DOMAIN,iadmatapk.nosdn.127.net,REJECT,extended-matching,pre-matching
 
 # ===== 京东广告专用主机：2026-10-13，多库交叉验证；不拦 DNS / 登录 / 支付 / 正常商品 CDN =====
 DOMAIN,dsp-x.jd.com,REJECT,extended-matching,pre-matching
@@ -1038,7 +1045,7 @@ DOMAIN,yk-ssp.ad.youku.com,REJECT,extended-matching,pre-matching
 ^https?:\/\/mea\.meitudata\.com\/kaiping(?:\?.*)?$ - reject
 ^https?:\/\/thor\.weidian\.com\/ares\/home\.splash(?:\?.*)?$ - reject-200
 ^https?:\/\/api\.xiachufang\.com\/v\d\/ad/ - reject
-^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(brand\/list|event\/list2)(?:\?.*)?$ - reject-dict
+# B站的四个开屏入口统一由 bili-splash 返回成功的空广告配置，避免抢先 reject。
 
 # ===== 腾讯手机管家 + 住这儿 开屏广告 =====
 # ===== 住这儿：广告接口 =====
@@ -1048,6 +1055,8 @@ DOMAIN,yk-ssp.ad.youku.com,REJECT,extended-matching,pre-matching
 # 住这儿当前版本：日志实证广告列表接口
 
 # ===== 后续增强：网易云音乐广告下发 =====
+# 日志中 /xeapi/ad/loading/get、bidget、get、materialconfig 均漏拦；同时兼容 eapi。
+^https?:\/\/(?:interface\d*|ipv[46])\.music\.163\.com\/(?:eapi|xeapi)\/ad\/ - reject-dict
 ^https?:\/\/interface3\.music\.163\.com\/eapi\/ad\/prefetch\/select(?:\?.*)?$ - reject-dict
 ^https?:\/\/interface3\.music\.163\.com\/eapi\/ad\/loading\/current(?:\?.*)?$ - reject-dict
 ^https?:\/\/interface3\.music\.163\.com\/eapi\/ad\/iyunIds(?:\?.*)?$ - reject-dict
@@ -1074,7 +1083,11 @@ DOMAIN,yk-ssp.ad.youku.com,REJECT,extended-matching,pre-matching
 # ===== 豆瓣 =====
 ^https?:\/\/webcast-open\.douyin\.com\/webcast\/openapi\/pangle\/setting\/.*package_name=com\.douban\.frodo.* - reject
 ^https?:\/\/api\.douban\.com\/b.*\/common_ads\?.* - reject-dict
-^https?:\/\/api\.douban\.com\/v\d+\/app_ads\/.* - reject
+# 返回空 JSON，避免仅断连接；frodo 分支只覆盖明确广告路径。
+^https?:\/\/api\.douban\.com\/v\d+\/app_ads\/.* - reject-dict
+^https?:\/\/frodo\.douban\.com\/api\/v\d+\/(?:app_ads\/|erebor\/feed_ad(?:\/|\?|$)|movie\/(?:ad|banner)(?:\/|\?|$)) - reject-dict
+# fmz200 的豆瓣广告素材专用路径；不拦普通封面、海报、头像。
+^https?:\/\/img\d+\.doubanio\.com\/view\/dale-online\/dale_ad\/ - reject
 
 # ===== 小宇宙：只保留开屏，不再拦 AI / 分类 / 搜索等正常功能 =====
 ^https?:\/\/api\.xiaoyuzhoufm\.com\/v1\/flash-screen\/list(?:\?.*)?$ - reject-dict
@@ -1151,8 +1164,8 @@ xianyu-splash =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.c
 xianyu-scene-restore =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.idle\.idleadv\.scene\.restore\/1\.0\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0
 xianyu-launch-report =type=http-response, pattern=^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.idle\.idleadv\.app\.launch\.report\/1\.0\/?(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/xianyu_splash.js, requires-body=true, max-size=0
 
-# ===== B站开屏 list/show：清理下发广告、抑制再次缓存 =====
-bili-splash =type=http-response, pattern=^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(list|show)(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/bilibili_splash_cache.js, requires-body=true, max-size=0
+# ===== B站四个开屏入口：返回空配置；版本参数用于刷新旧脚本缓存 =====
+bili-splash =type=http-response, pattern=^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/(list|show|brand\/list|event\/list2)(?:\?.*)?$, script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/bilibili_splash_cache.js?v=20261125, requires-body=true, max-size=0
 
 # 闲鱼 HTTPDNS：移除 acs/g-acs 专属解析，防止直连 IP 绕过 MITM/响应规则
 
@@ -1168,4 +1181,5 @@ taobao-guide =type=http-response, pattern=^https?:\/\/guide-acs\.m\.taobao\.com\
 taobao-poplayer =type=http-response, pattern=^https?:\/\/poplayer\.template\.alibaba\.com\/\w+\.json, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97/Scripts/myBlockAds.js, requires-body=true, max-size=0
 
 [MITM]
-hostname = %APPEND% -apple-pay-gateway*.apple.com,-cn-apple-pay-gateway*.apple.com,-smp-device.apple.com,-*-smp-device.apple.com,-tv.apple.com,-*.tv.apple.com,-videos.apple.com,-*.videos.apple.com,-itunes.apple.com,-*.itunes.apple.com,-tv.applemusic.com,-appletv.com,-*.appletv.com,-mzstatic.com,-*.mzstatic.com,-youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtube.googleapis.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m1.amap.com,m2.amap.com,m3.amap.com,m4.amap.com,m5.amap.com,m6.amap.com,m7.amap.com,m8.amap.com,m9.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface3.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,newclient.map.baidu.com,mea.meitudata.com,thor.weidian.com,api.xiachufang.com,api.m.jd.com,m.client.10010.com,h5.m.goofish.com
+hostname = %APPEND% -apple-pay-gateway*.apple.com,-cn-apple-pay-gateway*.apple.com,-smp-device.apple.com,-*-smp-device.apple.com,-tv.apple.com,-*.tv.apple.com,-videos.apple.com,-*.videos.apple.com,-itunes.apple.com,-*.itunes.apple.com,-tv.applemusic.com,-appletv.com,-*.appletv.com,-mzstatic.com,-*.mzstatic.com,-youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtube.googleapis.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,frodo.douban.com,img*.doubanio.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m1.amap.com,m2.amap.com,m3.amap.com,m4.amap.com,m5.amap.com,m6.amap.com,m7.amap.com,m8.amap.com,m9.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface*.music.163.com,ipv4.music.163.com,ipv6.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,newclient.map.baidu.com,mea.meitudata.com,thor.weidian.com,api.xiachufang.com,api.m.jd.com,m.client.10010.com,h5.m.goofish.com
+
