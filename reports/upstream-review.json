@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "checked_at": "2026-11-25 22:42",
+  "checked_at": "2026-11-26 07:19",
   "status": "review_required",
   "sources": [
     {
@@ -1206,12 +1206,6 @@
       "source": "fmz200-exact-ad-domains",
       "category": "DOMAIN",
       "line": "DOMAIN,iadmoo.apple.com,REJECT",
-      "reason": "受保护域名或未经审核的后缀规则"
-    },
-    {
-      "source": "fmz200-exact-ad-domains",
-      "category": "DOMAIN",
-      "line": "DOMAIN,iadmusicmat.music.126.net,REJECT",
       "reason": "受保护域名或未经审核的后缀规则"
     },
     {
