@@ -1,17 +1,25 @@
-# Shadowrocket-Fusion-Personal module status
+# 广告规则自动同步状态
 
-This is a snapshot of the current published **Module.sgmodule**, not a count taken from obsolete `tools/fusion.py`.
+- **最近检查：** 2026-11-25 22:25（北京时间）
+- **检查结果：** 已自动更新
+- **规则有效更新时间：** 2026-11-25 22:25
+- **上游文件：** 8 个；发生变化 8 个
+- **本次发布：** 2 条；等待下次自动处理 0 条
+- **持续待审核：** 4365 项；失败 0 项
 
-- Published module timestamp: **仓库更新时间：2026-10-13 23:14**
-- Rule entries: **904**
-- Exact DOMAIN rules: **855**
-- URL Rewrite entries: **42**
-- Body Rewrite entries: **15**
-- Script declarations: **9**
-- MITM hostname declaration: **1**
-- Vetted daily sync block: **10** exact-domain rules
-- Daily sync: **08:30 Asia/Shanghai**, GitHub Actions `safe-sync.yml` (may start later than scheduled)
-- Safety checks: **PASS** on GitHub Actions 2026-10-13
-- Personal routing: **not modified by this ad module revision**
+每天北京时间 08:30 计划检查，GitHub 调度可能延迟。只有正式模块内容变化才刷新模块有效更新时间；单纯检查或待审核不会刷新。
 
-The former 123-rule report described a legacy module schema and was not a valid count for this published module. Future source checks publish only approved exact-domain additions (up to 10 per run); the current module always remains authoritative. CI and static checks do not guarantee App-level effectiveness or remove existing local cache files.
+[待审核与本次差异](interface-updates.md) · [完整检查明细](upstream-review.json)
+
+## 各上游状态
+
+| 上游 | 结果 | 规则变动 | 内容 SHA-256 |
+|---|---|---|---|
+| [fmz200-exact-ad-domains](https://raw.githubusercontent.com/fmz200/wool_scripts/main/Shadowrocket/module/blockAds.srmodule) | 首次建立基线 | +4436 / −0 | `f2c0f73aa2c5` |
+| [app2smile-bilibili-json](https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-json.js) | 首次建立基线 | +0 / −0 | `748ad16a9253` |
+| [app2smile-bilibili-proto](https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-proto.js) | 首次建立基线 | +0 / −0 | `70fa7cf0e339` |
+| [zirawell-umetrip-ads](https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Scripts/AntiAd/umetrip.js) | 首次建立基线 | +0 / −0 | `64db067778ac` |
+| [app2smile QQ News](https://raw.githubusercontent.com/app2smile/rules/master/module/qqnews.sgmodule) | 首次建立基线 | +2 / −0 | `dbc36baa324c` |
+| [app2smile Tieba](https://raw.githubusercontent.com/app2smile/rules/master/module/tieba.sgmodule) | 首次建立基线 | +4 / −0 | `b20d792a1f44` |
+| [ddgksf Weibo Ads](https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/WeiboAds.conf) | 首次建立基线 | +46 / −0 | `9cc47e68231a` |
+| [fmz200-taobao-script](https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/myBlockAds.js) | 首次建立基线 | +0 / −0 | `4cf621004248` |

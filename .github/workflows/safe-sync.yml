@@ -4,6 +4,13 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '30 0 * * *'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/safe-sync.yml'
+      - 'tools/safe_ad_sync.py'
+      - 'tools/test_safe_ad_sync.py'
+      - 'sources.json'
 
 permissions:
   contents: write
@@ -15,28 +22,46 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Update exact domains from approved source
+      - name: Detect all configured upstream changes and stage reviewed rules
+        id: sync
+        continue-on-error: true
         run: python3 tools/safe_ad_sync.py
-      - name: Validate module and scripts before publication
+      - name: Validate staged publication
+        id: validate
+        continue-on-error: true
         run: |
           set -euo pipefail
+          python3 -m unittest discover -s tools -p test_safe_ad_sync.py
           python3 tools/validate_personal_rules.py
           for s in scripts/*.js; do node --check "$s"; done
           node tools/test_adblock_scripts.js
           test "$(grep -c '^hostname = ' Module.sgmodule)" -eq 1
           ! grep -Eq '^\s*ca-(p12|passphrase)\s*=\s*\S' Module.sgmodule
-      - name: Commit only when approved ad domains change
+      - name: Keep published module intact if validation fails
+        if: always() && steps.validate.outcome != 'success'
+        run: |
+          git restore -- Module.sgmodule README.md CHANGELOG.md
+          python3 tools/safe_ad_sync.py --record-failure "Publication validation failed; generated module and timestamps were restored." || true
+      - name: Publish check status and validated rule changes
+        if: always()
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Module.sgmodule README.md CHANGELOG.md
+          git add Module.sgmodule README.md CHANGELOG.md reports/status.md reports/interface-updates.md
+          for report in reports/upstream-state.json reports/upstream-review.json; do
+            if test -f "$report"; then git add "$report"; fi
+          done
           if git diff --cached --quiet; then
-            echo "No safe rule change to publish"
+            echo "No change to reports or module"
             exit 0
           fi
-          git commit -m "chore(adblock): safely sync vetted exact ad domains"
+          git commit -m "chore(adblock): record upstream check and publish reviewed changes"
           git push
+      - name: Mark check failure after saving diagnostic reports
+        if: always() && (steps.sync.outcome != 'success' || steps.validate.outcome != 'success')
+        run: exit 1
+

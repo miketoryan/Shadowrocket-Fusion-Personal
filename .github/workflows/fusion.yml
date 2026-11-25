@@ -12,6 +12,9 @@ on:
       - 'tools/validate_personal_rules.py'
       - 'tools/test_adblock_scripts.js'
       - 'tools/safe_ad_sync.py'
+      - 'tools/test_safe_ad_sync.py'
+      - 'sources.json'
+      - '.github/workflows/safe-sync.yml'
       - 'CHANGELOG.md'
 
 permissions:
@@ -29,6 +32,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Check personal routing safety and ad module structure
         run: python3 tools/validate_personal_rules.py
+      - name: Check upstream detection and publication regressions
+        run: python3 -m unittest discover -s tools -p test_safe_ad_sync.py -v
       - name: Validate substantive update tracking
         run: |
           python3 -m py_compile tools/safe_ad_sync.py
@@ -57,3 +62,4 @@ jobs:
         run: |
           head -n 2 Module.sgmodule
           echo "Rules: $(grep -Ec '^(DOMAIN|DOMAIN-SUFFIX|DOMAIN-KEYWORD|AND),' Module.sgmodule || true)"
+

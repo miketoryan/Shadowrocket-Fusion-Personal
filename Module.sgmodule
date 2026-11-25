@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-11-25 22:12
+#!desc=仓库更新时间：2026-11-25 22:25
 
 [Rule]
 
@@ -953,7 +953,6 @@ DOMAIN,ads.sennebogenforklift.jp,REJECT,extended-matching,pre-matching
 DOMAIN,ads.fantuzziforklift.jp,REJECT,extended-matching,pre-matching
 
 # BEGIN DAILY SAFE AD DOMAINS
-# Source: fmz200 exact-domain allowlisted subset
 DOMAIN,ad-cdn.qingting.fm,REJECT,extended-matching,pre-matching
 DOMAIN,ad-r.soulapp.cn,REJECT,extended-matching,pre-matching
 DOMAIN,ad-reward.soulapp.cn,REJECT,extended-matching,pre-matching
@@ -1022,6 +1021,8 @@ DOMAIN,sdkconfig.ad.xiaomi.com,REJECT,extended-matching,pre-matching
 DOMAIN,soul-ad.soulapp.cn,REJECT,extended-matching,pre-matching
 DOMAIN,t-ads.xiaohongshu.com,REJECT,extended-matching,pre-matching
 DOMAIN,yk-ssp.ad.youku.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,ad.doubanio.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,erebor.douban.com,REJECT,extended-matching,pre-matching
 # END DAILY SAFE AD DOMAINS
 
 [URL Rewrite]
@@ -1182,4 +1183,5 @@ taobao-poplayer =type=http-response, pattern=^https?:\/\/poplayer\.template\.ali
 
 [MITM]
 hostname = %APPEND% -apple-pay-gateway*.apple.com,-cn-apple-pay-gateway*.apple.com,-smp-device.apple.com,-*-smp-device.apple.com,-tv.apple.com,-*.tv.apple.com,-videos.apple.com,-*.videos.apple.com,-itunes.apple.com,-*.itunes.apple.com,-tv.applemusic.com,-appletv.com,-*.appletv.com,-mzstatic.com,-*.mzstatic.com,-youtube.com,-*.youtube.com,-youtu.be,-*.youtu.be,-youtube.googleapis.com,-ytimg.com,-*.ytimg.com,-youtube-nocookie.com,-*.youtube-nocookie.com,-weixin110.qq.com,-*.weixin110.qq.com,-security.wechat.com,-*.security.wechat.com,-pan.baidu.com,-*.pan.baidu.com,-grpc.biliapi.net,-i.vip.iqiyi.com,mp.weixin.qq.com,weibointl.api.weibo.cn,api.weibo.cn,tqt.weibo.cn,webcast-open.douyin.com,api.douban.com,frodo.douban.com,img*.doubanio.com,api.xiaoyuzhoufm.com,app.bilibili.com,api.bilibili.com,discardrp.umetrip.com,startup.umetrip.com,home.umetrip.com,114.115.217.129,m.360buyimg.com,acs.m.taobao.com,guide-acs.m.taobao.com,poplayer.template.alibaba.com,acs.m.goofish.com,g-acs.m.goofish.com,m1.amap.com,m2.amap.com,m3.amap.com,m4.amap.com,m5.amap.com,m6.amap.com,m7.amap.com,m8.amap.com,m9.amap.com,oss.amap.com,list-app-m.i4.cn,d.image.i4.cn,interface*.music.163.com,ipv4.music.163.com,ipv6.music.163.com,mmgr.gtimg.com,z.onewo.com,api.5th.zone,newclient.map.baidu.com,mea.meitudata.com,thor.weidian.com,api.xiachufang.com,api.m.jd.com,m.client.10010.com,h5.m.goofish.com
+
 

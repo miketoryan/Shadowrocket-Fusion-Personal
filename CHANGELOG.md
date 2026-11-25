@@ -2,9 +2,24 @@
 
 这里**只记录正式订阅文件 `Module.sgmodule` 的规则、脚本引用、MITM 或广告响应逻辑发生实际变化的时间**。每天自动检查但没有变更时不新增记录，也不刷新模块的时间标签。
 
-自动规则同步每次最多新增 10 个通过安全过滤的精确广告域名。新增不代表经过手机端实测；静态校验通过也不等于能够屏蔽所有 App 广告。
+自动规则同步每次最多新增 10 条通过过滤的精确广告域名或显式批准的后缀/接口规则。新增不代表经过手机端实测；静态校验通过也不等于能够屏蔽所有 App 广告。
 
 <!-- EFFECTIVE_UPDATES_START -->
+
+## 2026-11-25 22:25（北京时间）｜自动同步 2 条已审核广告规则
+
+**类型：** 精确域名及显式批准的后缀/广告接口同步。脚本与解密变更只进入待审核清单。
+
+- `DOMAIN-SUFFIX,ad.doubanio.com,REJECT,extended-matching,pre-matching`
+- `DOMAIN-SUFFIX,erebor.douban.com,REJECT,extended-matching,pre-matching`
+
+离线检查不代表手机端已验证。
+
+
+## 2026-11-25｜自动同步机制修正
+
+完整监测 8 个已配置上游文件，新增显式审核的后缀/接口同步；脚本、解密及未批准变化持续报告。检查失败保存诊断，发布校验失败回退模块。报告检查时间与模块有效更新时间分开记录。此机制条目本身不刷新模块时间标签。
+
 
 ## 2026-11-25 22:12（北京时间）｜豆瓣 / B站开屏修复及日志补漏
 
@@ -159,4 +174,5 @@
 [查看主要规则提交](https://github.com/miketoryan/Shadowrocket-Fusion-Personal/commit/e52f396ef7fe287160ca36069dfddd21a25fb9d3) · [B站脚本兼容修正](https://github.com/miketoryan/Shadowrocket-Fusion-Personal/commit/f53885dee87908ade456b78ca7216284600a830f)
 
 <!-- EFFECTIVE_UPDATES_END -->
+
 
