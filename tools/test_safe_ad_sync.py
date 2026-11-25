@@ -34,7 +34,7 @@ class SyncTest(unittest.TestCase):
                 "allowed_repository": "vendor/rules", "allowed_path": "module.conf",
                 "min_exact_rules": 1, "max_exact_rules": 100, "max_source_lines": 1000,
             }],
-            "sync_policy": {"max_additions_per_run": 10},
+            "sync_policy": {},
         }
         self.files = {URL: BASE}
 
@@ -131,12 +131,29 @@ class SyncTest(unittest.TestCase):
         self.config["upstream_scripts"][0]["reviewed_sha256"] = sync.sha("v2")
         self.assertEqual(self.run_sync()["status"], "no_upstream_changes")
 
-    def test_batch_limit_defers_without_losing_remaining_candidates(self):
-        self.config["sync_policy"]["max_additions_per_run"] = 1
-        self.files[URL] += "DOMAIN,ads.next.example,REJECT\n"
-        self.assertEqual(len(self.run_sync()["deferred"]), 1)
-        self.assertEqual(len(self.run_sync()["applied"]), 1)
-        self.assertFalse(self.run_sync()["deferred"])
+    def test_more_than_ten_eligible_rules_are_published_in_one_run(self):
+        self.files[URL] += ''.join(f'DOMAIN,ads.host{i}.example,REJECT\n' for i in range(24))
+        result = self.run_sync()
+        self.assertEqual(len(result['applied']), 25)
+        self.assertFalse(result['deferred'])
+        self.assertEqual(self.run_sync()['status'], 'no_upstream_changes')
+
+    def test_unusual_growth_pauses_the_entire_batch_without_partial_publication(self):
+        self.files[URL] += ''.join(f'DOMAIN,ads.host{i}.example,REJECT\n' for i in range(50))
+        before = (self.root / 'Module.sgmodule').read_bytes()
+        result = self.run_sync()
+        self.assertEqual(result['status'], 'sync_failed')
+        self.assertFalse(result['applied'])
+        self.assertEqual(len(result['deferred']), 51)
+        self.assertEqual((self.root / 'Module.sgmodule').read_bytes(), before)
+
+    def test_managed_rules_have_no_lifetime_quantity_quota(self):
+        existing = '\n'.join(f'DOMAIN,ads.existing{i}.example,REJECT' for i in range(220))
+        module = MODULE.replace('[Rule]', '[Rule]\n'+sync.BEGIN+'\n'+existing+'\n'+sync.END)
+        (self.root / 'Module.sgmodule').write_text(module)
+        result = self.run_sync()
+        self.assertEqual(len(result['applied']), 1)
+        self.assertFalse(result['errors'])
 
     def test_invalid_source_shape_is_not_accepted_as_new_baseline(self):
         self.run_sync()

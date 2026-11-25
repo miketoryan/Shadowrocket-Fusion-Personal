@@ -163,7 +163,7 @@ def eligible(item, source, policy):
     return None, "不属于可自动导入的规则类型"
 
 
-def add_block(module, begin, end, lines, section, ceiling):
+def add_block(module, begin, end, lines, section):
     if module.count(begin) != module.count(end) or module.count(begin) > 1:
         raise ValueError("Managed block markers are unbalanced")
     if not lines:
@@ -172,14 +172,20 @@ def add_block(module, begin, end, lines, section, ceiling):
         head, rest = module.split(begin, 1)
         body, tail = rest.split(end, 1)
         existing = [s for s in body.splitlines() if s and not s.startswith("#")]
-        if len(existing) + len(lines) > ceiling:
-            raise ValueError("Managed-rule ceiling reached")
         return head + begin + "\n" + "\n".join(existing + lines) + "\n" + end + tail
     if module.count(section) != 1:
         raise ValueError(f"Missing or duplicate {section}")
-    if len(lines) > ceiling:
-        raise ValueError("Managed-rule ceiling reached")
     return module.replace(section, section + "\n\n" + begin + "\n" + "\n".join(lines) + "\n" + end, 1)
+
+
+def check_batch_growth(candidates, module, policy):
+    """Pause a suspicious whole batch; never slice otherwise eligible changes."""
+    floor = int(policy.get("unusual_additions_floor", 50))
+    growth = float(policy.get("unusual_growth_ratio", 0.25))
+    current = sections(module)
+    count = len(current.get("Rule", [])) + len(current.get("URL Rewrite", []))
+    if len(candidates) > floor and len(candidates) > max(count, 1) * growth:
+        raise ValueError(f"异常批量新增 {len(candidates)} 条，现有规则 {count} 条；整批暂停，需核对上游和审批范围")
 
 
 def validate_candidate(root, module):
@@ -231,7 +237,7 @@ def write_reports(root, report, state):
         f"- **检查结果：** {label}\n"
         f"- **规则有效更新时间：** {stamp[1] if stamp else '未设置'}\n"
         f"- **上游文件：** {len(report['sources'])} 个；发生变化 {sum(s.get('changed', False) for s in report['sources'])} 个\n"
-        f"- **本次发布：** {len(report['applied'])} 条；等待下次自动处理 {len(report['deferred'])} 条\n"
+        f"- **本次发布：** {len(report['applied'])} 条；因异常或校验失败暂缓 {len(report['deferred'])} 条\n"
         f"- **持续待审核：** {len(report['pending'])} 项；失败 {len(report['errors'])} 项\n\n"
         "每天北京时间 08:30 计划检查，GitHub 调度可能延迟。"
         "只有正式模块内容变化才刷新模块有效更新时间；单纯检查或待审核不会刷新。\n\n"
@@ -261,7 +267,7 @@ def write_reports(root, report, state):
     if not report["pending"]:
         detail += "无待审核项目。\n"
     if report["deferred"]:
-        detail += f"\n已审核但因单次数量上限暂缓：{len(report['deferred'])} 条；下次继续处理。\n"
+        detail += f"\n因异常批量变化或发布校验失败暂缓：{len(report['deferred'])} 条；原因见状态报告。正常更新不按数量分批。\n"
     (reports / "interface-updates.md").write_text(detail, "utf-8")
     action_summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if action_summary:
@@ -361,16 +367,15 @@ def run(root, config, fetch=fetch_text, check=validate_candidate, stamp=None):
                             **{k: v for k, v in item.items() if k not in {"source", "category", "line", "reason"}})
         report["sources"].append(item_status)
 
-    limit = int(policy.get("max_additions_per_run", 10))
-    chosen = candidates[:limit]
-    report["deferred"] = candidates[limit:]
+    chosen = candidates
     try:
+        check_batch_growth(chosen, old_module, policy)
         proposal = add_block(old_module, BEGIN, END,
                              [x["published"] for x in chosen if x["category"] in {"DOMAIN", "DOMAIN-SUFFIX"}],
-                             "[Rule]", int(policy.get("domain_ceiling", 200)))
+                             "[Rule]")
         proposal = add_block(proposal, REWRITE_BEGIN, REWRITE_END,
                              [x["published"] for x in chosen if x["category"] == "URL Rewrite"],
-                             "[URL Rewrite]", int(policy.get("interface_ceiling", 50)))
+                             "[URL Rewrite]")
         if proposal != old_module:
             check(root, proposal)
             module, readme, history = update_metadata(root, proposal, chosen, stamp)

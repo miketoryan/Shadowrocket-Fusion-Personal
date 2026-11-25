@@ -100,9 +100,6 @@
     }
   ],
   "sync_policy": {
-    "max_additions_per_run": 10,
-    "domain_ceiling": 200,
-    "interface_ceiling": 50,
     "min_inventory_ratio": 0.5,
     "exact_allowlist": [
       "iadmatapk.nosdn.127.net",
@@ -128,6 +125,8 @@
         "publish": "^https?:\\/\\/img\\d+\\.doubanio\\.com\\/view\\/dale-online\\/dale_ad\\/ - reject"
       }
     ],
-    "note": "All configured file content hashes and active lines are observed. Only safe exact ad hosts and these exact reviewed suffix/interface entries can publish. Changed patterns/actions, scripts, MITM and removals require review."
+    "note": "Publish all eligible reviewed changes together, without per-run or lifetime quantity quotas. Pause the whole batch only if additions exceed both 50 rules and 25% of existing active domain/interface rules. Unreviewed scripts, MITM and changed interfaces remain pending.",
+    "unusual_additions_floor": 50,
+    "unusual_growth_ratio": 0.25
   }
 }
