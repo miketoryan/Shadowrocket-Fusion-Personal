@@ -127,6 +127,14 @@
     ],
     "note": "Publish all eligible reviewed changes together, without per-run or lifetime quantity quotas. Pause the whole batch only if additions exceed both 50 rules and 25% of existing active domain/interface rules. Unreviewed scripts, MITM and changed interfaces remain pending.",
     "unusual_additions_floor": 50,
-    "unusual_growth_ratio": 0.25
+    "unusual_growth_ratio": 0.25,
+    "cross_reference": {
+      "id": "AWAvenue",
+      "url": "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/AWAvenue-Ads-Rule.txt",
+      "min_domains": 500,
+      "max_domains": 10000,
+      "max_bytes": 500000,
+      "require_for_name_based_domains": true
+    }
   }
 }

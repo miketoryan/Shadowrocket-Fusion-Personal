@@ -79,6 +79,16 @@ class NotificationTest(unittest.TestCase):
         self.assertFalse(self.api.posts[0]["prerelease"])
         self.assertIn("原订阅地址", self.api.posts[0]["body"])
 
+    def test_notification_contains_change_details_and_previous_release(self):
+        (self.root / 'CHANGELOG.md').write_text('## 2026-11-25 22:25｜京东\n\n- 新增广告规则，来源 fmz200 和 AWAvenue。\n\n## older\nold\n')
+        (self.root / 'Module.sgmodule').write_text(MODULE.replace('ads.example', 'ads.new.example'))
+        self.run_notify()
+        body = self.api.posts[0]['body']
+        self.assertIn('新增广告规则', body)
+        self.assertIn('AWAvenue', body)
+        self.assertIn('上一版本全部文件', body)
+        self.assertIn('b' * 40, body)
+
     def test_referenced_script_change_is_substantive(self):
         (self.root / "scripts/active.js").write_text("changed")
         self.assertEqual(self.run_notify()["status"], "published")

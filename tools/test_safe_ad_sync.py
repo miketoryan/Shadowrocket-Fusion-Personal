@@ -182,3 +182,48 @@ class SyncTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class PrecisionTest(unittest.TestCase):
+    run_sync = SyncTest.run_sync
+
+    def setUp(self):
+        SyncTest.setUp(self)
+        self.evidence_url = 'https://raw.githubusercontent.com/vendor/evidence/main/ads.txt'
+        self.config['sync_policy']['cross_reference'] = {'id':'evidence', 'url':self.evidence_url,'min_domains':1,'max_domains':100}
+        self.files[self.evidence_url] = '||ads.old.example^\n'
+
+    def test_corroborated_exact_rule_publishes(self):
+        result = self.run_sync()
+        self.assertEqual(len(result['applied']), 1)
+        self.assertEqual(result['applied'][0]['evidence'], ['domains','evidence'])
+
+    def test_single_source_candidate_stays_pending(self):
+        self.files[self.evidence_url] = '||ads.unrelated.example^\n'
+        result = self.run_sync()
+        self.assertFalse(result['applied'])
+        self.assertTrue(any('交叉' in x['reason'] for x in result['pending']))
+
+    def test_evidence_failure_pauses_even_explicit_approval(self):
+        self.config['sync_policy']['suffix_allowlist'] = ['ads.reviewed.example']
+        self.files[URL] += 'DOMAIN-SUFFIX,ads.reviewed.example,REJECT\n'
+        del self.files[self.evidence_url]
+        before = (self.root / 'Module.sgmodule').read_bytes()
+        result = self.run_sync()
+        self.assertEqual(result['status'], 'sync_failed')
+        self.assertFalse(result['applied'])
+        self.assertEqual((self.root / 'Module.sgmodule').read_bytes(), before)
+
+    def test_first_seen_survives_runs_and_fetch_failures(self):
+        self.files[URL] += 'DOMAIN-SUFFIX,ads.unreviewed.example,REJECT\n'
+        result = self.run_sync()
+        before = next(x for x in result['pending'] if 'unreviewed' in x['line'])
+        result = sync.run(self.root, self.config, lambda url:self.files[url], lambda *x:None, stamp='2026-11-26 11:00')
+        after = next(x for x in result['pending'] if 'unreviewed' in x['line'])
+        self.assertEqual(before['first_seen'], after['first_seen'])
+        del self.files[URL]
+        result = sync.run(self.root, self.config, lambda url:self.files[url], lambda *x:None, stamp='2026-11-27 11:00')
+        after = next(x for x in result['pending'] if 'unreviewed' in x['line'])
+        self.assertEqual(before['first_seen'], after['first_seen'])
+
+    def test_source_exceptions_are_not_evidence(self):
+        self.assertEqual(sync.evidence_domains('@@||ads.old.example^\n||ads.other.example^$important\n||ads.valid.example^\n',1,10), {'ads.valid.example'})

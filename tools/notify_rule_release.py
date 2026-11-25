@@ -95,12 +95,19 @@ def publish(root, api, repository, head):
     module = (root / "Module.sgmodule").read_text("utf-8")
     stamp = re.search(r"(?m)^#!desc=仓库更新时间：(.*)$", module)
     timestamp = stamp[1] if stamp else "当前已发布版本"
+    history = (root / "CHANGELOG.md").read_text("utf-8") if (root / "CHANGELOG.md").exists() else ""
+    entries = re.findall(r"(?ms)^## ([^\n]+)\n(.*?)(?=^## |^<!-- EFFECTIVE_UPDATES_END -->|\Z)", history)
+    detail = next((body.strip() for title, body in entries if title.startswith(timestamp)), "")
+    detail = detail[:5000] if detail else "请查看版本差异和更新记录。"
     body = (
         "正式拦截规则或正在使用的仓库内脚本已有实质变化，请在手机上手动更新「广告屏蔽联网版」。\n\n"
         f"- 模块时间标签：**{timestamp}**（北京时间）\n"
         "- 此通知根据有效规则和所引用脚本的内容生成；仅刷新检查报告、时间标签或待审核清单不会通知。\n"
         f"- [查看版本差异](https://github.com/{repository}/compare/{previous_commit}...{head})\n"
         f"- [逐次更新明细](https://github.com/{repository}/blob/main/CHANGELOG.md)\n"
+        f"- [上一版本模块（回退参考）](https://github.com/{repository}/blob/{previous_commit}/Module.sgmodule)\n"
+        f"- [上一版本全部文件（包含脚本）](https://github.com/{repository}/tree/{previous_commit})\n\n"
+        f"**本次记录：**\n\n{detail}\n\n"
         f"- [原订阅地址](https://raw.githubusercontent.com/{repository}/main/Module.sgmodule)\n\n"
         "手机操作：更新原远程模块，重新连接小火箭，再完全退出并重新打开对应 App。\n\n"
         f"<!-- shadowrocket-rules-sha256:{digest} -->"

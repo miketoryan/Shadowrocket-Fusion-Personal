@@ -119,6 +119,25 @@ def fetch_text(url):
     return payload.decode("utf-8")
 
 
+def evidence_domains(text, minimum, maximum):
+    # Only simple ABP domain-block entries; exceptions and modifiers are never evidence.
+    domains = set()
+    for line in text.splitlines():
+        match = re.fullmatch(r"\|\|([a-zA-Z0-9.-]+)\^", line.strip())
+        if match:
+            host = normalize_host(match[1])
+            if host: domains.add(host)
+    if not minimum <= len(domains) <= maximum:
+        raise ValueError(f"交叉来源域名数量异常: {len(domains)}")
+    return domains
+
+
+def evidence_for(host, domains):
+    # ABP ||domain^ covers subdomains; only publish the exact candidate host.
+    labels = host.split(".")
+    return any(".".join(labels[i:]) in domains for i in range(len(labels) - 1))
+
+
 def covered(item, module):
     match = SIMPLE.fullmatch(item["line"])
     if not match:
@@ -203,7 +222,7 @@ def update_metadata(root, module, applied, stamp):
     history = (root / "CHANGELOG.md").read_text("utf-8")
     if history.count(HISTORY_MARKER) != 1:
         raise ValueError("Substantive-update history marker missing or duplicated")
-    details = "\n".join("- " + BT + item["published"] + BT for item in applied)
+    details = "\n".join("- " + BT + item["published"] + BT + "（来源：" + "、".join(item.get("evidence", [item["source"]])) + "）" for item in applied)
     entry = (f"\n\n## {stamp}（北京时间）｜自动同步 {len(applied)} 条已审核广告规则\n\n"
              "**类型：** 精确域名及显式批准的后缀/广告接口同步。脚本与解密变更只进入待审核清单。\n\n"
              + details + "\n\n离线检查不代表手机端已验证。\n")
@@ -253,7 +272,7 @@ def write_reports(root, report, state):
     detail = (
         "# 上游变化与持续待审核清单\n\n"
         f"最近检查：{report['checked_at']}（北京时间）；结果：**{label}**。\n\n"
-        "首次运行建立完整基线，清单包含尚未采用的历史存量，不代表当天新增；后续比较新增、删除及内容哈希。"
+        "首次运行建立完整基线，清单包含尚未采用的历史存量，不代表当天新增；首次纳入追踪时间不一定是上游最初发布日期。后续比较新增、删除及内容哈希。"
         "待审核项目会持续保留，不会因第二天没有新变化而消失。"
         "来源规则被删除时，不会擅自删除本地人工规则。\n\n"
         "完整条目、来源、原因、增删和脚本哈希均见 [upstream-review.json](upstream-review.json)。"
@@ -263,12 +282,12 @@ def write_reports(root, report, state):
     added = {(c["source"], key(item)) for c in report.get("changes", []) if not c.get("baseline") for item in c.get("added", [])}
     detail += "## 常用 App 优先查看\n\n按域名和接口关键词推测归属；共享域名及上游整行主机列表可能误归类，须人工核对。\n\n"
     for name, pattern in groups.items():
-        items = [x for x in report["pending"] if len(x["line"]) < 1000 and re.search(pattern, x["line"], re.I)]
-        fresh = [x for x in items if (x["source"], key(x)) in added]
+        items = sorted([x for x in report["pending"] if len(x["line"]) < 1000 and re.search(pattern, x["line"], re.I)], key=lambda x: (x.get("last_changed", ""), x.get("first_seen", "")), reverse=True)
+        fresh = sorted([x for x in items if x.get("first_seen") == report["checked_at"] or x.get("last_changed") == report["checked_at"]], key=lambda x: x.get("first_seen", ""), reverse=True)
         detail += f"### {name}｜本次新增 {len(fresh)} 项，历史待审 {len(items)-len(fresh)} 项\n\n"
         for item in (fresh + [x for x in items if x not in fresh])[:20]:
-            tag = "本次新增" if (item["source"], key(item)) in added else "历史待审"
-            detail += f"- **{tag}** {item['source']}：{BT}{item['line'].replace(BT, chr(39))}{BT}\n"
+            tag = "新发现/变化" if item in fresh else "持续待审"
+            detail += f"- **{tag}** {item['source']}（首次纳入追踪 {item.get('first_seen', '未知')}，最近变化 {item.get('last_changed', '未知')}）：{BT}{item['line'].replace(BT, chr(39))}{BT}\n"
         detail += "\n"
     detail += "## 本次上游新增与删除\n\n"
     for change in report.get("changes", []):
@@ -304,12 +323,36 @@ def run(root, config, fetch=fetch_text, check=validate_candidate, stamp=None):
     old_module = (root / "Module.sgmodule").read_text("utf-8")
     policy = config.get("sync_policy", {})
     candidates, attempted, pending_keys = [], set(), set()
+    ledger = state.get("pending_ledger", {})
+    old_ledger = dict(ledger)
+    cross = policy.get("cross_reference")
+    evidence = set()
+    if cross:
+        try:
+            parsed = urllib.parse.urlsplit(cross["url"])
+            if parsed.scheme != "https" or parsed.netloc != "raw.githubusercontent.com" or parsed.username:
+                raise ValueError("交叉来源地址不受信任")
+            blob = fetch(cross["url"])
+            if len(blob.encode("utf-8")) > int(cross.get("max_bytes", LIMIT_BYTES)):
+                raise ValueError("交叉来源文件过大")
+            evidence = evidence_domains(blob, int(cross["min_domains"]), int(cross["max_domains"]))
+            report["sources"].append({"id":cross["id"], "url":cross["url"], "kind":"evidence", "sha256":sha(blob), "changed":sha(blob) != state.get("evidence_sha256"), "baseline":not bool(state.get("evidence_sha256"))})
+        except Exception as error:
+            report["errors"].append(f"交叉来源 {cross.get('id')}：{type(error).__name__}: {error}")
+            report["sources"].append({"id":cross.get("id"), "url":cross.get("url"), "kind":"evidence", "error":str(error)})
 
     def pending(source, item, reason, **extra):
         identity = (source, key(item), reason)
         if identity not in pending_keys:
             pending_keys.add(identity)
-            report["pending"].append({"source": source, **item, "reason": reason, **extra})
+            ledger_key = sha(source + "\n" + key(item) + "\n" + reason)
+            before = old_ledger.get(ledger_key, {})
+            seen = before.get("first_seen", stamp)
+            changed = before.get("last_changed", stamp)
+            signature = extra.get("sha256")
+            if before and signature and signature != before.get("signature"): changed = stamp
+            ledger[ledger_key] = {"first_seen":seen, "last_changed":changed, "signature":signature, "status":"待审核"}
+            report["pending"].append({"source": source, **item, "reason": reason, "first_seen":seen, "last_changed":changed, "review_status":"待审核", **extra})
 
     for source in source_list(config):
         sid = source["id"]
@@ -368,11 +411,17 @@ def run(root, config, fetch=fetch_text, check=validate_candidate, stamp=None):
                 if not publish:
                     pending(sid, item, reason)
                     continue
+                domain_match = SIMPLE.fullmatch(item["line"])
+                if cross and domain_match and domain_match[1].upper() == "DOMAIN" and domain_match[2].lower() not in policy.get("exact_allowlist", []):
+                    if not evidence_for(domain_match[2].lower(), evidence):
+                        pending(sid, item, "缺少第二来源交叉收录，暂不自动发布", evidence_source=cross["id"])
+                        continue
                 target = {**item, "line": publish}
                 if covered(target, old_module) or publish in attempted:
                     continue
                 attempted.add(publish)
-                candidates.append({"source": sid, **item, "published": publish})
+                candidates.append({"source": sid, **item, "published": publish,
+                                   "evidence": [sid] + ([cross["id"]] if cross and domain_match and domain_match[1].upper() == "DOMAIN" and evidence_for(domain_match[2].lower(), evidence) else [])})
             for item in retired.values():
                 if covered(item, old_module):
                     pending(sid, item, "上游已删除；本地仍在使用，需确认后再移除")
@@ -383,11 +432,13 @@ def run(root, config, fetch=fetch_text, check=validate_candidate, stamp=None):
             for item in previous_report.get("pending", []):
                 if item["source"] == sid:
                     pending(sid, {"category": item["category"], "line": item["line"]}, item["reason"],
-                            **{k: v for k, v in item.items() if k not in {"source", "category", "line", "reason"}})
+                            **{k: v for k, v in item.items() if k not in {"source", "category", "line", "reason", "first_seen", "last_changed", "review_status"}})
         report["sources"].append(item_status)
 
     chosen = candidates
     try:
+        if cross and report["errors"]:
+            raise ValueError("关键上游或交叉来源检查失败，整批暂停发布")
         check_batch_growth(chosen, old_module, policy)
         proposal = add_block(old_module, BEGIN, END,
                              [x["published"] for x in chosen if x["category"] in {"DOMAIN", "DOMAIN-SUFFIX"}],
@@ -413,7 +464,8 @@ def run(root, config, fetch=fetch_text, check=validate_candidate, stamp=None):
         report["status"] = "review_required"
     elif any(s.get("changed") for s in report["sources"]):
         report["status"] = "observed_no_publish"
-    write_reports(root, report, {"schema_version": 2, "sources": next_sources})
+    write_reports(root, report, {"schema_version": 2, "sources": next_sources, "pending_ledger": ledger,
+                                 "evidence_sha256": sha(blob) if cross and evidence else state.get("evidence_sha256")})
     return report
 
 
