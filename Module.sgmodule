@@ -1,5 +1,5 @@
 #!name=广告屏蔽联网版
-#!desc=仓库更新时间：2026-11-26 07:19
+#!desc=仓库更新时间：2026-11-26 09:50
 
 [Rule]
 
@@ -1098,7 +1098,7 @@ DOMAIN-SUFFIX,erebor.douban.com,REJECT,extended-matching,pre-matching
 # ===== B站：只保留开屏 =====
 
 # ===== 微信公众号 =====
-^https?:\/\/mp\.weixin\.qq\.com\/mp\/(ad_|advertisement|getappmsgad|cps_product_info|masonryfeed|relatedarticle|relatedsearchword|searchkeywordreport|geticon|getainfo|jsmonitor) - reject-dict
+^https?:\/\/mp\.weixin\.qq\.com\/mp\/(ad_|advertisement|getappmsgad) - reject-dict
 ^https?:\/\/mp\.weixin\.qq\.com\/wapad\/getaddata\?action=getad - reject-200
 ^https?:\/\/mp\.weixin\.qq\.com\/wapad\/reportaddata\?action=exposure_report - reject-200
 
@@ -1126,9 +1126,6 @@ DOMAIN-SUFFIX,erebor.douban.com,REJECT,extended-matching,pre-matching
 # ===== 小宇宙 =====
 
 # ===== 微信公众号 =====
-^https?:\/\/mp\.weixin\.qq\.com\/s\?.* response-body-replace-regex "<div[^>]+class=\"[^\"]*(?:ad|advert)[^\"]*\"[^>]*>[\s\S]*?<\/div>" ""
-^https?:\/\/mp\.weixin\.qq\.com\/s\?.* response-body-replace-regex "<section[^>]+class=\"[^\"]*(?:ad|advert)[^\"]*\"[^>]*>[\s\S]*?<\/section>" ""
-^https?:\/\/mp\.weixin\.qq\.com\/s\?.* response-body-replace-regex "<div[^>]+id=\"js_bottom_ad_area\"[\s\S]*?<\/div>" ""
 
 # ===== B站 =====
 
@@ -1140,7 +1137,9 @@ DOMAIN-SUFFIX,erebor.douban.com,REJECT,extended-matching,pre-matching
 
 [Script]
 
-json-ads-safe =type=http-response, pattern=^https?:\/\/(?:api\.douban\.com\/|api\.xiaoyuzhoufm\.com\/|home\.umetrip\.com\/gateway\/api\/umetrip\/native|app\.bilibili\.com\/x\/v2\/feed\/index(?:\?|$)), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/json_ads_safe.js?v=55036853c8e64089, requires-body=true, max-size=0
+wechat-article-ads =type=http-response, pattern=^https?:\/\/mp\.weixin\.qq\.com\/s(?:\?|$), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/wechat_article_ads.js?v=f66cfde4259b7970, requires-body=true, max-size=0
+
+json-ads-safe =type=http-response, pattern=^https?:\/\/(?:api\.douban\.com\/|api\.xiaoyuzhoufm\.com\/|home\.umetrip\.com\/gateway\/api\/umetrip\/native|app\.bilibili\.com\/x\/v2\/feed\/index(?:\?|$)), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/json_ads_safe.js?v=077b6982d3001358, requires-body=true, max-size=0
 
 # 2026-11-01 高德启动图层接口：只移除明确的开屏控制字段
 amap-splash-config =type=http-response, pattern=^https?:\/\/m\d+\.amap\.com\/ws\/shield\/frogserver\/aocs\/updatable\/1(?:\?|$), script-path=https://raw.githubusercontent.com/miketoryan/Shadowrocket-Fusion-Personal/main/scripts/amap_splash_config.js?v=d70c59904f87b4ad, requires-body=true, max-size=0

@@ -97,3 +97,24 @@ const xyout=apply("scripts/xianyu_splash.js",xyurl,xy);
 assert.deepEqual(xyout.data.adMap,{}); assert.equal(xyout.data.cacheAd.length,0); assert.equal(xyout.data.normal.id,4);
 assert.deepEqual(apply("scripts/xianyu_splash.js",xyurl,{...xy,ret:["FAIL"]}),{...xy,ret:["FAIL"]});
 assert.equal(apply(jd,"https://api.m.jd.com/client.action?client=apple&functionId=start",origJD).images.length,0);
+
+// B站首页仅移除明确广告卡和广告横幅，保留普通内容与嵌套数据。
+const biliFeed = {data:{items:[{id:1,card_type:'small_cover',nested:{is_ad:true}},{id:2,card_goto:'ad_web'},{id:3,is_ad:true},{id:4,card_type:'banner_v8',banner_item:[{type:'ad',id:'a'},{type:'normal',id:'b'}]}]}};
+const feedClean=apply(safe,'https://app.bilibili.com/x/v2/feed/index?x=1',biliFeed);
+assert.deepEqual(feedClean.data.items.map(x=>x.id),[1,4]);
+assert.equal(feedClean.data.items[0].nested.is_ad,true);
+assert.deepEqual(feedClean.data.items[1].banner_item,[{type:'normal',id:'b'}]);
+assert.deepEqual(apply(safe,'https://app.bilibili.com/x/v2/feed/index/story?x=1',biliFeed),biliFeed);
+
+function applyHtml(url,body) {
+ let result; vm.runInNewContext(fs.readFileSync('scripts/wechat_article_ads.js','utf8'), {
+   $request:{url},$response:{body},$done:x=>{result=x;}
+ }, {timeout:2000});
+ assert.ok(result !== undefined);return result.body === undefined ? body : result.body;
+}
+const article='<html><script>const t="<div id=\'js_bottom_ad_area\'>";</script><div id="main">正文<div>嵌套内容</div></div><div id="js_bottom_ad_area"><div>广告</div><div>第二层<div>嵌套</div></div></div><div id="related">推荐文章</div></html>';
+const wx=applyHtml('https://mp.weixin.qq.com/s?__biz=test',article);
+assert.ok(wx.includes('正文<div>嵌套内容</div>'));assert.ok(wx.includes('推荐文章'));assert.ok(!wx.includes('第二层'));
+assert.equal(applyHtml('https://mp.weixin.qq.com/s?x=1','<div data-id="js_bottom_ad_area">正文</div>'),'<div data-id="js_bottom_ad_area">正文</div>');
+assert.equal(applyHtml('https://mp.weixin.qq.com/s?x=1','<div id="js_bottom_ad_area"><div>正文'),'<div id="js_bottom_ad_area"><div>正文');
+assert.equal(applyHtml('https://example.com/s?x=1',article),article);
