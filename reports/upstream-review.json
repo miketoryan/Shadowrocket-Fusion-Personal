@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "checked_at": "2026-11-26 07:54",
+  "checked_at": "2026-11-26 16:39",
   "status": "review_required",
   "sources": [
     {
@@ -8,8 +8,8 @@
       "url": "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/AWAvenue-Ads-Rule.txt",
       "kind": "evidence",
       "sha256": "9c7204be5180e33ed97d2f7b8dc9fc1b61e6aabdaafa149ed9165636294f7f7b",
-      "changed": true,
-      "baseline": true
+      "changed": false,
+      "baseline": false
     },
     {
       "id": "fmz200-exact-ad-domains",

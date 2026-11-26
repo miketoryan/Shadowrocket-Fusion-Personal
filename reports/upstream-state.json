@@ -17753,7 +17753,7 @@
       ],
       "retired": [],
       "approved_sha256": null,
-      "last_success": "2026-11-26 07:54"
+      "last_success": "2026-11-26 16:39"
     },
     "app2smile-bilibili-json": {
       "sha256": "748ad16a92532bde2c439a8b9975f465381d20e24328cf2a58ff3a2a27328d84",
@@ -17762,7 +17762,7 @@
       "items": [],
       "retired": [],
       "approved_sha256": null,
-      "last_success": "2026-11-26 07:54"
+      "last_success": "2026-11-26 16:39"
     },
     "app2smile-bilibili-proto": {
       "sha256": "70fa7cf0e3390da24db93bcfbf0c81c2af17b16f99012b483783f046f62c476e",
@@ -17771,7 +17771,7 @@
       "items": [],
       "retired": [],
       "approved_sha256": null,
-      "last_success": "2026-11-26 07:54"
+      "last_success": "2026-11-26 16:39"
     },
     "zirawell-umetrip-ads": {
       "sha256": "64db067778acd1818e8eb82ee73fe1f82ea300cf91c5479276b4d44e87a4cfa1",
@@ -17780,7 +17780,7 @@
       "items": [],
       "retired": [],
       "approved_sha256": null,
-      "last_success": "2026-11-26 07:54"
+      "last_success": "2026-11-26 16:39"
     },
     "app2smile QQ News": {
       "sha256": "dbc36baa324c803bbcfdf0a6590faf58e2d5c8d8c18d1fd460a174600751847b",
@@ -17798,7 +17798,7 @@
       ],
       "retired": [],
       "approved_sha256": null,
-      "last_success": "2026-11-26 07:54"
+      "last_success": "2026-11-26 16:39"
     },
     "app2smile Tieba": {
       "sha256": "b20d792a1f4466e97103266942176d6db4579340ba201a4fa8db91da2adfda29",
@@ -17824,7 +17824,7 @@
       ],
       "retired": [],
       "approved_sha256": null,
-      "last_success": "2026-11-26 07:54"
+      "last_success": "2026-11-26 16:39"
     },
     "ddgksf Weibo Ads": {
       "sha256": "9cc47e68231ae05324f50eea108e0f1e5175fa2cfeeb6c8bae241db1556b038a",
@@ -18018,7 +18018,7 @@
       ],
       "retired": [],
       "approved_sha256": null,
-      "last_success": "2026-11-26 07:54"
+      "last_success": "2026-11-26 16:39"
     },
     "fmz200-taobao-script": {
       "sha256": "4cf62100424886068a5470daecec319e93ccd034c647d79a9daaa72bbbc341bb",
@@ -18027,7 +18027,7 @@
       "items": [],
       "retired": [],
       "approved_sha256": null,
-      "last_success": "2026-11-26 07:54"
+      "last_success": "2026-11-26 16:39"
     }
   },
   "pending_ledger": {
